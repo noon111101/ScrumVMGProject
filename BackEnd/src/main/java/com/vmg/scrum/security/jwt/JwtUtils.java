@@ -17,6 +17,9 @@ public class JwtUtils {
     @Value("${vmg.scrum.jwtSecret}")
     private String jwtSecret;
 
+    @Value("${vmg.scrum.jwtSecretEmail}")
+    private String jwtSecretEmail;
+
     @Value("${vmg.scrum.jwtExpirationMs}")
     private int jwtExpirationMs;
 
@@ -39,6 +42,40 @@ public class JwtUtils {
     public boolean validateJwtToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+            return true;
+        } catch (SignatureException e) {
+            logger.error("Invalid JWT signature: {}", e.getMessage());
+        } catch (MalformedJwtException e) {
+            logger.error("Invalid JWT token: {}", e.getMessage());
+        } catch (ExpiredJwtException e) {
+            logger.error("JWT token is expired: {}", e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            logger.error("JWT token is unsupported: {}", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            logger.error("JWT claims string is empty: {}", e.getMessage());
+        }
+
+        return false;
+    }
+    public String generateJwtTokenEmail(Authentication authentication) {
+
+        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+
+        return Jwts.builder()
+                .setSubject((userPrincipal.getUsername()))
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .signWith(SignatureAlgorithm.HS512, jwtSecretEmail)
+                .compact();
+    }
+
+    public String getUserNameFromJwtTokenEmail(String token) {
+        return Jwts.parser().setSigningKey(jwtSecretEmail).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public boolean validateJwtTokenEmail(String authToken) {
+        try {
+            Jwts.parser().setSigningKey(jwtSecretEmail).parseClaimsJws(authToken);
             return true;
         } catch (SignatureException e) {
             logger.error("Invalid JWT signature: {}", e.getMessage());
