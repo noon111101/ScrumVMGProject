@@ -1,5 +1,7 @@
 package com.vmg.scrum.entity;
 
+import com.vmg.scrum.entity.option.Department;
+import com.vmg.scrum.entity.option.Status;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,6 +27,14 @@ public class User extends BaseEntity {
     private String fullName;
     @Column(nullable = false)
     private String email;
+
+    private String phone;
+
+    @OneToMany(mappedBy = "users")
+    private Set<Department> departments;
+
+    @OneToMany(mappedBy = "users")
+    private Set<Status> statuses;
     @ManyToMany( fetch = FetchType.LAZY)
     @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
             @JoinColumn(name = "role_id") })
