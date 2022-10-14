@@ -1,6 +1,7 @@
 package com.vmg.scrum.excel;
 
-import com.vmg.scrum.entity.User;
+
+import com.vmg.scrum.model.User;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFColor;

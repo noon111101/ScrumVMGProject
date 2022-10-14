@@ -1,7 +1,7 @@
 package com.vmg.scrum.excel;
 
 
-import com.vmg.scrum.entity.User;
+import com.vmg.scrum.model.User;
 import com.vmg.scrum.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
