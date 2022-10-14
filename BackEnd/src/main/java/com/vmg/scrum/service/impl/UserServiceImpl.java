@@ -2,9 +2,10 @@ package com.vmg.scrum.service.impl;
 
 
 
-import com.vmg.scrum.entity.ERole;
-import com.vmg.scrum.entity.Role;
-import com.vmg.scrum.entity.User;
+
+import com.vmg.scrum.model.ERole;
+import com.vmg.scrum.model.Role;
+import com.vmg.scrum.model.User;
 import com.vmg.scrum.payload.request.LoginRequest;
 import com.vmg.scrum.payload.request.SignupRequest;
 import com.vmg.scrum.payload.response.JwtResponse;
@@ -64,7 +65,6 @@ public class UserServiceImpl implements UserService {
         return new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
-                userDetails.getEmail(),
                 roles);
     }
 
@@ -74,14 +74,10 @@ public class UserServiceImpl implements UserService {
             return new MessageResponse("Error: Username is already taken!");
         }
 
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return new MessageResponse("Error: Email is already in use!");
-        }
 
         // Create new user's account
         User user = new User(signUpRequest.getUsername(),
                 encoder.encode(signUpRequest.getPassword()),
-                signUpRequest.getEmail(),
                 signUpRequest.getFullName());
 
         Set<String> strRoles = signUpRequest.getRole();

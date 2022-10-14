@@ -1,4 +1,4 @@
-package com.vmg.scrum.entity;
+package com.vmg.scrum.model;
 
 public enum ERole {
     ROLE_USER,
