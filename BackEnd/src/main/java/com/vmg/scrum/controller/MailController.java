@@ -1,6 +1,7 @@
 package com.vmg.scrum.controller;
 
 import com.vmg.scrum.entity.User;
+
 import com.vmg.scrum.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

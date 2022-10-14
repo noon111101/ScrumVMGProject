@@ -2,7 +2,7 @@ package com.vmg.scrum.service;
 
 
 import com.vmg.scrum.entity.User;
-import com.vmg.scrum.security.UserDetailsServiceImpl;
+
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.mail.MessagingException;
