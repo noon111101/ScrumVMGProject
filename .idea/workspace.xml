@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4260541f-7ef0-496f-bfb2-041c6e73dfdf" name="Changes" comment="feat :add login">
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="4260541f-7ef0-496f-bfb2-041c6e73dfdf" name="Changes" comment="feat :add send email">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BackEnd/src/main/java/com/vmg/scrum/controller/ForgotPasswordController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BackEnd/src/main/java/com/vmg/scrum/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/BackEnd/src/main/java/com/vmg/scrum/entity/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BackEnd/src/main/resources/application-dev.properties" beforeDir="false" afterPath="$PROJECT_DIR$/BackEnd/src/main/resources/application-dev.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -79,7 +75,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "last_opened_file_path": "C:/Users/ADMIN/ScrumVMG/ScrumProject/BackEnd/src/main/java/com/vmg/scrum/entity/â",
+    "last_opened_file_path": "C:/Users/ADMIN/ScrumVMG",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
@@ -144,7 +140,14 @@
       <option name="project" value="LOCAL" />
       <updated>1665486225160</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="feat :add send email">
+      <created>1665655747686</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1665655747686</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -161,6 +164,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="feat : create structure" />
     <MESSAGE value="feat :add login" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat :add login" />
+    <MESSAGE value="feat :add send email" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat :add send email" />
   </component>
 </project>
