@@ -229,11 +229,11 @@ public class ExcelExporter {
 //                    cell.setCellStyle(styleBodyColor);
 //                }
                 if(i==33){
-                    cell.setCellValue("12"); // Tổng ngày làm việc
+                    cell.setCellValue(12); // Tổng ngày làm việc
                     cell.setCellStyle(styleBodyCenter);
                 }
                 if(i==34){
-                    cell.setCellValue("15"); // Tổng ngày hưởng lương
+                    cell.setCellValue(15); // Tổng ngày hưởng lương
                     cell.setCellStyle(styleBodyCenter);
                 }
             }
@@ -249,18 +249,15 @@ public class ExcelExporter {
         cell.setCellStyle(styleBodyCenter);
 
 
-//        sheet.getRow(rowCount++).getCell(33).setCellFormula("SUM(AH7:AH9)");
-        Cell cell1 = row.createCell(33);
-        cell1.setCellValue("123");
-//        cell1.setCellType(CellType.FORMULA);
-//        cell1.setCellFormula("SUM(AH7:AH"+(rowIndex-1)+")");
-        cell1.setCellStyle(styleBodyCenter);
+        rowIndex = sheet.getLastRowNum();
+        cell = row.createCell(33);
+        cell.setCellFormula("SUM(AH7:AH"+rowIndex+")");
+        cell.setCellStyle(styleBodyCenter);
 
-        cell1 = row.createCell(34);
-        cell1.setCellValue("321");
-//        cell1.setCellType(CellType.FORMULA);
-//        cell1.setCellFormula("SUM(AI7:AI9)");
-        cell1.setCellStyle(styleBodyCenter);
+
+        cell = row.createCell(34);
+        cell.setCellFormula("SUM(AI7:AI"+rowIndex+")");
+        cell.setCellStyle(styleBodyCenter);
 
         rowIndex = sheet.getLastRowNum();
 
@@ -345,11 +342,13 @@ public class ExcelExporter {
         cell.setCellValue("Giám đốc TT/ Bộ phận");
         cell.setCellStyle(styleBold);
 
-        row = sheet.createRow(rowCurrent);
+
+
         cell = row.createCell(25);
         cell.setCellValue("TP. QTNNL&DVNB");
         cell.setCellStyle(styleBold);
         //Merge footer
+
         sheet.addMergedRegion(new CellRangeAddress(rowCurrent, rowCurrent, 0, 3));
         sheet.addMergedRegion(new CellRangeAddress(rowCurrent, rowCurrent, 25, 34));
 
@@ -358,7 +357,6 @@ public class ExcelExporter {
         cell.setCellValue("Ký và Ghi rõ Họ Tên");
         cell.setCellStyle(styleThinCenter);
 
-        row = sheet.createRow(rowCurrent);
         cell = row.createCell(25);
         cell.setCellValue("Ký và Ghi rõ Họ Tên");
         cell.setCellStyle(styleThinCenter);
