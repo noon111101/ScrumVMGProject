@@ -1,6 +1,6 @@
 package com.vmg.scrum.service;
 
-import com.vmg.scrum.entity.User;
+import com.vmg.scrum.model.User;
 import com.vmg.scrum.payload.request.LoginRequest;
 import com.vmg.scrum.payload.request.SignupRequest;
 import com.vmg.scrum.payload.response.JwtResponse;

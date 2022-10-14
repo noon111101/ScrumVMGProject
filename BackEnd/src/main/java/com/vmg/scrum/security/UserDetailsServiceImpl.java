@@ -1,7 +1,7 @@
 package com.vmg.scrum.security;
 
 
-import com.vmg.scrum.entity.User;
+import com.vmg.scrum.model.User;
 import com.vmg.scrum.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class   UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
 
     public UserDetailsServiceImpl(UserRepository userDAO) {

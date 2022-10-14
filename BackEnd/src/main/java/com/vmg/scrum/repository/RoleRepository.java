@@ -1,7 +1,8 @@
 package com.vmg.scrum.repository;
 
-import com.vmg.scrum.entity.ERole;
-import com.vmg.scrum.entity.Role;
+
+import com.vmg.scrum.model.ERole;
+import com.vmg.scrum.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.vmg.scrum.entity;
+package com.vmg.scrum.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
