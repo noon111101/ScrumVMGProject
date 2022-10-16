@@ -4,10 +4,7 @@ package com.vmg.scrum.excel;
 import com.vmg.scrum.model.User;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFColor;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.*;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -52,7 +49,7 @@ public class ExcelExporter {
         style.setAlignment(HorizontalAlignment.CENTER);
         //font
         XSSFFont fontHeader = workbook.createFont();
-        fontHeader.setColor(new XSSFColor(Color.decode("#000080")));
+        fontHeader.setColor(new XSSFColor((IndexedColorMap) Color.decode("#000080")));
         fontHeader.setBold(true);
         fontHeader.setFontName("Times New Roman");
         fontHeader.setFontHeight(10);
@@ -94,7 +91,7 @@ public class ExcelExporter {
         styleTitle.setWrapText(true);
         // font Titles
         XSSFFont fontHeader = workbook.createFont();
-        fontHeader.setColor(new XSSFColor(Color.decode("#000080")));
+        fontHeader.setColor(new XSSFColor((IndexedColorMap) Color.decode("#000080")));
         fontHeader.setBold(true);
         fontHeader.setFontName("Times New Roman");
         fontHeader.setFontHeight(10);
@@ -274,7 +271,7 @@ public class ExcelExporter {
         styleBold.setAlignment(HorizontalAlignment.CENTER);
         //font Bold
         XSSFFont fontBold = workbook.createFont();
-        fontBold.setColor(new XSSFColor(Color.decode("#000080")));
+        fontBold.setColor(new XSSFColor((IndexedColorMap) Color.decode("#000080")));
         fontBold.setBold(true);
         fontBold.setFontName("Times New Roman");
         fontBold.setFontHeight(10);
@@ -288,7 +285,7 @@ public class ExcelExporter {
         styleThinCenter.setAlignment(HorizontalAlignment.CENTER);
         //font Thin
         XSSFFont fontThin = workbook.createFont();
-        fontThin.setColor(new XSSFColor(Color.decode("#000080")));
+        fontThin.setColor(new XSSFColor((IndexedColorMap) Color.decode("#000080")));
         fontThin.setFontName("Times New Roman");
         fontThin.setFontHeight(10);
         styleThinCenter.setFont(fontThin);
