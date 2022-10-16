@@ -2,16 +2,18 @@ package com.vmg.scrum.model.option;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vmg.scrum.model.User;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
-@Data
 public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

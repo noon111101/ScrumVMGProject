@@ -2,21 +2,22 @@ package com.vmg.scrum.model.excel;
 
 
 import com.vmg.scrum.model.User;
-import com.vmg.scrum.model.option.ExceptionLog;
 import com.vmg.scrum.model.option.Shift;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
-@Data
 public class LogDetail {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -26,11 +27,11 @@ public class LogDetail {
     @ToString.Exclude
     private User user;
 
-    private Date date;
+    private Date date_log;
 
-    private LocalDateTime in;
+    private LocalDateTime timeIn;
 
-    private LocalDateTime out;
+    private LocalDateTime timeOut;
 
     private LocalDateTime regularHour;
 
@@ -38,14 +39,12 @@ public class LogDetail {
 
     private LocalDateTime totalWork;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "exceptionLog_id", referencedColumnName = "id")
-    private ExceptionLog exception;
+    private String exception;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "shift_id", referencedColumnName = "id")
     private Shift shift;
 
-    private String leave;
+    private String leave_status;
 
 }

@@ -1,5 +1,6 @@
 package com.vmg.scrum.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,15 +28,19 @@ public abstract class BaseEntity {
 
     @Column
     @CreatedDate
+    @JsonIgnore
     private Date createDate;
     @Column
     @LastModifiedDate
+    @JsonIgnore
     private Date modifiedDate;
     @Column
     @CreatedBy
+    @JsonIgnore
     private String createBy;
     @Column
     @LastModifiedBy
+    @JsonIgnore
     private String modifiedBy;
 
 
