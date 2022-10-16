@@ -1,9 +1,8 @@
-package com.vmg.scrum.model.excel;
+package com.vmg.scrum.model;
 
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
@@ -11,18 +10,16 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-public class LogDetailTotal {
+public class Sign {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    private String name;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private ESign name;
 
-    private LocalDateTime regularHour;
 
-    private LocalDateTime overTime;
-
-    private LocalDateTime totalWork;
 
 }

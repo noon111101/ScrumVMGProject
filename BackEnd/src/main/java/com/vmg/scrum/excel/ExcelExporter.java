@@ -49,7 +49,8 @@ public class ExcelExporter {
         style.setAlignment(HorizontalAlignment.CENTER);
         //font
         XSSFFont fontHeader = workbook.createFont();
-        fontHeader.setColor(new XSSFColor((IndexedColorMap) Color.decode("#000080")));
+        IndexedColorMap colorMap = workbook.getStylesSource().getIndexedColors();
+        fontHeader.setColor(new XSSFColor(Color.decode("#000080"),colorMap));
         fontHeader.setBold(true);
         fontHeader.setFontName("Times New Roman");
         fontHeader.setFontHeight(10);
@@ -91,7 +92,8 @@ public class ExcelExporter {
         styleTitle.setWrapText(true);
         // font Titles
         XSSFFont fontHeader = workbook.createFont();
-        fontHeader.setColor(new XSSFColor((IndexedColorMap) Color.decode("#000080")));
+        IndexedColorMap colorMap = workbook.getStylesSource().getIndexedColors();
+        fontHeader.setColor(new XSSFColor(Color.decode("#000080"),colorMap));
         fontHeader.setBold(true);
         fontHeader.setFontName("Times New Roman");
         fontHeader.setFontHeight(10);
@@ -271,7 +273,8 @@ public class ExcelExporter {
         styleBold.setAlignment(HorizontalAlignment.CENTER);
         //font Bold
         XSSFFont fontBold = workbook.createFont();
-        fontBold.setColor(new XSSFColor((IndexedColorMap) Color.decode("#000080")));
+        IndexedColorMap colorMap = workbook.getStylesSource().getIndexedColors();
+        fontBold.setColor(new XSSFColor(Color.decode("#000080"),colorMap));
         fontBold.setBold(true);
         fontBold.setFontName("Times New Roman");
         fontBold.setFontHeight(10);
@@ -285,7 +288,7 @@ public class ExcelExporter {
         styleThinCenter.setAlignment(HorizontalAlignment.CENTER);
         //font Thin
         XSSFFont fontThin = workbook.createFont();
-        fontThin.setColor(new XSSFColor((IndexedColorMap) Color.decode("#000080")));
+        fontThin.setColor(new XSSFColor(Color.decode("#000080"),colorMap));
         fontThin.setFontName("Times New Roman");
         fontThin.setFontHeight(10);
         styleThinCenter.setFont(fontThin);

@@ -5,26 +5,46 @@ import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.model.excel.LogDetailTotal;
 import com.vmg.scrum.model.option.Department;
-import com.vmg.scrum.model.option.ExceptionLog;
 import com.vmg.scrum.model.option.Shift;
+import com.vmg.scrum.repository.ShiftRepository;
+import com.vmg.scrum.repository.UserRepository;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 @Service
 public class ExcelImporter {
 
-    public List<LogDetail> read() throws IOException {
-        FileInputStream inputStream = new FileInputStream(new File("C:/Users/ADMIN/Documents/ExcelDataLogTest.xlsx"));
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    ShiftRepository shiftRepository;
+    public String getPathExcelFile(){
+    return "C:/Users/ADMIN/Documents/ExcelDataLogTest.xlsx";
+    }
+    public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+
+    public static boolean hasExcelFormat(MultipartFile file) {
+
+        if (!TYPE.equals(file.getContentType())) {
+            return false;
+        }
+
+        return true;
+    }
+//    public List<LogDetailTotal> logDetailTotals;
+    public List<LogDetail> read(InputStream inputStream) throws IOException {
         List<LogDetail> logDetails;
         List<LogDetailTotal> logDetailTotals;
         try {
@@ -95,34 +115,30 @@ public class ExcelImporter {
                             logDetail.setTotalWork(currentCell.getLocalDateTimeCellValue());
                             break;
                         case 6:
-                            logDetail.setDate(currentCell.getDateCellValue());
+                            logDetail.setDate_log(currentCell.getDateCellValue());
                             break;
                         case 7:
-                            Shift shift = new Shift();
-                            shift.setName(currentCell.getStringCellValue());
-                            logDetail.setShift(shift);
+                            logDetail.setShift(shiftRepository.findByName(currentCell.getStringCellValue()));
                             break;
                         case 8:
-                            logDetail.setLeave(currentCell.getStringCellValue());
+                            logDetail.setLeave_status(currentCell.getStringCellValue());
                             break;
                         case 9:
                             if(currentCell.getCellType()==CellType.STRING){
-                                logDetail.setIn(null);
+                                logDetail.setTimeIn(null);
                                 break;
                             }
-                            logDetail.setIn(currentCell.getLocalDateTimeCellValue());
+                            logDetail.setTimeIn(currentCell.getLocalDateTimeCellValue());
                             break;
                         case 10:
                             if(currentCell.getCellType()==CellType.STRING){
-                                logDetail.setIn(null);
+                                logDetail.setTimeOut(null);
                                 break;
                             }
-                            logDetail.setOut(currentCell.getLocalDateTimeCellValue());
+                            logDetail.setTimeOut(currentCell.getLocalDateTimeCellValue());
                             break;
                         case 11:
-                            ExceptionLog exception = new ExceptionLog();
-                            exception.setName(currentCell.getStringCellValue());
-                            logDetail.setException(exception);
+                            logDetail.setException(currentCell.getStringCellValue());
                             break;
                         default:
                             break;
@@ -131,10 +147,11 @@ public class ExcelImporter {
 
                 }
                 if(user.getFullName()!=null){
-                    logDetail.setUser(user);
+                    logDetail.setUser(userRepository.findByCode(user.getCode()));
                     logDetails.add(logDetail);
-                    logDetailTotals.add(logDetailTotal);}
-
+                    logDetailTotals.add(logDetailTotal);
+                }
+//                this.logDetailTotals=logDetailTotals;
 
             }
             workbook.close();

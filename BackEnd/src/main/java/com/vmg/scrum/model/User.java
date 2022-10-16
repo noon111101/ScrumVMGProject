@@ -20,13 +20,10 @@ import java.util.Set;
 @Entity
 @Table(name="user", uniqueConstraints = {
         @UniqueConstraint(columnNames = "username"),
-})
-public class User  {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    private Long id;
+        @UniqueConstraint(columnNames = "code"),
 
+})
+public class User extends BaseEntity {
     @Column(length = 20, unique = true, nullable = false)
     private String username;
     @Column(length = 130,nullable = false)
@@ -34,9 +31,8 @@ public class User  {
     private String password;
     @Column(length = 50, nullable = false)
     private String fullName;
-    @Column(nullable = false)
 
-
+    @Column(unique = true, nullable = false)
     private Double code;
 
     private String phone;

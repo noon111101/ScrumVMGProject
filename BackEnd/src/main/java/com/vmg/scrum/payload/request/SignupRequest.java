@@ -20,6 +20,10 @@ public class SignupRequest {
     @Size(min = 6, max = 50)
     private String fullName;
 
+    @NotBlank
+    private Double code;
+
+
     public String getFullName() {
         return fullName;
     }
