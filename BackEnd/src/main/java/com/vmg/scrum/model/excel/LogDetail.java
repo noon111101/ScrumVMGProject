@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -27,9 +28,15 @@ public class LogDetail {
 
     private Date date;
 
-    private String in;
+    private LocalDateTime in;
 
-    private String out;
+    private LocalDateTime out;
+
+    private LocalDateTime regularHour;
+
+    private LocalDateTime overTime;
+
+    private LocalDateTime totalWork;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "exceptionLog_id", referencedColumnName = "id")

@@ -1,6 +1,7 @@
 package com.vmg.scrum.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.model.option.Cover;
 import com.vmg.scrum.model.option.Department;
@@ -29,6 +30,7 @@ public class User  {
     @Column(length = 20, unique = true, nullable = false)
     private String username;
     @Column(length = 130,nullable = false)
+    @JsonIgnore
     private String password;
     @Column(length = 50, nullable = false)
     private String fullName;
@@ -50,6 +52,7 @@ public class User  {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonIgnore
     private Set<LogDetail> logDetails= new HashSet<>();
     @ManyToMany( fetch = FetchType.LAZY)
     @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {

@@ -1,5 +1,6 @@
 package com.vmg.scrum.model.option;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vmg.scrum.model.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,11 +16,13 @@ public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
+    @JsonIgnore
     private Long id;
 
     private String name;
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "departments")
+    @JsonIgnore
     private Set<User> users = new HashSet<>();
 
 }

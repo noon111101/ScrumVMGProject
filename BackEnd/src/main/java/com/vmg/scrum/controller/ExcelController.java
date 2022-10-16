@@ -1,7 +1,10 @@
-package com.vmg.scrum.excel;
+package com.vmg.scrum.controller;
 
 
+import com.vmg.scrum.excel.ExcelExporter;
+import com.vmg.scrum.excel.ExcelImporter;
 import com.vmg.scrum.model.User;
+import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,13 +22,14 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/excel")
+//@RequestMapping("/api/excel")
 public class ExcelController {
 
     @Autowired
     UserRepository userRepository;
 
-
+    @Autowired
+    private ExcelImporter excelImporter;
     @GetMapping("/export")
     public ResponseEntity exportToExcel(HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
@@ -43,5 +47,9 @@ public class ExcelController {
 
         excelExporter.export(response);
         return new ResponseEntity(HttpStatus.OK);
+    }
+    @GetMapping("/import")
+    public List<LogDetail> importToExcel() throws IOException {
+        return  excelImporter.read();
     }
 }
