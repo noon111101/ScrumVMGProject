@@ -1,5 +1,6 @@
 package com.vmg.scrum.service.impl;
 
+import com.vmg.scrum.excel.DataExcelCalculation;
 import com.vmg.scrum.excel.ExcelImporter;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.repository.LogDetailRepository;
@@ -18,12 +19,13 @@ public class ExcelService {
     @Autowired
     LogDetailTotalRepository logDetailTotalRepository;
     @Autowired
-    private ExcelImporter excelImporter;
+    ExcelImporter excelImporter;
+    @Autowired
+    DataExcelCalculation dataExcelCalculation;
     public void save(MultipartFile file) {
         try {
             List<LogDetail> logDetailList = excelImporter.read(file.getInputStream());
-            logDetailRepository.saveAll(logDetailList);
-//            logDetailTotalRepository.saveAll(excelImporter.logDetailTotals);
+            logDetailRepository.saveAll(dataExcelCalculation.convertSign(logDetailList));
         } catch (IOException e) {
             throw new RuntimeException("fail to store excel data: " + e.getMessage());
         }
