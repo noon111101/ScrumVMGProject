@@ -39,10 +39,12 @@ public class User extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
+    @JsonIgnore
     private Department departments;
 
     @ManyToOne
     @JoinColumn(name = "status_id", nullable = false)
+    @JsonIgnore
     private Status statuses;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
