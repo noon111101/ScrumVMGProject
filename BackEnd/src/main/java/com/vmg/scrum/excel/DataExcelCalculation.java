@@ -18,15 +18,15 @@ public class DataExcelCalculation {
     SignRepository signRepository;
     @Autowired
     LogDetailRepository logDetailRepository;
-    public void convertSign(List<LogDetail> logDetails) {
+    public List<LogDetail> convertSign(List<LogDetail> logDetails) {
         for (LogDetail logDetail : logDetails) {
                 Integer dayOfWeek = logDetail.getDate_log().getDay();
-                Integer hourIn =0;
-                Integer hourOut=0;
-                Integer minuteIn =0;
-                Integer minuteOut=0;
-                Integer secondIn =0;
-                Integer secondOut=0;
+                Integer hourIn =null;
+                Integer hourOut=null;
+                Integer minuteIn =null;
+                Integer minuteOut=null;
+                Integer secondIn =null;
+                Integer secondOut=null;
                 if(logDetail.getTimeIn()!=null) {
                     hourIn = logDetail.getTimeIn().getHour();
                     minuteIn = logDetail.getTimeIn().getMinute();
@@ -47,56 +47,50 @@ public class DataExcelCalculation {
 
                 }
                 System.out.println(logDetail.getDate_log() +"-"+ dayOfWeek);
-                if(dayOfWeek==0 || dayOfWeek==6){
-                    Optional<LogDetail> logDetail1 = logDetailRepository.findById(logDetail.getId());
-                    LogDetail logDetail2 = logDetail1.get();
-                    logDetail2.setSigns(signRepository.findByName(ESign.NT));
-                    logDetailRepository.save(logDetail2);
+
+                if(hourOut==null && hourIn==null){
+                    if(dayOfWeek==0 || dayOfWeek==6){
+                        logDetail.setSigns(signRepository.findByName(ESign.NT));
+
+                    }
+                    if(dayOfWeek!=0 && dayOfWeek!=6){
+                        logDetail.setSigns(signRepository.findByName(ESign.KL));
+                    }
                 }
-                if((hourIn==0 && hourOut==0 && (dayOfWeek==0 || dayOfWeek==6)) || (hourIn==null && hourOut<15 ) || (hourIn==10 && secondIn>0 && hourOut==null)){
-                    Optional<LogDetail> logDetail1 = logDetailRepository.findById(logDetail.getId());
-                    LogDetail logDetail2 = logDetail1.get();
-                    logDetail2.setSigns(signRepository.findByName(ESign.KL));
-                    logDetailRepository.save(logDetail2);
+                if(hourOut!=null && hourIn!=null){
+                    if( (hourIn==null && hourOut<15 ) || (hourIn==10 && secondIn>0 && hourOut==null)){
+                        logDetail.setSigns(signRepository.findByName(ESign.KL));
+                    }
+                    if((hourIn>10 || hourIn==10 && minuteIn>0) && ((hourOut==15 &&minuteOut>0) || hourOut>15)){
+                        logDetail.setSigns(signRepository.findByName(ESign.KL_H));
+                    }
+                    if((hourIn<10||(hourIn==10 && minuteIn==0)) && (hourOut>15 || (hourOut==15 && minuteOut==0))){
+                        logDetail.setSigns(signRepository.findByName(ESign.H_KL));
+                    }
+                    if((hourIn<10||(hourIn==10 && minuteIn==0)) && ((hourOut==15 &&minuteOut>0) || hourOut>15)) {
+                        logDetail.setSigns(signRepository.findByName(ESign.H));
+                    }
+
                 }
-//                if(hourOut!=null && hourIn!=null){
-//                    if( (hourIn==null && hourOut<15 ) || (hourIn==10 && secondIn>0 && hourOut==null)){
-//                        Optional<LogDetail> logDetail1 = logDetailRepository.findById(logDetail.getId());
-//                        LogDetail logDetail2 = logDetail1.get();
-//                        logDetail2.setSigns(signRepository.findByName(ESign.KL));
-//                        logDetailRepository.save(logDetail2);
-//                    }
-//                    if((hourIn==10 && secondIn>0) && ((hourOut==17 &&minuteOut>30) || hourOut>17)){
-//                        Optional<LogDetail> logDetail1 = logDetailRepository.findById(logDetail.getId());
-//                        LogDetail logDetail2 = logDetail1.get();
-//                        logDetail2.setSigns(signRepository.findByName(ESign.KL_H));
-//                        logDetailRepository.save(logDetail2);
-//                    }
-//                    if((hourIn<8||(hourIn=8 && minuteIn<30))){
-//                        Optional<LogDetail> logDetail1 = logDetailRepository.findById(logDetail.getId());
-//                        LogDetail logDetail2 = logDetail1.get();
-//                        logDetail2.setSigns(signRepository.findByName(ESign.H_KL));
-//                        logDetailRepository.save(logDetail2);
-//                    }
-//
-//                }
-//            if((hourIn==null && hourOut==null && (dayOfWeek==0 || dayOfWeek==6))){
-//                Optional<LogDetail> logDetail1 = logDetailRepository.findById(logDetail.getId());
-//                LogDetail logDetail2 = logDetail1.get();
-//                logDetail2.setSigns(signRepository.findByName(ESign.KL));
-//                logDetailRepository.save(logDetail2);
-//            }
-//                if(dayOfWeek!=0 && dayOfWeek!=6 && hourIn==null && hourOut==null)
-//                    logDetail.setSigns(new Sign(ESign.KL));
-//                if(hourIn>10 || (hourIn==10 && secondIn>0))
-//                    logDetail.setSigns(new Sign(ESign.M));
-//                if(hourOut<15)
-//                    logDetail.setSigns(new Sign(ESign.S));
-//                if((hourIn>10 || (hourIn==10 && secondIn>0)) && hourOut<15)
-//                    logDetail.setSigns(new Sign(ESign.M_S));
+                if(hourIn==null && hourOut!=null){
+                    if(hourOut<15){
+                        logDetail.setSigns(signRepository.findByName(ESign.KL));
+                    }
+                    if((hourOut==15 &&minuteOut>0) || hourOut>15){
+                        logDetail.setSigns(signRepository.findByName(ESign.KL_H));
+                    }
+                }
+            if(hourIn!=null && hourOut==null){
+                if(hourIn>10 || hourIn==10 && minuteIn>0){
+                    logDetail.setSigns(signRepository.findByName(ESign.KL));
+                }
+                if(hourIn<10){
+                    logDetail.setSigns(signRepository.findByName(ESign.H_KL));
+                }
+            }
 
         }
-
+        return logDetails;
     }
 
 }
