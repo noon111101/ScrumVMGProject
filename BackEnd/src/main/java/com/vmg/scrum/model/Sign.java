@@ -1,8 +1,12 @@
 package com.vmg.scrum.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vmg.scrum.model.excel.LogDetail;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Builder
 @AllArgsConstructor
@@ -20,6 +24,12 @@ public class Sign {
     @Column(length = 20)
     private ESign name;
 
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "signs")
+    @JsonIgnore
+    private Set<LogDetail> logDetails = new HashSet<>();
 
 
+    public Sign(ESign nt) {
+        this.name=nt;
+    }
 }

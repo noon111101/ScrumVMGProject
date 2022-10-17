@@ -1,11 +1,13 @@
 package com.vmg.scrum.controller;
 
 
+import com.vmg.scrum.excel.DataExcelCalculation;
 import com.vmg.scrum.excel.ExcelExporter;
 import com.vmg.scrum.excel.ExcelImporter;
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.payload.response.MessageResponse;
+import com.vmg.scrum.repository.LogDetailRepository;
 import com.vmg.scrum.repository.UserRepository;
 import com.vmg.scrum.service.impl.ExcelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,10 @@ public class ExcelController {
 
     @Autowired
     ExcelService fileService;
+    @Autowired
+    DataExcelCalculation dataExcelCalculation;
+    @Autowired
+    LogDetailRepository logDetailRepository;
     @GetMapping("/export")
     public ResponseEntity exportToExcel(HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
@@ -71,6 +77,12 @@ public class ExcelController {
         message = "Please upload an excel file!";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse(message));
     }
+
+    @GetMapping("/test")
+    public void test(){
+        dataExcelCalculation.convertSign(logDetailRepository.findAll());
+    }
+
 }
 
 
