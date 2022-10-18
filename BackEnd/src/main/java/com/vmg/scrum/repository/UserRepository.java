@@ -2,6 +2,9 @@ package com.vmg.scrum.repository;
 
 
 import com.vmg.scrum.model.User;
+import com.vmg.scrum.model.excel.LogDetail;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
@@ -14,6 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Boolean existsByUsername(String username);
 
     User findByCode(Double code);
-
+    @Override
+    Page<User> findAll(Pageable pageable);
 
 }

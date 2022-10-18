@@ -18,5 +18,7 @@ public interface LogDetailRepository extends JpaRepository<LogDetail,Long> {
     @Override
     Page<LogDetail> findAll(Pageable pageable);
 
+    Page<LogDetail> findByUserCode(Pageable pageable,Double code);
+    Page<LogDetail> findByUserDepartmentsId(Pageable pageable,Long id);
 
 }
