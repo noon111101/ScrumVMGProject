@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public MessageResponse registerUser(SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return new MessageResponse("Error: Username is already taken!");
+            return new MessageResponse("Error: Email is already taken!");
         }
 
 

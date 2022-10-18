@@ -21,7 +21,7 @@ public class MailController {
            return true;
 
     }
-    @PostMapping("/reset_password")
+    @PostMapping("reset_password")
     public UserDetails resetpassword(@RequestParam(name ="token") String token){
         return mailService.resetPassword(token);
     }
