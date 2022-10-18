@@ -5,7 +5,6 @@ import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.model.excel.LogDetailTotal;
 import com.vmg.scrum.model.option.Department;
-import com.vmg.scrum.model.option.Shift;
 import com.vmg.scrum.repository.ShiftRepository;
 import com.vmg.scrum.repository.UserRepository;
 import org.apache.poi.ss.usermodel.Cell;
@@ -17,9 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 @Service
@@ -115,7 +119,10 @@ public class ExcelImporter {
                             logDetail.setTotalWork(currentCell.getLocalDateTimeCellValue());
                             break;
                         case 6:
-                            logDetail.setDate_log(currentCell.getDateCellValue());
+//                            LocalDateTime localDateTime = currentCell.getLocalDateTimeCellValue();
+//                            LocalDate date = localDateTime.toLocalDate();
+//                            System.out.println("fdahfukdsahfdskfndksajhfkjds"+date);
+                                logDetail.setDate_log(currentCell.getDateCellValue());
                             break;
                         case 7:
                             logDetail.setShift(shiftRepository.findByName(currentCell.getStringCellValue()));
@@ -128,6 +135,7 @@ public class ExcelImporter {
                                 logDetail.setTimeIn(null);
                                 break;
                             }
+
                             logDetail.setTimeIn(currentCell.getLocalDateTimeCellValue());
                             break;
                         case 10:

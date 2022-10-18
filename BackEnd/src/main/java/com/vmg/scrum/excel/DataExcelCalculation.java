@@ -21,6 +21,7 @@ public class DataExcelCalculation {
     public List<LogDetail> convertSign(List<LogDetail> logDetails) {
         for (LogDetail logDetail : logDetails) {
                 Integer dayOfWeek = logDetail.getDate_log().getDay();
+//                Integer dayOfWeek = logDetail.getDate_log().getDayOfMonth();
                 Integer hourIn =null;
                 Integer hourOut=null;
                 Integer minuteIn =null;
