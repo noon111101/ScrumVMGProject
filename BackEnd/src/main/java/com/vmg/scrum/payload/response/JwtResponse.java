@@ -1,5 +1,7 @@
 package com.vmg.scrum.payload.response;
 
+import com.vmg.scrum.model.User;
+
 import java.util.List;
 
 public class JwtResponse {
@@ -9,11 +11,22 @@ public class JwtResponse {
     private String username;
     private List<String> roles;
 
-    public JwtResponse(String accessToken, Long id, String username, List<String> roles) {
-        this.token = accessToken;
+    private User user;
+
+    public JwtResponse(String token, Long id, String username, List<String> roles, User user) {
+        this.token = token;
         this.id = id;
         this.username = username;
         this.roles = roles;
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getAccessToken() {
