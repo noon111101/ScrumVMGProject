@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class SignupRequest {
     @NotBlank
-    @Size(min = 3, max = 20)
+    @Size(min = 3, max = 50)
     private String username;
 
     private Set<String> role;
@@ -16,8 +16,20 @@ public class SignupRequest {
     @Size(min = 6, max = 50)
     private String fullName;
 
-    @NotBlank
     private Double code;
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    @NotBlank
+    private String department;
+    @NotBlank
+    private String gender;
 
     private String cover;
 
@@ -29,8 +41,6 @@ public class SignupRequest {
         this.cover = cover;
     }
 
-    @NotBlank
-    private String gender;
 
     public String getUsername() {
         return username;

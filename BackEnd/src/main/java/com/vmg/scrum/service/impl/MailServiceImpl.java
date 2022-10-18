@@ -41,7 +41,7 @@ public class MailServiceImpl implements MailService {
         this.jwtUtils = jwtUtils;
     }
 
-
+@Override
     public void sendEmail(String recipientEmail)
             throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = mailSender.createMimeMessage();
@@ -59,6 +59,28 @@ public class MailServiceImpl implements MailService {
                 + "<br>"
                 + "<p>Ignore this email if you do remember your password, "
                 + "or you have not made the request.</p>";
+
+        helper.setSubject(subject);
+
+        helper.setText(content, true);
+
+        mailSender.send(message);
+    }
+    @Override
+    public void sendEmailAccountInfo(String recipientEmail,String rootPassword)
+            throws MessagingException, UnsupportedEncodingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        helper.setFrom("VMG@mailnotifi", "VMG");
+        helper.setTo(recipientEmail);
+        String subject = "Here's the info account";
+        String content = "<p>Hello,</p>"
+                + "<p>You have to logIn and change your password.</p>"
+                + "Here is account infomation :"
+                + "<p> Email:yourEmail </p>"
+                + "<br>"
+                + "<p> Password:" + rootPassword +"</p>";
 
         helper.setSubject(subject);
 

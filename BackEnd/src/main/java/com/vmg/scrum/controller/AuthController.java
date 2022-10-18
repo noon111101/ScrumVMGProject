@@ -1,15 +1,15 @@
 package com.vmg.scrum.controller;
 
+import com.vmg.scrum.payload.request.ChangePasswordRequest;
 import com.vmg.scrum.payload.request.LoginRequest;
 import com.vmg.scrum.payload.request.SignupRequest;
 import com.vmg.scrum.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -26,7 +26,11 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) throws MessagingException, UnsupportedEncodingException {
         return ResponseEntity.ok(userService.registerUser(signUpRequest));
+    }
+    @PostMapping("/changePassword")
+    public Boolean changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest)  {
+        return userService.updatePassword(changePasswordRequest);
     }
 }

@@ -6,15 +6,20 @@ package com.vmg.scrum.service.impl;
 import com.vmg.scrum.model.ERole;
 import com.vmg.scrum.model.Role;
 import com.vmg.scrum.model.User;
+import com.vmg.scrum.model.option.Department;
+import com.vmg.scrum.payload.request.ChangePasswordRequest;
 import com.vmg.scrum.payload.request.LoginRequest;
 import com.vmg.scrum.payload.request.SignupRequest;
 import com.vmg.scrum.payload.response.JwtResponse;
 import com.vmg.scrum.payload.response.MessageResponse;
+import com.vmg.scrum.repository.DepartmentRepository;
 import com.vmg.scrum.repository.RoleRepository;
 import com.vmg.scrum.repository.UserRepository;
 import com.vmg.scrum.security.UserDetailsImpl;
 import com.vmg.scrum.security.jwt.JwtUtils;
+import com.vmg.scrum.service.MailService;
 import com.vmg.scrum.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,10 +28,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +45,10 @@ public class UserServiceImpl implements UserService {
 
     private final JwtUtils jwtUtils;
 
+    @Autowired
+    MailService mailService;
+    @Autowired
+    DepartmentRepository departmentRepository;
     public UserServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
@@ -71,28 +79,30 @@ public class UserServiceImpl implements UserService {
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
-
+        Boolean check = userRepository.getById(userDetails.getId()).getCheckRootDisable();
         return new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
-                roles,userRepository.getById(userDetails.getId()));
+                roles,userRepository.getById(userDetails.getId()),check);
     }
 
     @Override
-    public MessageResponse registerUser(SignupRequest signUpRequest) {
+    public MessageResponse registerUser(SignupRequest signUpRequest) throws MessagingException, UnsupportedEncodingException {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return new MessageResponse("Error: Email is already taken!");
         }
-
-
+        String genarate =alphaNumericString(8);
+        Department department = departmentRepository.findByName(signUpRequest.getDepartment());
         // Create new user's account
         User user = new User(signUpRequest.getUsername(),
-                encoder.encode(alphaNumericString(8)),
+                encoder.encode(genarate),
                 signUpRequest.getFullName(),
                 signUpRequest.getGender(),
                 signUpRequest.getCover(),
-                signUpRequest.getCode());
-
+                signUpRequest.getCode(),
+                department
+                );
+        mailService.sendEmailAccountInfo(signUpRequest.getUsername(),genarate);
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
 
@@ -129,10 +139,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updatePassword(User user, String newPassword) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = passwordEncoder.encode(newPassword);
-        user.setPassword(encodedPassword);
-        userRepository.save(user);
-    }
+    public Boolean updatePassword(ChangePasswordRequest changePasswordRequest) {
+        try {
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            Long id = changePasswordRequest.getId();
+            String newPassword = changePasswordRequest.getPassword();
+            Optional<User> users = userRepository.findById(id);
+            User user =users.get();
+            boolean check = user.getCheckRootDisable();
+            if(!check){
+                String encodedPassword = passwordEncoder.encode(newPassword);
+                user.setPassword(encodedPassword);
+                user.setRootPassword(passwordEncoder.encode(""));
+                user.setCheckRootDisable(true);
+                userRepository.save(user);
+            }
+            if(check){
+                String encodedPassword = passwordEncoder.encode(newPassword);
+                user.setPassword(encodedPassword);
+                userRepository.save(user);
+            }
+            return true;
+        }
+        catch (Exception e){
+            return false;
+        }
+}
 }
