@@ -20,7 +20,7 @@ public class DataExcelCalculation {
     LogDetailRepository logDetailRepository;
     public List<LogDetail> convertSign(List<LogDetail> logDetails) {
         for (LogDetail logDetail : logDetails) {
-                Integer dayOfWeek = logDetail.getDate_log().getDay();
+                DayOfWeek dayOfWeek = logDetail.getDate_log().getDayOfWeek();
                 Integer hourIn =null;
                 Integer hourOut=null;
                 Integer minuteIn =null;
@@ -49,11 +49,11 @@ public class DataExcelCalculation {
                 System.out.println(logDetail.getDate_log() +"-"+ dayOfWeek);
 
                 if(hourOut==null && hourIn==null){
-                    if(dayOfWeek==0 || dayOfWeek==6){
+                    if(dayOfWeek.toString().equals("SUNDAY") || dayOfWeek.toString().equals("SATURDAY")){
                         logDetail.setSigns(signRepository.findByName(ESign.NT));
 
                     }
-                    if(dayOfWeek!=0 && dayOfWeek!=6){
+                    if(!dayOfWeek.toString().equals("SUNDAY") && !dayOfWeek.toString().equals("SATURDAY")){
                         logDetail.setSigns(signRepository.findByName(ESign.KL));
                     }
                 }

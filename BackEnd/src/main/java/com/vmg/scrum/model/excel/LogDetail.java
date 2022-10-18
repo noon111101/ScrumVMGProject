@@ -9,6 +9,7 @@ import com.vmg.scrum.model.option.Shift;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
@@ -32,7 +33,7 @@ public class LogDetail {
     @ToString.Exclude
     private User user;
 
-    private Date date_log;
+    private LocalDate date_log;
 
     private LocalDateTime timeIn;
 

@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -115,7 +116,8 @@ public class ExcelImporter {
                             logDetail.setTotalWork(currentCell.getLocalDateTimeCellValue());
                             break;
                         case 6:
-                            logDetail.setDate_log(currentCell.getDateCellValue());
+                            LocalDate localDate = currentCell.getLocalDateTimeCellValue().toLocalDate();
+                            logDetail.setDate_log(localDate);
                             break;
                         case 7:
                             logDetail.setShift(shiftRepository.findByName(currentCell.getStringCellValue()));
