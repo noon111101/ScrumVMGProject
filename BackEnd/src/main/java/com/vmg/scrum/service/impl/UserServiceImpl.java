@@ -102,7 +102,6 @@ public class UserServiceImpl implements UserService {
                 signUpRequest.getCode(),
                 department
                 );
-        mailService.sendEmailAccountInfo(signUpRequest.getUsername(),genarate);
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
 
@@ -134,7 +133,7 @@ public class UserServiceImpl implements UserService {
 
         user.setRoles(roles);
         userRepository.save(user);
-
+        mailService.sendEmailAccountInfo(signUpRequest.getUsername(),genarate);
         return new MessageResponse("User registered successfully!");
     }
 
