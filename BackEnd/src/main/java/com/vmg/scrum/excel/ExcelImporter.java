@@ -5,6 +5,7 @@ import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.model.excel.LogDetailTotal;
 import com.vmg.scrum.model.option.Department;
+import com.vmg.scrum.model.option.Shift;
 import com.vmg.scrum.repository.ShiftRepository;
 import com.vmg.scrum.repository.UserRepository;
 import org.apache.poi.ss.usermodel.Cell;
@@ -16,14 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 @Service
@@ -110,19 +108,17 @@ public class ExcelImporter {
                                 logDetailTotal.setTotalWork(currentCell.getLocalDateTimeCellValue());
                                 break;
                             }
-                            logDetail.setRegularHour(currentCell.getLocalDateTimeCellValue());
+                            logDetail.setRegularHour(currentCell.getLocalDateTimeCellValue().toLocalTime());
                             break;
                         case 4:
-                            logDetail.setOverTime(currentCell.getLocalDateTimeCellValue());
+                            logDetail.setOverTime(currentCell.getLocalDateTimeCellValue().toLocalTime());
                             break;
                         case 5:
-                            logDetail.setTotalWork(currentCell.getLocalDateTimeCellValue());
+                            logDetail.setTotalWork(currentCell.getLocalDateTimeCellValue().toLocalTime());
                             break;
                         case 6:
-//                            LocalDateTime localDateTime = currentCell.getLocalDateTimeCellValue();
-//                            LocalDate date = localDateTime.toLocalDate();
-//                            System.out.println("fdahfukdsahfdskfndksajhfkjds"+date);
-                                logDetail.setDate_log(currentCell.getDateCellValue());
+                            LocalDate localDate = currentCell.getLocalDateTimeCellValue().toLocalDate();
+                            logDetail.setDate_log(localDate);
                             break;
                         case 7:
                             logDetail.setShift(shiftRepository.findByName(currentCell.getStringCellValue()));
@@ -135,15 +131,14 @@ public class ExcelImporter {
                                 logDetail.setTimeIn(null);
                                 break;
                             }
-
-                            logDetail.setTimeIn(currentCell.getLocalDateTimeCellValue());
+                            logDetail.setTimeIn(currentCell.getLocalDateTimeCellValue().toLocalTime());
                             break;
                         case 10:
                             if(currentCell.getCellType()==CellType.STRING){
                                 logDetail.setTimeOut(null);
                                 break;
                             }
-                            logDetail.setTimeOut(currentCell.getLocalDateTimeCellValue());
+                            logDetail.setTimeOut(currentCell.getLocalDateTimeCellValue().toLocalTime());
                             break;
                         case 11:
                             logDetail.setException(currentCell.getStringCellValue());

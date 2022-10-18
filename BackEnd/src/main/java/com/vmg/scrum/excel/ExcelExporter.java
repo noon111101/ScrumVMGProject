@@ -243,9 +243,6 @@ public class ExcelExporter {
                 cell = row.createCell(i);
                 cell.setCellValue("H");
                 cell.setCellStyle(styleBody);
-//                if(i==3||i==4||i==10||i==11||i==17||i==18||i==24||i==25){
-//                    cell.setCellStyle(styleBodyColor);
-//                }
                 if(i==33){
                     cell.setCellFormula("COUNTIF(C"+rowCount+":AG"+rowCount+", \"*H*\")" +
                             "-COUNTIF(C"+rowCount+":AG"+rowCount+",\"*/H*\")/2" +

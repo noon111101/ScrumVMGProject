@@ -18,18 +18,15 @@ public interface LogDetailRepository extends JpaRepository<LogDetail,Long> {
     @Override
     Page<LogDetail> findAll(Pageable pageable);
 
-    @Query(value = "select *, DATE(date_log), dayofweek(date_log)," +
-            " time(time_in),time(time_out), time(total_work)," +
-            " exception, signs_id,user_id from log_detail;\n", nativeQuery = true)
-//    @Query("select DATE(date_log), dayofweek(date_log), time(timeIn), " +
-//            "time(timeOut), time(totalWork), exception," +
-//            " from LogDetail l")
-    List<LogDetail> getLogs();
-
     Page<LogDetail> findByUserCode(Pageable pageable,Double code);
     Page<LogDetail> findByUserDepartmentsId(Pageable pageable,Long id);
 
-    List<LogDetail> findByUserDepartmentsId(Long id);
+    LogDetail findByUserDepartmentsId(Long id);
+
+    List<LogDetail> findByUserCode(Double code);
+
+
+
 
 
 }

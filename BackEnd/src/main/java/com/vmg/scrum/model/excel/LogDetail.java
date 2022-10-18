@@ -8,7 +8,9 @@ import com.vmg.scrum.model.option.Shift;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Builder
@@ -29,17 +31,17 @@ public class LogDetail {
     @ToString.Exclude
     private User user;
 
-    private Date date_log;
+    private LocalDate date_log;
 
-    private LocalDateTime timeIn;
+    private LocalTime timeIn;
 
-    private LocalDateTime timeOut;
+    private LocalTime timeOut;
 
-    private LocalDateTime regularHour;
+    private LocalTime regularHour;
 
-    private LocalDateTime overTime;
+    private LocalTime overTime;
 
-    private LocalDateTime totalWork;
+    private LocalTime totalWork;
 
     private String exception;
 
