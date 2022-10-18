@@ -26,16 +26,23 @@ import java.util.Set;
 public class User extends BaseEntity {
     @Column(length = 20, unique = true, nullable = false)
     private String username;
-    @Column(length = 130,nullable = false)
+    @Column(length = 130,nullable = true)
     @JsonIgnore
     private String password;
+
+    @Column(length = 130,nullable = false)
+    @JsonIgnore
+    private String rootPassword;
     @Column(length = 50, nullable = false)
     private String fullName;
 
     @Column(unique = true, nullable = false)
     private Double code;
 
-    private String phone;
+    @Column(nullable = false)
+    private String gender;
+
+    private String cover;
 
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
@@ -57,9 +64,12 @@ public class User extends BaseEntity {
             @JoinColumn(name = "role_id") })
     private Set<Role> roles = new HashSet<>();
 
-    public User(String username, String password, String fullName) {
+    public User(String username, String rootPassword, String fullName,String gender,String cover,Double code) {
         this.username = username;
-        this.password = password;
+        this.rootPassword = rootPassword;
         this.fullName = fullName;
+        this.gender=gender;
+        this.cover=cover;
+        this.code=code;
     }
 }
