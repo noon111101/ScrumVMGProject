@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -107,13 +108,13 @@ public class ExcelImporter {
                                 logDetailTotal.setTotalWork(currentCell.getLocalDateTimeCellValue());
                                 break;
                             }
-                            logDetail.setRegularHour(currentCell.getLocalDateTimeCellValue());
+                            logDetail.setRegularHour(currentCell.getLocalDateTimeCellValue().toLocalTime());
                             break;
                         case 4:
-                            logDetail.setOverTime(currentCell.getLocalDateTimeCellValue());
+                            logDetail.setOverTime(currentCell.getLocalDateTimeCellValue().toLocalTime());
                             break;
                         case 5:
-                            logDetail.setTotalWork(currentCell.getLocalDateTimeCellValue());
+                            logDetail.setTotalWork(currentCell.getLocalDateTimeCellValue().toLocalTime());
                             break;
                         case 6:
                             LocalDate localDate = currentCell.getLocalDateTimeCellValue().toLocalDate();
@@ -130,14 +131,14 @@ public class ExcelImporter {
                                 logDetail.setTimeIn(null);
                                 break;
                             }
-                            logDetail.setTimeIn(currentCell.getLocalDateTimeCellValue());
+                            logDetail.setTimeIn(currentCell.getLocalDateTimeCellValue().toLocalTime());
                             break;
                         case 10:
                             if(currentCell.getCellType()==CellType.STRING){
                                 logDetail.setTimeOut(null);
                                 break;
                             }
-                            logDetail.setTimeOut(currentCell.getLocalDateTimeCellValue());
+                            logDetail.setTimeOut(currentCell.getLocalDateTimeCellValue().toLocalTime());
                             break;
                         case 11:
                             logDetail.setException(currentCell.getStringCellValue());

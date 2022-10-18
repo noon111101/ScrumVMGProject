@@ -23,6 +23,9 @@ public interface LogDetailRepository extends JpaRepository<LogDetail,Long> {
 
     LogDetail findByUserDepartmentsId(Long id);
 
+    List<LogDetail> findByUserCode(Double code);
+
+
 
 
 
