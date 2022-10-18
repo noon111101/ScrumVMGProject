@@ -11,6 +11,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,15 +36,15 @@ public class LogDetail {
 
     private LocalDate date_log;
 
-    private LocalDateTime timeIn;
+    private LocalTime timeIn;
 
-    private LocalDateTime timeOut;
+    private LocalTime timeOut;
 
-    private LocalDateTime regularHour;
+    private LocalTime regularHour;
 
-    private LocalDateTime overTime;
+    private LocalTime overTime;
 
-    private LocalDateTime totalWork;
+    private LocalTime totalWork;
 
     private String exception;
 

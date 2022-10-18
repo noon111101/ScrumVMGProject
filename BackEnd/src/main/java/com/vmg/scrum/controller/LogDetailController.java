@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/log")
 public class LogDetailController {
@@ -31,6 +33,11 @@ public class LogDetailController {
     {
         Pageable pageable = PageRequest.of(page, size);
         return new ResponseEntity<>(logDetailRepository.findByUserCode(pageable,code), HttpStatus.OK);
+    }
+    @GetMapping("allByUser")
+    public ResponseEntity<List<LogDetail>> getByUser(@RequestParam Double code)
+    {
+        return new ResponseEntity<>(logDetailRepository.findByUserCode(code), HttpStatus.OK);
     }
     @GetMapping("byDepartment")
     public ResponseEntity<Page<LogDetail>> getByUser(@RequestParam(defaultValue = "0") int page,
