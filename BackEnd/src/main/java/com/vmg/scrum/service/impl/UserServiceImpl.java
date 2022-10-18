@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -48,7 +49,16 @@ public class UserServiceImpl implements UserService {
         this.jwtUtils = jwtUtils;
     }
 
+    private static String alphaNumericString(int len) {
+        String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        Random rnd = new Random();
 
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            sb.append(AB.charAt(rnd.nextInt(AB.length())));
+        }
+        return sb.toString();
+    }
     @Override
     public JwtResponse authenticateUser(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
@@ -65,7 +75,7 @@ public class UserServiceImpl implements UserService {
         return new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
-                roles);
+                roles,userRepository.getById(userDetails.getId()));
     }
 
     @Override
@@ -77,8 +87,11 @@ public class UserServiceImpl implements UserService {
 
         // Create new user's account
         User user = new User(signUpRequest.getUsername(),
-                encoder.encode(signUpRequest.getPassword()),
-                signUpRequest.getFullName());
+                encoder.encode(alphaNumericString(8)),
+                signUpRequest.getFullName(),
+                signUpRequest.getGender(),
+                signUpRequest.getCover(),
+                signUpRequest.getCode());
 
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();

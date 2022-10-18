@@ -13,24 +13,24 @@ public class SignupRequest {
     private Set<String> role;
 
     @NotBlank
-    @Size(min = 8, max = 40)
-    private String password;
-
-    @NotBlank
     @Size(min = 6, max = 50)
     private String fullName;
 
     @NotBlank
     private Double code;
 
+    private String cover;
 
-    public String getFullName() {
-        return fullName;
+    public String getCover() {
+        return cover;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setCover(String cover) {
+        this.cover = cover;
     }
+
+    @NotBlank
+    private String gender;
 
     public String getUsername() {
         return username;
@@ -40,19 +40,35 @@ public class SignupRequest {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public Set<String> getRole() {
-        return this.role;
+        return role;
     }
 
     public void setRole(Set<String> role) {
         this.role = role;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public Double getCode() {
+        return code;
+    }
+
+    public void setCode(Double code) {
+        this.code = code;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }
