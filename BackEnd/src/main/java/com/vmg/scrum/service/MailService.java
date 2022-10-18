@@ -12,4 +12,6 @@ public interface MailService {
     void sendEmail(String recipientEmail) throws MessagingException, UnsupportedEncodingException;
 
     UserDetails resetPassword(String token);
+    public void sendEmailAccountInfo(String recipientEmail,String rootPassword) throws MessagingException, UnsupportedEncodingException;
+
 }

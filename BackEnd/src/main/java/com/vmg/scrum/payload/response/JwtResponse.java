@@ -13,13 +13,18 @@ public class JwtResponse {
 
     private User user;
 
-    public JwtResponse(String token, Long id, String username, List<String> roles, User user) {
+    private Boolean checkPassword;
+
+    public JwtResponse(String token, Long id, String username, List<String> roles, User user,Boolean checkPassword) {
         this.token = token;
         this.id = id;
         this.username = username;
         this.roles = roles;
         this.user = user;
+        this.checkPassword=checkPassword;
     }
+
+
 
     public User getUser() {
         return user;
