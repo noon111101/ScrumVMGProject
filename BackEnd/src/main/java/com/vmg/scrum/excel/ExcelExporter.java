@@ -1,10 +1,17 @@
 package com.vmg.scrum.excel;
 
 
+import com.vmg.scrum.model.ESign;
 import com.vmg.scrum.model.User;
+import com.vmg.scrum.model.excel.LogDetail;
+import com.vmg.scrum.repository.DepartmentRepository;
+import com.vmg.scrum.service.LogDetailService;
+import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -12,16 +19,23 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.List;
 
+
+
 public class ExcelExporter {
     private XSSFWorkbook workbook;
     private XSSFSheet sheet;
+    private List<LogDetail> listLogs;
 
-    private List<User> listUsers;
+    private LogDetailService logDetailService;
+    private long id;
 
-    public ExcelExporter(List<User> listUsers) {
-        this.listUsers = listUsers;
+    private DepartmentRepository departmentRepository;
+
+    public ExcelExporter(List<LogDetail> listLogs, Long id,DepartmentRepository departmentRepository) {
+        this.listLogs = listLogs;
         workbook = new XSSFWorkbook();
-
+        this.id = id;
+        this.departmentRepository=departmentRepository;
     }
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
@@ -205,18 +219,22 @@ public class ExcelExporter {
 
 
         // Edit Body Table
-
+         List<LogDetail> listLogsByUser = listLogs;
         int rowCount = 6;
-        for (User e : listUsers) {
-            row = sheet.createRow(rowCount++);
+        int tt=1;
+        int count = departmentRepository.findById(id).get().getUsers().size();
 
+
+
+        for (int k = 0; k<count; k++) {
+            row = sheet.createRow(rowCount++);
             cell = row.createCell(0);
-            cell.setCellValue(e.getId());
+            cell.setCellValue(tt++);
             cell.setCellStyle(styleBody);
             sheet.setColumnWidth(0, 1500 );
 
             cell = row.createCell(1);
-            cell.setCellValue(e.getFullName());
+            cell.setCellValue("d");
             cell.setCellStyle(styleBody);
 
 
@@ -229,11 +247,15 @@ public class ExcelExporter {
 //                    cell.setCellStyle(styleBodyColor);
 //                }
                 if(i==33){
-                    cell.setCellValue(12); // Tổng ngày làm việc
+                    cell.setCellFormula("COUNTIF(C"+rowCount+":AG"+rowCount+", \"*H*\")" +
+                            "-COUNTIF(C"+rowCount+":AG"+rowCount+",\"*/H*\")/2" +
+                            "-COUNTIF(C"+rowCount+":AG"+rowCount+",\"*H/*\")/2" +
+                            "+COUNTIF(C"+rowCount+":AG"+rowCount+", \"*CT*\")" +
+                            "+COUNTIF(C"+rowCount+":AG"+rowCount+", \"*LB*\")"); // Tổng ngày làm việc
                     cell.setCellStyle(styleBodyCenter);
                 }
                 if(i==34){
-                    cell.setCellValue(15); // Tổng ngày hưởng lương
+                    cell.setCellFormula("AH"+rowCount+""); // Tổng ngày hưởng lương
                     cell.setCellStyle(styleBodyCenter);
                 }
             }

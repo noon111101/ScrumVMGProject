@@ -7,6 +7,7 @@ import com.vmg.scrum.excel.ExcelImporter;
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.payload.response.MessageResponse;
+import com.vmg.scrum.repository.DepartmentRepository;
 import com.vmg.scrum.repository.LogDetailRepository;
 import com.vmg.scrum.repository.UserRepository;
 import com.vmg.scrum.service.impl.ExcelService;
@@ -40,8 +41,10 @@ public class ExcelController {
     DataExcelCalculation dataExcelCalculation;
     @Autowired
     LogDetailRepository logDetailRepository;
+    @Autowired
+    DepartmentRepository departmentRepository;
     @GetMapping("/export")
-    public ResponseEntity exportToExcel(HttpServletResponse response) throws IOException {
+    public ResponseEntity exportToExcel(@RequestParam Long id, HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
         String currentDateTime = dateFormatter.format(new Date());
@@ -51,13 +54,14 @@ public class ExcelController {
 
         response.setHeader(headerKey, headerValue);
 
-        List<User> listUsers = userRepository.findAll();
+        List<LogDetail> listLogs = logDetailRepository.findByUserDepartmentsId(id);
 
-        ExcelExporter excelExporter = new ExcelExporter(listUsers);
+        ExcelExporter excelExporter = new ExcelExporter(listLogs, id,departmentRepository);
 
         excelExporter.export(response);
         return new ResponseEntity(HttpStatus.OK);
     }
+
     @PostMapping("/import")
     public ResponseEntity<MessageResponse> uploadFile(@ModelAttribute("file") MultipartFile file) {
         String message = "";
