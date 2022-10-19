@@ -1,22 +1,7 @@
 package com.vmg.scrum.service.impl;
 
-import com.vmg.scrum.dto.LogDetailDTO;
-import com.vmg.scrum.model.excel.LogDetail;
-import com.vmg.scrum.repository.LogDetailRepository;
 import com.vmg.scrum.service.LogDetailService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @Service
 public class LogDetailServiceImpl  implements LogDetailService{

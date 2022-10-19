@@ -5,6 +5,7 @@ import com.vmg.scrum.model.ESign;
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.repository.DepartmentRepository;
+import com.vmg.scrum.repository.UserRepository;
 import com.vmg.scrum.service.LogDetailService;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
@@ -17,8 +18,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.Color;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-
 
 
 public class ExcelExporter {
@@ -31,11 +32,16 @@ public class ExcelExporter {
 
     private DepartmentRepository departmentRepository;
 
-    public ExcelExporter(List<LogDetail> listLogs, Long id,DepartmentRepository departmentRepository) {
+    private UserRepository userRepository;
+
+    public ExcelExporter(List<LogDetail> listLogs, Long id,
+                         DepartmentRepository departmentRepository,
+                         UserRepository userRepository) {
         this.listLogs = listLogs;
         workbook = new XSSFWorkbook();
         this.id = id;
-        this.departmentRepository=departmentRepository;
+        this.departmentRepository = departmentRepository;
+        this.userRepository = userRepository;
     }
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
@@ -52,8 +58,9 @@ public class ExcelExporter {
     }
 
     static int rowIndex = 0;
+
     // Create Header
-    private void writeHeader () {
+    private void writeHeader() {
         //style
         CellStyle style = workbook.createCellStyle();
         style.setBorderBottom(BorderStyle.NONE);
@@ -64,14 +71,14 @@ public class ExcelExporter {
         //font
         XSSFFont fontHeader = workbook.createFont();
         IndexedColorMap colorMap = workbook.getStylesSource().getIndexedColors();
-        fontHeader.setColor(new XSSFColor(Color.decode("#000080"),colorMap));
+        fontHeader.setColor(new XSSFColor(Color.decode("#000080"), colorMap));
         fontHeader.setBold(true);
         fontHeader.setFontName("Times New Roman");
         fontHeader.setFontHeight(10);
         style.setFont(fontHeader);
 
 
-        sheet = workbook.createSheet("Employees");
+        sheet = workbook.createSheet("Bảng Chấm Công");
 
 
         Row row = sheet.createRow(1);
@@ -81,20 +88,19 @@ public class ExcelExporter {
 
         row = sheet.createRow(2);
         cell = row.createCell(0);
-        cell.setCellValue("Tháng "+9+"/"+2022);
+        cell.setCellValue("Tháng " + 9 + "/" + 2022);
         cell.setCellStyle(style);
 
         row = sheet.createRow(3);
         cell = row.createCell(1);
-        cell.setCellValue("Bộ phận: "+ "TTS PTPM");
+        cell.setCellValue("Bộ phận: " + departmentRepository.getById(id).getName());
         cell.setCellStyle(style);
-
 
 
         rowIndex = sheet.getLastRowNum();
     }
 
-    private void writeTitleTable(){
+    private void writeTitleTable() {
         // style Titles
         CellStyle styleTitle = workbook.createCellStyle();
         styleTitle.setBorderBottom(BorderStyle.THIN);
@@ -107,7 +113,7 @@ public class ExcelExporter {
         // font Titles
         XSSFFont fontHeader = workbook.createFont();
         IndexedColorMap colorMap = workbook.getStylesSource().getIndexedColors();
-        fontHeader.setColor(new XSSFColor(Color.decode("#000080"),colorMap));
+        fontHeader.setColor(new XSSFColor(Color.decode("#000080"), colorMap));
         fontHeader.setBold(true);
         fontHeader.setFontName("Times New Roman");
         fontHeader.setFontHeight(10);
@@ -115,7 +121,7 @@ public class ExcelExporter {
 
         // Edit Title Table
         Row row = sheet.createRow(4);
-        for (int i=2;i<=32;i++){
+        for (int i = 2; i <= 32; i++) {
             Cell cell = row.createCell(i);
             cell.setCellStyle(styleTitle);
         }
@@ -150,7 +156,7 @@ public class ExcelExporter {
 
         row = sheet.createRow(5);
         int day = 1;
-        for (int i=2;i<=32;i++){
+        for (int i = 2; i <= 32; i++) {
             cell = row.createCell(i);
             cell.setCellValue(day++);
             cell.setCellStyle(styleTitle);
@@ -173,7 +179,7 @@ public class ExcelExporter {
         row.setHeight((short) 900);
 
 
-        for (int i=2;i<=32;i++){
+        for (int i = 2; i <= 32; i++) {
             sheet.setColumnWidth(i, 1500);
 
         }
@@ -219,47 +225,118 @@ public class ExcelExporter {
 
 
         // Edit Body Table
-         List<LogDetail> listLogsByUser = listLogs;
+        List<LogDetail> listLogsByUser = listLogs;
         int rowCount = 6;
-        int tt=1;
+        int tt = 1;
         int count = departmentRepository.findById(id).get().getUsers().size();
+        List<User> listUsers = userRepository.findAllByDepartments_Id(id);
 
 
-
-        for (int k = 0; k<count; k++) {
+        for (int k = 0; k < count; k++) {
             row = sheet.createRow(rowCount++);
             cell = row.createCell(0);
             cell.setCellValue(tt++);
             cell.setCellStyle(styleBody);
-            sheet.setColumnWidth(0, 1500 );
+            sheet.setColumnWidth(0, 1500);
 
             cell = row.createCell(1);
-            cell.setCellValue("d");
+            cell.setCellValue(listUsers.get(k).getFullName());
             cell.setCellStyle(styleBody);
 
+            List<String> signs = new ArrayList<>();
+            for (LogDetail l : listLogs) {
+                if (l.getUser().getCode() == listUsers.get(k).getCode()) {
+                    if (l.getSigns() == null) {
+                        signs.add("KL");
+                    } else {
+                        signs.add(l.getSigns().getName().toString());
+                    }
 
-            for (int i=2;i<=34;i++){
-                // Ký tự tính công
+                }
+            }
+
+            if (signs.size() == 27) {
+                for (int i = 2; i <= 32; i++) {
+                    // Ký tự tính công
+                    if (i <=28) {
+                        cell = row.createCell(i);
+                        cell.setCellValue(signs.get(i - 2));
+                        cell.setCellStyle(styleBody);
+                    }
+                    if (i >= 29) {
+                        cell = row.createCell(i);
+                        cell.setCellValue("");
+                        cell.setCellStyle(styleBody);
+                    }
+
+                }
+            }
+
+            if (signs.size() == 28) {
+                for (int i = 2; i <= 32; i++) {
+                    // Ký tự tính công
+                    if (i <=29) {
+                        cell = row.createCell(i);
+                        cell.setCellValue(signs.get(i - 2));
+                        cell.setCellStyle(styleBody);
+                    }
+                    if (i >= 30) {
+                        cell = row.createCell(i);
+                        cell.setCellValue("");
+                        cell.setCellStyle(styleBody);
+                    }
+
+                }
+            }
+            if (signs.size() == 30) {
+                for (int i = 2; i <= 32; i++) {
+                    // Ký tự tính công
+                    if (i <= 31) {
+                        cell = row.createCell(i);
+                        cell.setCellValue(signs.get(i - 2));
+                        cell.setCellStyle(styleBody);
+                    }
+                    if (i >= 32) {
+                        cell = row.createCell(i);
+                        cell.setCellValue("");
+                        cell.setCellStyle(styleBody);
+                    }
+                }
+            }
+            if (signs.size() == 31) {
+                for (int i = 2; i <= 32; i++) {
+                    // Ký tự tính công
+                    if (i <= 32) {
+                        cell = row.createCell(i);
+                        cell.setCellValue(signs.get(i - 2));
+                        cell.setCellStyle(styleBody);
+                    }
+
+                }
+            }
+            // Tổng
+            for (int i = 33; i <= 34; i++) {
                 cell = row.createCell(i);
-                cell.setCellValue("H");
                 cell.setCellStyle(styleBody);
-                if(i==33){
-                    cell.setCellFormula("COUNTIF(C"+rowCount+":AG"+rowCount+", \"*H*\")" +
-                            "-COUNTIF(C"+rowCount+":AG"+rowCount+",\"*/H*\")/2" +
-                            "-COUNTIF(C"+rowCount+":AG"+rowCount+",\"*H/*\")/2" +
-                            "+COUNTIF(C"+rowCount+":AG"+rowCount+", \"*CT*\")" +
-                            "+COUNTIF(C"+rowCount+":AG"+rowCount+", \"*LB*\")"); // Tổng ngày làm việc
+                if (i == 33) {
+                    cell.setCellFormula("COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*H*\")" +
+                            "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*/H*\")/2" +
+                            "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*H/*\")/2" +
+                            "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*CT*\")" +
+                            "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*LB*\")"); // Tổng ngày làm việc
                     cell.setCellStyle(styleBodyCenter);
                 }
-                if(i==34){
-                    cell.setCellFormula("AH"+rowCount+""); // Tổng ngày hưởng lương
+                if (i == 34) {
+                    cell.setCellFormula("AH" + rowCount + ""); // Tổng ngày hưởng lương
                     cell.setCellStyle(styleBodyCenter);
                 }
             }
+
+
         }
 
         row = sheet.createRow(rowCount++);
-        for (int i=0;i<=32;i++){
+        for (int i = 0; i <= 32; i++) {
             cell = row.createCell(i);
             cell.setCellStyle(styleBodyCenter);
         }
@@ -270,22 +347,23 @@ public class ExcelExporter {
 
         rowIndex = sheet.getLastRowNum();
         cell = row.createCell(33);
-        cell.setCellFormula("SUM(AH7:AH"+rowIndex+")");
+        cell.setCellFormula("SUM(AH7:AH" + rowIndex + ")");
         cell.setCellStyle(styleBodyCenter);
 
 
         cell = row.createCell(34);
-        cell.setCellFormula("SUM(AI7:AI"+rowIndex+")");
+        cell.setCellFormula("SUM(AI7:AI" + rowIndex + ")");
         cell.setCellStyle(styleBodyCenter);
 
         rowIndex = sheet.getLastRowNum();
 
     }
+
     // Create Footer
     private void writeFooter() {
         Row row = null;
         Cell cell;
-        int rowCurrent = rowIndex+1;
+        int rowCurrent = rowIndex + 1;
 
         //style Bold
         CellStyle styleBold = workbook.createCellStyle();
@@ -293,7 +371,7 @@ public class ExcelExporter {
         //font Bold
         XSSFFont fontBold = workbook.createFont();
         IndexedColorMap colorMap = workbook.getStylesSource().getIndexedColors();
-        fontBold.setColor(new XSSFColor(Color.decode("#000080"),colorMap));
+        fontBold.setColor(new XSSFColor(Color.decode("#000080"), colorMap));
         fontBold.setBold(true);
         fontBold.setFontName("Times New Roman");
         fontBold.setFontHeight(10);
@@ -307,7 +385,7 @@ public class ExcelExporter {
         styleThinCenter.setAlignment(HorizontalAlignment.CENTER);
         //font Thin
         XSSFFont fontThin = workbook.createFont();
-        fontThin.setColor(new XSSFColor(Color.decode("#000080"),colorMap));
+        fontThin.setColor(new XSSFColor(Color.decode("#000080"), colorMap));
         fontThin.setFontName("Times New Roman");
         fontThin.setFontHeight(10);
         styleThinCenter.setFont(fontThin);
@@ -363,7 +441,6 @@ public class ExcelExporter {
         cell.setCellStyle(styleBold);
 
 
-
         cell = row.createCell(25);
         cell.setCellValue("TP. QTNNL&DVNB");
         cell.setCellStyle(styleBold);
@@ -386,9 +463,8 @@ public class ExcelExporter {
         sheet.addMergedRegion(new CellRangeAddress(rowCurrent, rowCurrent, 25, 34));
 
 
-
         //Freeze Pane
-        sheet.createFreezePane(0,6,0,6);
+        sheet.createFreezePane(0, 6, 0, 6);
 
         // merge in header (row 1-4)
         sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 34));
@@ -414,7 +490,6 @@ public class ExcelExporter {
         sheet.addMergedRegion(new CellRangeAddress(4, 4, 2, 32));
         // Ô "tổng cộng"
         sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 0, 32));
-
 
 
         rowIndex = sheet.getLastRowNum();

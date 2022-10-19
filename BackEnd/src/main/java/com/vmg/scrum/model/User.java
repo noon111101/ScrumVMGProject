@@ -36,7 +36,7 @@ public class User extends BaseEntity {
     private String fullName;
 
     @Column(unique = true, nullable = false)
-    private Double code;
+    private double code;
 
     @Column(nullable = false)
     private String gender;

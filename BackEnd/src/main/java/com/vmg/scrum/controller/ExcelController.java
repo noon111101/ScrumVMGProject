@@ -43,6 +43,8 @@ public class ExcelController {
     LogDetailRepository logDetailRepository;
     @Autowired
     DepartmentRepository departmentRepository;
+
+
     @GetMapping("/export")
     public ResponseEntity exportToExcel(@RequestParam Long id, HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
@@ -50,13 +52,13 @@ public class ExcelController {
         String currentDateTime = dateFormatter.format(new Date());
 
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=Employees_" + currentDateTime + ".xlsx";
+        String headerValue = "attachment; filename=Bang_Cham_Cong_" + currentDateTime + ".xlsx";
 
         response.setHeader(headerKey, headerValue);
 
         List<LogDetail> listLogs = logDetailRepository.findByUserDepartmentsId(id);
 
-        ExcelExporter excelExporter = new ExcelExporter(listLogs, id,departmentRepository);
+        ExcelExporter excelExporter = new ExcelExporter(listLogs, id,departmentRepository,userRepository);
 
         excelExporter.export(response);
         return new ResponseEntity(HttpStatus.OK);
