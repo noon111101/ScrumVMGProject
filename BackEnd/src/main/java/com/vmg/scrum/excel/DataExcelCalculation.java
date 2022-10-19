@@ -58,13 +58,13 @@ public class DataExcelCalculation {
                     }
                 }
                 if(hourOut!=null && hourIn!=null){
-                    if( (hourIn==null && hourOut<15 ) || (hourIn==10 && secondIn>0 && hourOut==null)){
+                    if( (hourIn==null && hourOut<15 ) || (hourIn==10 && minuteIn>0 && hourOut==null) || ((hourIn==10 && minuteIn>0)&&hourOut<15) ){
                         logDetail.setSigns(signRepository.findByName(ESign.KL));
                     }
                     if((hourIn>10 || hourIn==10 && minuteIn>0) && ((hourOut==15 &&minuteOut>0) || hourOut>15)){
                         logDetail.setSigns(signRepository.findByName(ESign.KL_H));
                     }
-                    if((hourIn<10||(hourIn==10 && minuteIn==0)) && (hourOut>15 || (hourOut==15 && minuteOut==0))){
+                    if((hourIn<10||(hourIn==10 && minuteIn==0)) && (hourOut<15)){
                         logDetail.setSigns(signRepository.findByName(ESign.H_KL));
                     }
                     if((hourIn<10||(hourIn==10 && minuteIn==0)) && ((hourOut==15 &&minuteOut>0) || hourOut>15)) {
