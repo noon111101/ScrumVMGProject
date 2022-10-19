@@ -2,7 +2,6 @@ package com.vmg.scrum.model.excel;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vmg.scrum.model.Role;
 import com.vmg.scrum.model.Sign;
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.option.Shift;
@@ -13,8 +12,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @Builder
 @AllArgsConstructor
@@ -58,5 +55,7 @@ public class LogDetail {
     private Shift shift;
 
     private String leave_status;
+
+
 
 }
