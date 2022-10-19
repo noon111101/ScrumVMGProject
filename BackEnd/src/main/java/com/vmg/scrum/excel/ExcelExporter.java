@@ -249,7 +249,14 @@ public class ExcelExporter {
                     if (l.getSigns() == null) {
                         signs.add("KL");
                     } else {
-                        signs.add(l.getSigns().getName().toString());
+                        if(l.getSigns().getName().toString() == "H_KL"){
+                            signs.add("H/KL");
+                        } else if (l.getSigns().getName().toString() == "KL_H") {
+                            signs.add("KL/H");
+                        }else{
+                            signs.add(l.getSigns().getName().toString());
+                        }
+
                     }
 
                 }
