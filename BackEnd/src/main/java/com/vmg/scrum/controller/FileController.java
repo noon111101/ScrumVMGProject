@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @CrossOrigin("*")
@@ -25,11 +26,13 @@ public class FileController {
     }
 
     @GetMapping("info")
-    public Map<String,Double> download ( @RequestParam("code") Double code) {
-        User user = userRepository.findByCode(code);
+    public Map<String,Double> download ( ) {
+        List<User> user = userRepository.findAll();
         Map<String,Double> listInfo = new HashMap<>();
-        String pathFile = "http://localhost:8080/uploads/images/"+user.getCover();
-        listInfo.put(pathFile,user.getCode());
+        for(User u : user){
+        String pathFile = "http://localhost:8080/uploads/images/"+u.getCover();
+        listInfo.put(pathFile,u.getCode());
+        }
         return listInfo;
     }
 }
