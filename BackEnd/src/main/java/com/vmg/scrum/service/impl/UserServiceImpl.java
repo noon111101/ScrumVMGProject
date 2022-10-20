@@ -49,6 +49,8 @@ public class UserServiceImpl implements UserService {
     MailService mailService;
     @Autowired
     DepartmentRepository departmentRepository;
+    @Autowired
+    FileManagerService fileManagerService;
     public UserServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
@@ -93,12 +95,14 @@ public class UserServiceImpl implements UserService {
         }
         String genarate =alphaNumericString(8);
         Department department = departmentRepository.findByName(signUpRequest.getDepartment());
+        //file
+        String filename = fileManagerService.save("images",signUpRequest.getCover());
         // Create new user's account
         User user = new User(signUpRequest.getUsername(),
                 encoder.encode(genarate),
                 signUpRequest.getFullName(),
                 signUpRequest.getGender(),
-                signUpRequest.getCover(),
+                filename,
                 signUpRequest.getCode(),
                 department
                 );

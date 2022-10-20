@@ -1,5 +1,7 @@
 package com.vmg.scrum.payload.request;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -31,15 +33,17 @@ public class SignupRequest {
     @NotBlank
     private String gender;
 
-    private String cover;
-
-    public String getCover() {
+    public MultipartFile getCover() {
         return cover;
     }
 
-    public void setCover(String cover) {
+    public void setCover(MultipartFile cover) {
         this.cover = cover;
     }
+
+    private MultipartFile cover;
+
+
 
 
     public String getUsername() {
