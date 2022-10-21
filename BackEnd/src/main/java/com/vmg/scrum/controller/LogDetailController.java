@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -29,10 +34,23 @@ public class LogDetailController {
     }
     @GetMapping("byUser")
     public ResponseEntity<Page<LogDetail>> getByUser(@RequestParam(defaultValue = "0") int page,
-                                                  @RequestParam(defaultValue = "5") int size,@RequestParam Double code)
+                                                     @RequestParam(defaultValue = "5") int size,
+                                                     @RequestParam Double code)
     {
         Pageable pageable = PageRequest.of(page, size);
         return new ResponseEntity<>(logDetailRepository.findByUserCode(pageable,code), HttpStatus.OK);
+    }
+
+    @GetMapping("byDate")
+    public ResponseEntity<List<LogDetail>> getByUser(@RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "5") int size,
+                                                     @RequestParam String from,
+                                                     @RequestParam String to) throws ParseException {
+        DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate from1 = LocalDate.parse(from, sdf);
+        LocalDate to1 = LocalDate.parse(to, sdf);
+        Pageable pageable = PageRequest.of(page, size);
+        return new ResponseEntity<>(logDetailRepository.findByDate(from1, to1), HttpStatus.OK);
     }
     @GetMapping("allByUser")
     public ResponseEntity<List<LogDetail>> getByUser(@RequestParam Double code)
@@ -41,7 +59,8 @@ public class LogDetailController {
     }
     @GetMapping("byDepartment")
     public ResponseEntity<Page<LogDetail>> getByUser(@RequestParam(defaultValue = "0") int page,
-                                                     @RequestParam(defaultValue = "5") int size,@RequestParam Long id)
+                                                     @RequestParam(defaultValue = "5") int size,
+                                                     @RequestParam Long id)
     {
         Pageable pageable = PageRequest.of(page, size);
         return new ResponseEntity<>(logDetailRepository.findByUserDepartmentsId(pageable,id), HttpStatus.OK);

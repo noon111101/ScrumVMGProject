@@ -47,7 +47,7 @@ public class User extends BaseEntity {
     private Boolean checkRootDisable ;
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
-    @JsonIgnore
+
     private Department departments;
 
     @Column(columnDefinition = "boolean default true")
