@@ -24,7 +24,13 @@ public interface LogDetailRepository extends JpaRepository<LogDetail,Long> {
     @Query(value = "select l from LogDetail l\n" +
             " join l.user u " +
             "where u.code = ?1 and l.date_log between ?2 and ?3")
-    Page<LogDetail> findByDate(Double code, LocalDate from, LocalDate to, Pageable pageable);
+    Page<LogDetail> findByDate_UserCode(Double code, LocalDate from, LocalDate to, Pageable pageable);
+
+    @Query(value = "select l from LogDetail l\n" +
+            " join l.user u " +
+            "where u.departments.id = ?1 and l.date_log = ?2")
+    Page<LogDetail> findByDate_DepartmentId(long id, LocalDate date, Pageable pageable);
+
 
 
     Page<LogDetail> findByUserDepartmentsId(Pageable pageable,Long id);
