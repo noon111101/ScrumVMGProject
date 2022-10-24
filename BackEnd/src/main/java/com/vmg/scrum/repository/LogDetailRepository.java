@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -23,7 +24,7 @@ public interface LogDetailRepository extends JpaRepository<LogDetail,Long> {
     @Query(value = "select l from LogDetail l\n" +
             " join l.user u " +
             "where u.code = ?1 and l.date_log between ?2 and ?3")
-    Page<LogDetail> findByDate(Double code,LocalDate from, LocalDate to, Pageable pageable);
+    Page<LogDetail> findByDate(Double code, LocalDate from, LocalDate to, Pageable pageable);
 
 
     Page<LogDetail> findByUserDepartmentsId(Pageable pageable,Long id);
