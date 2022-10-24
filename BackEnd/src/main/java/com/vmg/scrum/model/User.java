@@ -40,7 +40,7 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     private String gender;
-
+    @Column(length = 500,nullable = false)
     private String cover;
 
     @Column(columnDefinition = "boolean default false")
