@@ -40,7 +40,7 @@ public class LogDetailController {
     }
 
     @GetMapping("byDate")
-    public ResponseEntity<Page<LogDetail>> getByDate(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<Page<LogDetail>> getLogsByDate_UserCode(@RequestParam(defaultValue = "0") int page,
                                                      @RequestParam(defaultValue = "30") int size,
                                                      @RequestParam Double code,
                                                      @RequestParam(name = "from", required = false) String from,
@@ -55,16 +55,6 @@ public class LogDetailController {
 
         }
         else{
-//            LocalDate localDate = LocalDate.now();
-//            LocalDate localMonth = LocalDate.from(localDate.getMonth());
-//            int year = localDate.getYear();
-////            LocalDate fromDate = LocalDate.of(year, Month.SEPTEMBER, 1);
-//
-//
-//            String fromDate = year+"-"+Month.OCTOBER+"-"+"1";
-//            LocalDate fromDate1 = LocalDate.parse(fromDate, sdf);
-//
-//            System.out.println(fromDate);
             pageLogs = logDetailRepository.findByUserCode(pageable, code);
 
         }
