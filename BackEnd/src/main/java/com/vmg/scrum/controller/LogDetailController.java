@@ -8,17 +8,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/log")
@@ -42,15 +40,35 @@ public class LogDetailController {
     }
 
     @GetMapping("byDate")
-    public ResponseEntity<List<LogDetail>> getByUser(@RequestParam(defaultValue = "0") int page,
-                                                     @RequestParam(defaultValue = "5") int size,
-                                                     @RequestParam String from,
-                                                     @RequestParam String to) throws ParseException {
+    public ResponseEntity<Page<LogDetail>> getByDate(@RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "30") int size,
+                                                     @RequestParam Double code,
+                                                     @RequestParam(name = "from", required = false) String from,
+                                                     @RequestParam(name = "to", required = false) String to) throws ParseException {
         DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate from1 = LocalDate.parse(from, sdf);
-        LocalDate to1 = LocalDate.parse(to, sdf);
         Pageable pageable = PageRequest.of(page, size);
-        return new ResponseEntity<>(logDetailRepository.findByDate(from1, to1), HttpStatus.OK);
+        Page<LogDetail> pageLogs = null;
+        if(from != null && to!=null && from != "" && to!=""){
+            LocalDate from1 = LocalDate.parse(from, sdf);
+            LocalDate to1 = LocalDate.parse(to, sdf);
+            pageLogs = logDetailRepository.findByDate(code, from1, to1, pageable);
+
+        }
+        else{
+//            LocalDate localDate = LocalDate.now();
+//            LocalDate localMonth = LocalDate.from(localDate.getMonth());
+//            int year = localDate.getYear();
+////            LocalDate fromDate = LocalDate.of(year, Month.SEPTEMBER, 1);
+//
+//
+//            String fromDate = year+"-"+Month.OCTOBER+"-"+"1";
+//            LocalDate fromDate1 = LocalDate.parse(fromDate, sdf);
+//
+//            System.out.println(fromDate);
+            pageLogs = logDetailRepository.findByUserCode(pageable, code);
+
+        }
+        return new ResponseEntity<>(pageLogs, HttpStatus.OK);
     }
     @GetMapping("allByUser")
     public ResponseEntity<List<LogDetail>> getByUser(@RequestParam Double code)
