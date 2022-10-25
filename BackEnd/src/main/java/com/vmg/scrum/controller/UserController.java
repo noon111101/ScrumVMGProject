@@ -20,8 +20,18 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
     @GetMapping("users")
-    public List<User> getUsers(){
-        return userRepository.findAll();
+    public ResponseEntity<Page<User>> getUsers(@RequestParam(defaultValue = "0") int page,
+                                               @RequestParam(defaultValue = "10") int size,
+                                               @RequestParam(name = "departid", required = false) Long departid){
+        Pageable pageable = PageRequest.of(page,size);
+        Page<User> pageUsers = null;
+        if(departid!=null && departid!=0){
+            pageUsers = userRepository.getUsersByDepartments_Id(departid, pageable);
+        }
+        else{
+            pageUsers = userRepository.findAll(pageable);
+        }
+        return new ResponseEntity<>(pageUsers, HttpStatus.OK);
     }
     @GetMapping("users/{id}")
     public Optional<User> getUsers(@PathVariable Long id){
