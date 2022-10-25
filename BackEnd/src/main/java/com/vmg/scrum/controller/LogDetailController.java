@@ -2,6 +2,7 @@ package com.vmg.scrum.controller;
 
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.repository.LogDetailRepository;
+import com.vmg.scrum.service.LogDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,34 +25,49 @@ import java.util.List;
 public class LogDetailController {
     @Autowired
     LogDetailRepository logDetailRepository;
+
+    @Autowired
+    private LogDetailService logDetailService;
+
     @GetMapping("logList")
     public ResponseEntity<Page<LogDetail>> getAll(@RequestParam(defaultValue = "0") int page,
-                                                  @RequestParam(defaultValue = "5") int size)
-    {
+                                                  @RequestParam(defaultValue = "5") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return new ResponseEntity<>(logDetailRepository.findAll(pageable), HttpStatus.OK);
     }
+
     @GetMapping("byUser")
     public ResponseEntity<Page<LogDetail>> getByUser(@RequestParam(defaultValue = "0") int page,
-                                                  @RequestParam(defaultValue = "5") int size,@RequestParam Double code)
-    {
+                                                     @RequestParam(defaultValue = "5") int size, @RequestParam Double code) {
         Pageable pageable = PageRequest.of(page, size);
-        return new ResponseEntity<>(logDetailRepository.findByUserCode(pageable,code), HttpStatus.OK);
+        return new ResponseEntity<>(logDetailRepository.findByUserCode(pageable, code), HttpStatus.OK);
     }
 
-    @GetMapping("byDate")
+    @GetMapping("allByUser")
+    public ResponseEntity<List<LogDetail>> getByUser(@RequestParam Double code) {
+        return new ResponseEntity<>(logDetailRepository.findByUserCode(code), HttpStatus.OK);
+    }
+
+    @GetMapping("byDepartment")
+    public ResponseEntity<Page<LogDetail>> getByUser(@RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "5") int size, @RequestParam Long id) {
+        Pageable pageable = PageRequest.of(page, size);
+        return new ResponseEntity<>(logDetailRepository.findByUserDepartmentsId(pageable, id), HttpStatus.OK);
+    }
+
+    @GetMapping("byDate_Usercode")
     public ResponseEntity<Page<LogDetail>> getLogsByDate_UserCode(@RequestParam(defaultValue = "0") int page,
-                                                     @RequestParam(defaultValue = "30") int size,
-                                                     @RequestParam Double code,
-                                                     @RequestParam(name = "from", required = false) String from,
-                                                     @RequestParam(name = "to", required = false) String to) throws ParseException {
+                                                                  @RequestParam(defaultValue = "30") int size,
+                                                                  @RequestParam Double code,
+                                                                  @RequestParam(name = "from", required = false) String from,
+                                                                  @RequestParam(name = "to", required = false) String to) throws ParseException {
         DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         Pageable pageable = PageRequest.of(page, size);
         Page<LogDetail> pageLogs = null;
         if(from != null && to!=null && from != "" && to!=""){
             LocalDate from1 = LocalDate.parse(from, sdf);
             LocalDate to1 = LocalDate.parse(to, sdf);
-            pageLogs = logDetailRepository.findByDate(code, from1, to1, pageable);
+            pageLogs = logDetailRepository.findByDate_UserCode(code, from1, to1, pageable);
 
         }
         else{
@@ -60,56 +76,53 @@ public class LogDetailController {
         }
         return new ResponseEntity<>(pageLogs, HttpStatus.OK);
     }
-    @GetMapping("allByUser")
-    public ResponseEntity<List<LogDetail>> getByUser(@RequestParam Double code)
-    {
-        return new ResponseEntity<>(logDetailRepository.findByUserCode(code), HttpStatus.OK);
-    }
-    @GetMapping("byDepartment")
-    public ResponseEntity<Page<LogDetail>> getByUser(@RequestParam(defaultValue = "0") int page,
-                                                     @RequestParam(defaultValue = "5") int size,@RequestParam Long id)
-    {
-        Pageable pageable = PageRequest.of(page, size);
-        return new ResponseEntity<>(logDetailRepository.findByUserDepartmentsId(pageable,id), HttpStatus.OK);
-    }
 
     @GetMapping("search")
-    public ResponseEntity<Page<LogDetail>> searchByDepartmentAndDate(@RequestParam(name = "key") String key,
+    public ResponseEntity<Page<LogDetail>> searchByDepartmentAndDate(@RequestParam(name = "key") long key,
                                                                      @RequestParam(name = "date") String date,
                                                                      @RequestParam(defaultValue = "0") int page,
                                                                      @RequestParam(defaultValue = "5") int size) {
-        try {
-        List<LogDetail> logDetails = new ArrayList<LogDetail>();
-        if (key.isEmpty() && !date.isEmpty()) {
-            String[] time = date.split("-");
-            LocalDate dates = LocalDate.of(Integer.parseInt(time[0]), Integer.parseInt(time[1]), Integer.parseInt(time[2]));
-            System.out.println(dates.toString());
+            DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate now = LocalDate.parse(LocalDate.now().format(sdf), sdf);
             Pageable pageable = PageRequest.of(page, size);
+        if (!date.isEmpty() && key == 0) {
+            LocalDate dates = LocalDate.parse(date, sdf);
             return new ResponseEntity<>(logDetailRepository.findByDate(dates, pageable), HttpStatus.OK);
         }
-
-        else if (date.isEmpty() && !key.isEmpty()) {
-            Pageable pageable = PageRequest.of(page, size);
-            return new ResponseEntity<>(logDetailRepository.findByDepartment(Integer.parseInt(key), pageable), HttpStatus.OK);
+        if (date.isEmpty()) {
+            return new ResponseEntity<>(logDetailRepository.findDateandDepartment(key,now, pageable), HttpStatus.OK);
         }
-        else if (!key.isEmpty() && !date.isEmpty()) {
-            String[] time = date.split("-");
-            LocalDate dates = LocalDate.of(Integer.parseInt(time[0]), Integer.parseInt(time[1]), Integer.parseInt(time[2]));
-            System.out.println(dates.toString());
-            Pageable pageable = PageRequest.of(page, size);
-            return new ResponseEntity<>(logDetailRepository.findDateandDepartment(Integer.parseInt(key), dates, pageable), HttpStatus.OK);
+        if (!date.isEmpty() && key != 0) {
+            LocalDate dates = LocalDate.parse(date, sdf);
+            return new ResponseEntity<>(logDetailRepository.findDateandDepartment(key, dates, pageable), HttpStatus.OK);
         }
-        if (key.isEmpty() && date.isEmpty()) {
-            Pageable pageable = PageRequest.of(page, size);
-            return new ResponseEntity<>(logDetailRepository.findAll(pageable), HttpStatus.OK);
-        }
-        if (logDetails.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if ( date.isEmpty() && key == 0) {
+            return new ResponseEntity<>(logDetailRepository.findByDate(now,pageable), HttpStatus.OK);
         }
             return null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping("byDate_Department")
+    public ResponseEntity<Page<LogDetail>> getLogsByDate_Department(@RequestParam(defaultValue = "0") int page,
+                                                                    @RequestParam(defaultValue = "30") int size,
+                                                                    @RequestParam long id,
+                                                                    @RequestParam(name = "date", required = false) String date) throws ParseException {
+        DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        Pageable pageable = PageRequest.of(page, size);
+        Page<LogDetail> pageLogs = null;
+        LocalDate now = LocalDate.parse(LocalDate.now().format(sdf), sdf);
+        if(date != null && date!=""){
+            LocalDate date1 = LocalDate.parse(date, sdf);
+            pageLogs = logDetailRepository.findByDate_DepartmentId(id , date1, pageable);
         }
+        else if(id == 0) {
+            LocalDate date1 = LocalDate.parse(date, sdf);
+            pageLogs = logDetailRepository.findByDate(now, pageable);
+        }
+        else  {
+            pageLogs = logDetailRepository.findByDate_DepartmentId(id , now, pageable);
+            System.out.println(now);
+        }
+        return new ResponseEntity<>(pageLogs, HttpStatus.OK);
     }
 }
