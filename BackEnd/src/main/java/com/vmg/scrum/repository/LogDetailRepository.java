@@ -31,6 +31,10 @@ public interface LogDetailRepository extends JpaRepository<LogDetail,Long> {
             "where u.departments.id = ?1 and l.date_log = ?2")
     Page<LogDetail> findByDate_DepartmentId(long id, LocalDate date, Pageable pageable);
 
+    @Query(value = "select l from LogDetail l\n" +
+            "where l.date_log = ?1")
+    Page<LogDetail> findByDate_AllDepartment(LocalDate date, Pageable pageable);
+
 
 
     Page<LogDetail> findByUserDepartmentsId(Pageable pageable,Long id);

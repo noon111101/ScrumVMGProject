@@ -64,7 +64,7 @@ public class LogDetailController {
     @GetMapping("byDate_Department")
     public ResponseEntity<Page<LogDetail>> getLogsByDate_Department(@RequestParam(defaultValue = "0") int page,
                                                                   @RequestParam(defaultValue = "30") int size,
-                                                                  @RequestParam long id,
+                                                                  @RequestParam(defaultValue = "0") long id,
                                                                   @RequestParam(name = "date", required = false) String date) throws ParseException {
         DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         Pageable pageable = PageRequest.of(page, size);
@@ -72,12 +72,12 @@ public class LogDetailController {
         if(date != null && date!=""){
             LocalDate date1 = LocalDate.parse(date, sdf);
             pageLogs = logDetailRepository.findByDate_DepartmentId(id , date1, pageable);
-        }
-        else  {
+        } else if (id!=0) {
             LocalDate now = LocalDate.parse(LocalDate.now().format(sdf), sdf);
             pageLogs = logDetailRepository.findByDate_DepartmentId(id , now, pageable);
-            System.out.println(now);
-
+        } else  {
+            LocalDate now = LocalDate.parse(LocalDate.now().format(sdf), sdf);
+            pageLogs = logDetailRepository.findByDate_AllDepartment(now, pageable);
         }
         return new ResponseEntity<>(pageLogs, HttpStatus.OK);
     }
