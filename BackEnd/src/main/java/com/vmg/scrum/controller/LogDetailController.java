@@ -70,14 +70,24 @@ public class LogDetailController {
         Pageable pageable = PageRequest.of(page, size);
         Page<LogDetail> pageLogs = null;
         if(date != null && date!=""){
-            LocalDate date1 = LocalDate.parse(date, sdf);
-            pageLogs = logDetailRepository.findByDate_DepartmentId(id , date1, pageable);
-        } else if (id!=0) {
-            LocalDate now = LocalDate.parse(LocalDate.now().format(sdf), sdf);
-            pageLogs = logDetailRepository.findByDate_DepartmentId(id , now, pageable);
+            if(id!=0){
+                LocalDate date1 = LocalDate.parse(date, sdf);
+                pageLogs = logDetailRepository.findByDate_DepartmentId(id , date1, pageable);
+            }
+            else{
+                LocalDate date1 = LocalDate.parse(date, sdf);
+                pageLogs = logDetailRepository.findByDate_AllDepartment(date1, pageable);
+            }
         } else  {
-            LocalDate now = LocalDate.parse(LocalDate.now().format(sdf), sdf);
-            pageLogs = logDetailRepository.findByDate_AllDepartment(now, pageable);
+            if(id!=0){
+                LocalDate now = LocalDate.parse(LocalDate.now().format(sdf), sdf);
+                pageLogs = logDetailRepository.findByDate_DepartmentId(id , now, pageable);
+            }
+            else{
+                LocalDate now = LocalDate.parse(LocalDate.now().format(sdf), sdf);
+                pageLogs = logDetailRepository.findByDate_AllDepartment(now, pageable);
+            }
+
         }
         return new ResponseEntity<>(pageLogs, HttpStatus.OK);
     }
