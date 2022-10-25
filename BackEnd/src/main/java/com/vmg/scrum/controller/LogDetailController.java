@@ -39,7 +39,7 @@ public class LogDetailController {
         return new ResponseEntity<>(logDetailRepository.findByUserCode(pageable,code), HttpStatus.OK);
     }
 
-    @GetMapping("byDate")
+    @GetMapping("byDate_Usercode")
     public ResponseEntity<Page<LogDetail>> getLogsByDate_UserCode(@RequestParam(defaultValue = "0") int page,
                                                      @RequestParam(defaultValue = "30") int size,
                                                      @RequestParam Double code,
@@ -51,7 +51,7 @@ public class LogDetailController {
         if(from != null && to!=null && from != "" && to!=""){
             LocalDate from1 = LocalDate.parse(from, sdf);
             LocalDate to1 = LocalDate.parse(to, sdf);
-            pageLogs = logDetailRepository.findByDate(code, from1, to1, pageable);
+            pageLogs = logDetailRepository.findByDate_UserCode(code, from1, to1, pageable);
 
         }
         else{
@@ -60,6 +60,28 @@ public class LogDetailController {
         }
         return new ResponseEntity<>(pageLogs, HttpStatus.OK);
     }
+
+    @GetMapping("byDate_Department")
+    public ResponseEntity<Page<LogDetail>> getLogsByDate_Department(@RequestParam(defaultValue = "0") int page,
+                                                                  @RequestParam(defaultValue = "30") int size,
+                                                                  @RequestParam(defaultValue = "0") long id,
+                                                                  @RequestParam(name = "date", required = false) String date) throws ParseException {
+        DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        Pageable pageable = PageRequest.of(page, size);
+        Page<LogDetail> pageLogs = null;
+        if(date != null && date!=""){
+            LocalDate date1 = LocalDate.parse(date, sdf);
+            pageLogs = logDetailRepository.findByDate_DepartmentId(id , date1, pageable);
+        } else if (id!=0) {
+            LocalDate now = LocalDate.parse(LocalDate.now().format(sdf), sdf);
+            pageLogs = logDetailRepository.findByDate_DepartmentId(id , now, pageable);
+        } else  {
+            LocalDate now = LocalDate.parse(LocalDate.now().format(sdf), sdf);
+            pageLogs = logDetailRepository.findByDate_AllDepartment(now, pageable);
+        }
+        return new ResponseEntity<>(pageLogs, HttpStatus.OK);
+    }
+
     @GetMapping("allByUser")
     public ResponseEntity<List<LogDetail>> getByUser(@RequestParam Double code)
     {
