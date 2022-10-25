@@ -1,7 +1,10 @@
 package com.vmg.scrum.controller;
 
+import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
+import com.vmg.scrum.payload.response.UserLogDetail;
 import com.vmg.scrum.repository.LogDetailRepository;
+import com.vmg.scrum.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,13 +20,17 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/log")
 public class LogDetailController {
     @Autowired
     LogDetailRepository logDetailRepository;
+    @Autowired
+    UserRepository userRepository;
     @GetMapping("logList")
     public ResponseEntity<Page<LogDetail>> getAll(@RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "5") int size)
@@ -60,7 +67,58 @@ public class LogDetailController {
         }
         return new ResponseEntity<>(pageLogs, HttpStatus.OK);
     }
+    @GetMapping("allByMonthAndDepartment")
+    public ResponseEntity<List<UserLogDetail>> getAllByMonthAndDepartment(
+                                                        @RequestParam(name = "month", required = true) Integer month,
+                                                        @RequestParam(name = "id", required = false) Long id
+                                                        ) throws ParseException {
+        List<LogDetail> logDetails = null;
+        List<User> users = userRepository.findAll();
+        List<UserLogDetail> userLogDetails = new ArrayList<>();
+        if (id != null) {
+            logDetails = logDetailRepository.findByMonthAndDepartment(id, month);
+            for (User user : users) {
+                UserLogDetail userLogDetail = new UserLogDetail();
+                List<LogDetail> list = new ArrayList<>();
+                for (LogDetail logDetail : logDetails) {
+                    if (logDetail.getUser() == user) {
+                        list.add(logDetail);
+                    } else continue;
+                    userLogDetail.setCode(user.getCode());
+                    userLogDetail.setName(user.getFullName());
+                    userLogDetail.setLogDetail(list);
+                    continue;
+                }
 
+                if (userLogDetail.getName() != null) {
+                    userLogDetails.add(userLogDetail);
+                }
+                continue;
+            }
+        } else {
+            logDetails = logDetailRepository.findByMonth(month);
+            for (User user : users) {
+                UserLogDetail userLogDetail = new UserLogDetail();
+                List<LogDetail> list = new ArrayList<>();
+                for (LogDetail logDetail : logDetails) {
+                    if (logDetail.getUser() == user) {
+                        list.add(logDetail);
+                    } else continue;
+                    userLogDetail.setCode(user.getCode());
+                    userLogDetail.setName(user.getFullName());
+                    userLogDetail.setLogDetail(list);
+                    continue;
+                }
+
+                if (userLogDetail.getName() != null) {
+                    userLogDetails.add(userLogDetail);
+                }
+                continue;
+            }
+
+        }
+        return new ResponseEntity<>(userLogDetails, HttpStatus.OK);
+    }
     @GetMapping("byDate_Department")
     public ResponseEntity<Page<LogDetail>> getLogsByDate_Department(@RequestParam(defaultValue = "0") int page,
                                                                   @RequestParam(defaultValue = "30") int size,
@@ -90,6 +148,7 @@ public class LogDetailController {
 
         }
         return new ResponseEntity<>(pageLogs, HttpStatus.OK);
+
     }
 
     @GetMapping("allByUser")
@@ -99,7 +158,7 @@ public class LogDetailController {
     }
     @GetMapping("byDepartment")
     public ResponseEntity<Page<LogDetail>> getByUser(@RequestParam(defaultValue = "0") int page,
-                                                     @RequestParam(defaultValue = "5") int size,@RequestParam Long id)
+                                                     @RequestParam(defaultValue = "30") int size,@RequestParam Long id)
     {
         Pageable pageable = PageRequest.of(page, size);
         return new ResponseEntity<>(logDetailRepository.findByUserDepartmentsId(pageable,id), HttpStatus.OK);

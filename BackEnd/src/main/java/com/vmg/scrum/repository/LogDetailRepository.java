@@ -1,6 +1,7 @@
 package com.vmg.scrum.repository;
 
 import com.vmg.scrum.model.excel.LogDetail;
+import com.vmg.scrum.payload.response.UserLogDetail;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -37,6 +38,15 @@ public interface LogDetailRepository extends JpaRepository<LogDetail,Long> {
 
 
 
+    @Query(value = "select l from LogDetail l\n" +
+        " join l.user u " +
+        "where u.departments.id=?1 and MONTH (l.date_log) = ?2  ")
+    List<LogDetail> findByMonthAndDepartment(Long id,Integer month);
+    @Query(value = "select l from LogDetail l\n" +
+            " join l.user u " +
+            "where MONTH (l.date_log) = ?1 ")
+    List<LogDetail> findByMonth(Integer month);
+
     Page<LogDetail> findByUserDepartmentsId(Pageable pageable,Long id);
 
     List<LogDetail> findByUserDepartmentsId(Long id);
@@ -66,5 +76,11 @@ public interface LogDetailRepository extends JpaRepository<LogDetail,Long> {
             "join user u on l.user_id = u.id \n " +
             "join department d on d.id = u.department_id " , nativeQuery = true)
     Page<LogDetail> findAllUser(Pageable pageable);
+
+    @Query(value = "select * from log_detail l \n" +
+            "join user u on l.user_id = u.id \n " +
+            "where u.code = ?1 " +
+            "and l.date_log = ?2 ", nativeQuery = true)
+    LogDetail findByUserCodeAndDate(Double code , LocalDate date);
 
 }

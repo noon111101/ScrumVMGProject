@@ -6,6 +6,7 @@ import com.vmg.scrum.model.excel.LogDetail;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -25,7 +26,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findAll(Pageable pageable);
 
     Page<User> getUsersByDepartments_Id(long id, Pageable pageable);
-
 
 
 }
