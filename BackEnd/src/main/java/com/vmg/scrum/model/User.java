@@ -75,4 +75,16 @@ public class User extends BaseEntity {
         this.checkRootDisable=false;
         this.avalible=true;
     }
+    public User(String username, String fullName,String gender,Double code,Department department) {
+        this.username = username;
+        this.rootPassword = rootPassword;
+        this.fullName = fullName;
+        this.gender=gender;
+        this.cover=cover;
+        this.code=code;
+        this.departments=department;
+        this.checkRootDisable=false;
+        this.avalible=true;
+    }
+
 }

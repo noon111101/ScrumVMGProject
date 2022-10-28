@@ -10,6 +10,7 @@ import com.vmg.scrum.model.option.Department;
 import com.vmg.scrum.payload.request.ChangePasswordRequest;
 import com.vmg.scrum.payload.request.LoginRequest;
 import com.vmg.scrum.payload.request.SignupRequest;
+import com.vmg.scrum.payload.request.UpdateUserRequest;
 import com.vmg.scrum.payload.response.JwtResponse;
 import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.repository.DepartmentRepository;
@@ -168,4 +169,43 @@ public class UserServiceImpl implements UserService {
             return false;
         }
 }
+
+    @Override
+    public void updateUser(long id, UpdateUserRequest updateRequest) {
+        User user = userRepository.findById(id).get();
+        user.setCode(updateRequest.getCode());
+        user.setFullName(updateRequest.getFullName());
+        user.setUsername(updateRequest.getUsername());
+        Department department = departmentRepository.findByName(updateRequest.getDepartment());
+        user.setDepartments(department);
+        Set<String> strRoles = updateRequest.getRole();
+        Set<Role> roles = new HashSet<>();
+        if (strRoles == null) {
+            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            roles.add(userRole);
+        } else {
+            strRoles.forEach(role -> {
+                switch (role) {
+                    case "admin" -> {
+                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(adminRole);
+                    }
+                    case "manage" -> {
+                        Role manageRole = roleRepository.findByName(ERole.ROLE_MANAGE)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(manageRole);
+                    }
+                    default -> {
+                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(userRole);
+                    }
+                }
+            });
+        }
+        user.setRoles(roles);
+        userRepository.save(user);
+    }
 }

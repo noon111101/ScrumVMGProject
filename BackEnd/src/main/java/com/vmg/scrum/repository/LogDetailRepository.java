@@ -28,14 +28,28 @@ public interface LogDetailRepository extends JpaRepository<LogDetail,Long> {
 
     @Query(value = "select l from LogDetail l\n" +
             " join l.user u " +
-            "where u.departments.id = ?1 and l.date_log = ?2")
-    Page<LogDetail> findByDate_DepartmentId(long id, LocalDate date, Pageable pageable);
+            "where u.departments.id = ?1 and l.date_log between ?2 and ?3" +
+            " order by l.date_log desc ")
+    Page<LogDetail> findByDate_DepartmentId(long id, LocalDate from, LocalDate to, Pageable pageable);
 
     @Query(value = "select l from LogDetail l\n" +
-            "where l.date_log = ?1")
-    Page<LogDetail> findByDate_AllDepartment(LocalDate date, Pageable pageable);
+            "where l.date_log between ?1 and ?2" +
+            " order by l.date_log desc"
+    )
+    Page<LogDetail> findByDate_AllDepartment(LocalDate from, LocalDate to, Pageable pageable);
 
+    @Query(value = " select l from LogDetail l\n " +
+            " join l.user u " +
+            " where u.departments.id = ?1 " +
+            " order by l.date_log desc "
+    )
+    Page<LogDetail> findByDepartmentId(long id, Pageable pageable);
 
+    @Query(value = "select l from LogDetail l\n " +
+            " join l.user u " +
+            " order by l.date_log desc "
+    )
+    Page<LogDetail> findByAllDepartmentId(Pageable pageable);
 
     Page<LogDetail> findByUserDepartmentsId(Pageable pageable,Long id);
 
@@ -58,17 +72,4 @@ public interface LogDetailRepository extends JpaRepository<LogDetail,Long> {
             " join l.user u " +
             "where u.departments.id = ?1")
     Page<LogDetail> findByDepartment(long key,Pageable pageable);
-
-
-    @Query(value = "select l from LogDetail l\n" +
-            " join l.user u " +
-            "where u.departments.id = ?1 and l.date_log = ?2")
-    Page<LogDetail> findByDate_DepartmentId(long id, LocalDate date, Pageable pageable);
-
-    @Query(value = "select l from LogDetail l\n" +
-            " join l.user u " +
-            "where u.code = ?1 and l.date_log between ?2 and ?3")
-    Page<LogDetail> findByDate_UserCode(Double code, LocalDate from, LocalDate to, Pageable pageable);
-
-
 }
