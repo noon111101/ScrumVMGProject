@@ -22,7 +22,7 @@ import java.util.Set;
 
 })
 public class User extends BaseEntity {
-    @Column(length = 20, unique = true, nullable = false)
+    @Column(length = 200, unique = true, nullable = false)
     private String username;
 
     @Column(length = 130,nullable = true)
@@ -55,6 +55,7 @@ public class User extends BaseEntity {
     private Boolean avalible;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<LogDetail> logDetails= new HashSet<>();
     @ManyToMany( fetch = FetchType.LAZY)
     @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {

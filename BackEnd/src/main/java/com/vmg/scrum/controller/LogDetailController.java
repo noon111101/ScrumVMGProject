@@ -47,8 +47,8 @@ public class LogDetailController {
     }
 
     @GetMapping("byDate_Usercode")
-    public ResponseEntity<Page<LogDetail>> getLogsByDate_UserCode(@RequestParam(defaultValue = "0") int page,
-                                                     @RequestParam(defaultValue = "30") int size,
+    public ResponseEntity<Page<LogDetail>> getLogsByDate_UserCode(@RequestParam(name = "page", defaultValue = "0") int page,
+                                                     @RequestParam(name = "size", defaultValue = "30") int size,
                                                      @RequestParam Double code,
                                                      @RequestParam(name = "from", required = false) String from,
                                                      @RequestParam(name = "to", required = false) String to) throws ParseException {
@@ -120,35 +120,32 @@ public class LogDetailController {
         return new ResponseEntity<>(userLogDetails, HttpStatus.OK);
     }
     @GetMapping("byDate_Department")
-    public ResponseEntity<Page<LogDetail>> getLogsByDate_Department(@RequestParam(defaultValue = "0") int page,
-                                                                  @RequestParam(defaultValue = "30") int size,
-                                                                  @RequestParam(defaultValue = "0") long id,
-                                                                  @RequestParam(name = "date", required = false) String date) throws ParseException {
+    public ResponseEntity<Page<LogDetail>> getLogsByDate_Department(@RequestParam(name="page", defaultValue = "0") int page,
+                                                                    @RequestParam(name="size",defaultValue = "30") int size,
+                                                                    @RequestParam(name="id", defaultValue = "0") long id,
+                                                                    @RequestParam(name = "from", required = false) String from,
+                                                                    @RequestParam(name = "to", required = false) String to) throws ParseException {
         DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         Pageable pageable = PageRequest.of(page, size);
         Page<LogDetail> pageLogs = null;
-        if(date != null && date!=""){
+        if(from != null && to!=null && from != "" && to!=""){
+            LocalDate from1 = LocalDate.parse(from, sdf);
+            LocalDate to1 = LocalDate.parse(to, sdf);
             if(id!=0){
-                LocalDate date1 = LocalDate.parse(date, sdf);
-                pageLogs = logDetailRepository.findByDate_DepartmentId(id , date1, pageable);
+                pageLogs = logDetailRepository.findByDate_DepartmentId(id , from1, to1, pageable);
             }
             else{
-                LocalDate date1 = LocalDate.parse(date, sdf);
-                pageLogs = logDetailRepository.findByDate_AllDepartment(date1, pageable);
+                pageLogs = logDetailRepository.findByDate_AllDepartment(from1, to1, pageable);
             }
         } else  {
             if(id!=0){
-                LocalDate now = LocalDate.parse(LocalDate.now().format(sdf), sdf);
-                pageLogs = logDetailRepository.findByDate_DepartmentId(id , now, pageable);
+                pageLogs = logDetailRepository.findByDepartmentId(id , pageable);
             }
             else{
-                LocalDate now = LocalDate.parse(LocalDate.now().format(sdf), sdf);
-                pageLogs = logDetailRepository.findByDate_AllDepartment(now, pageable);
+                pageLogs = logDetailRepository.findByAllDepartmentId(pageable);
             }
-
         }
         return new ResponseEntity<>(pageLogs, HttpStatus.OK);
-
     }
 
     @GetMapping("allByUser")
