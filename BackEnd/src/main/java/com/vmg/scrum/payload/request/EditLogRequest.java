@@ -7,8 +7,20 @@ public class EditLogRequest {
     @NotNull
     private double code;
 
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
     @NotNull
     private String sign;
+    @NotBlank
+    private String date;
+
+    private String reason;
 
     public String getSign() {
         return sign;
@@ -34,6 +46,5 @@ public class EditLogRequest {
         this.date = date;
     }
 
-    @NotBlank
-    private String date;
+
 }
