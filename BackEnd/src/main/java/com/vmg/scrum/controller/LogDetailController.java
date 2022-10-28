@@ -1,7 +1,14 @@
 package com.vmg.scrum.controller;
 
+import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
+import com.vmg.scrum.payload.request.EditLogRequest;
+import com.vmg.scrum.payload.request.SignupRequest;
+import com.vmg.scrum.payload.response.MessageResponse;
+import com.vmg.scrum.payload.response.UserLogDetail;
 import com.vmg.scrum.repository.LogDetailRepository;
+import com.vmg.scrum.repository.UserRepository;
+import com.vmg.scrum.service.LogDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,17 +17,27 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/log")
 public class LogDetailController {
+
     @Autowired
     LogDetailRepository logDetailRepository;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    LogDetailService logDetailService;
     @GetMapping("logList")
     public ResponseEntity<Page<LogDetail>> getAll(@RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "5") int size)
@@ -55,7 +72,55 @@ public class LogDetailController {
         }
         return new ResponseEntity<>(pageLogs, HttpStatus.OK);
     }
+    @GetMapping("allByMonthAndDepartment")
+    public ResponseEntity<List<UserLogDetail>> getAllByMonthAndDepartment(
+                                                        @RequestParam(name = "month", required = true) Integer month,
+                                                        @RequestParam(name = "id", required = false) Long id
+                                                        ) throws ParseException {
+        List<LogDetail> logDetails = null;
+        List<User> users = userRepository.findAll();
+        List<UserLogDetail> userLogDetails = new ArrayList<>();
+        if (id != null) {
+            logDetails = logDetailRepository.findByMonthAndDepartment(id, month);
+            for (User user : users) {
+                UserLogDetail userLogDetail = new UserLogDetail();
+                List<LogDetail> list = new ArrayList<>();
+                for (LogDetail logDetail : logDetails) {
+                    if (logDetail.getUser() == user) {
+                        list.add(logDetail);
+                    } else continue;
+                    userLogDetail.setCode(user.getCode());
+                    userLogDetail.setName(user.getFullName());
+                    userLogDetail.setLogDetail(list);
+                }
+                if(userLogDetail.getName()!=null){
+                    userLogDetails.add(userLogDetail);
+                }
+                if(userLogDetail.getName()==null)
+                    continue;
+            }
+        } else {
+            logDetails = logDetailRepository.findByMonth(month);
+            for (User user : users) {
+                UserLogDetail userLogDetail = new UserLogDetail();
+                List<LogDetail> list = new ArrayList<>();
+                for (LogDetail logDetail : logDetails) {
+                    if (logDetail.getUser() == user) {
+                        list.add(logDetail);
+                    } else continue;
 
+
+                }
+                    userLogDetail.setCode(user.getCode());
+                    userLogDetail.setName(user.getFullName());
+                    userLogDetail.setLogDetail(list);
+                    userLogDetails.add(userLogDetail);
+                continue;
+            }
+
+        }
+        return new ResponseEntity<>(userLogDetails, HttpStatus.OK);
+    }
     @GetMapping("byDate_Department")
     public ResponseEntity<Page<LogDetail>> getLogsByDate_Department(@RequestParam(name="page", defaultValue = "0") int page,
                                                                   @RequestParam(name="size",defaultValue = "30") int size,
@@ -83,6 +148,7 @@ public class LogDetailController {
             }
         }
         return new ResponseEntity<>(pageLogs, HttpStatus.OK);
+
     }
 
     @GetMapping("allByUser")
@@ -92,7 +158,7 @@ public class LogDetailController {
     }
     @GetMapping("byDepartment")
     public ResponseEntity<Page<LogDetail>> getByUser(@RequestParam(defaultValue = "0") int page,
-                                                     @RequestParam(defaultValue = "5") int size,@RequestParam Long id)
+                                                     @RequestParam(defaultValue = "30") int size,@RequestParam Long id)
     {
         Pageable pageable = PageRequest.of(page, size);
         return new ResponseEntity<>(logDetailRepository.findByUserDepartmentsId(pageable,id), HttpStatus.OK);
@@ -136,5 +202,14 @@ public class LogDetailController {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    @PostMapping("edit")
+    public ResponseEntity<MessageResponse> updateLogSign(@Valid @RequestBody EditLogRequest[] editLogRequests) throws MessagingException, UnsupportedEncodingException {
+        return ResponseEntity.ok(logDetailService.updateLogDetails(editLogRequests));
+    }
+    @GetMapping("test")
+    public ResponseEntity<List<LogDetail>> test(@RequestParam(name = "month", required = true) Integer month,
+                                                @RequestParam(name = "id", required = true) Long id)  {
+        return ResponseEntity.ok(logDetailRepository.findByMonthAndDepartment(id, month));
     }
 }

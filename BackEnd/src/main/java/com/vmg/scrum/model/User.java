@@ -55,9 +55,6 @@ public class User extends BaseEntity {
     private Boolean avalible;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @JsonIgnore
     private Set<LogDetail> logDetails= new HashSet<>();
     @ManyToMany( fetch = FetchType.LAZY)
     @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
