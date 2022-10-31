@@ -318,6 +318,7 @@ public class ExcelExporter {
                         } else if (logDetail.getSigns().getName().toString() == "H_KL") {
                             cell.setCellValue("H/KL");
                             cell.setCellStyle(styleBody);
+                            //Comment
                             if(logDetail.getReason() != null){
 //                                ClientAnchor clientAnchor = drawing.createAnchor(0, 0, 0, 0, 0, 2, 7, 7);
                                 ClientAnchor clientAnchor = creationHelper.createClientAnchor();
@@ -334,6 +335,7 @@ public class ExcelExporter {
                         } else if (logDetail.getSigns().getName().toString() == "KL_H") {
                             cell.setCellValue("KL/H");
                             cell.setCellStyle(styleBody);
+                            //Comment
                             if(logDetail.getReason() != null){
 //                                ClientAnchor clientAnchor = drawing.createAnchor(0, 0, 0, 0, 0, 2, 7, 7);
                                 ClientAnchor clientAnchor = creationHelper.createClientAnchor();
@@ -351,6 +353,7 @@ public class ExcelExporter {
                         else {
                             cell.setCellValue(logDetail.getSigns().getName().toString());
                             cell.setCellStyle(styleBody);
+                            //Comment
                             if(logDetail.getReason() != null){
                                 ClientAnchor clientAnchor = creationHelper.createClientAnchor();
                                 clientAnchor.setCol1(cell.getColumnIndex());
