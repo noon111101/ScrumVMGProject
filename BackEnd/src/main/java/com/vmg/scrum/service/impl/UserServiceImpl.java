@@ -175,8 +175,18 @@ public class UserServiceImpl implements UserService {
 }
 
     @Override
-    public Boolean lockAccount(Long id,boolean lock) {
+    public MessageResponse lockAccount(Long id, boolean lock) {
         User user = userRepository.getById(id);
-        return  true;
+        if(lock){
+            user.setAvalible(true);
+            userRepository.save(user);
+            return new MessageResponse("Account unlock sucess");
+        }
+        else{
+            user.setAvalible(false);
+            userRepository.save(user);
+            return new MessageResponse("Account lock sucess");
+        }
+
     }
 }
