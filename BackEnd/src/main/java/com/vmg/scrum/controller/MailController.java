@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/mail")
@@ -21,10 +20,13 @@ public class MailController {
            return true;
 
     }
-    @PostMapping("reset_password")
-    public UserDetails resetpassword(@RequestParam(name ="token") String token){
-        return mailService.resetPassword(token);
+    @PostMapping("reset_password-tokenLink")
+    public UserDetails resetpasswordtoken(@RequestParam(name ="token") String token){
+        return mailService.resetPasswordToken(token);
     }
-
+    @PostMapping("reset_password")
+    public Boolean resetpassword(@RequestParam(name ="email") String email) throws MessagingException, UnsupportedEncodingException {
+        return mailService.resetPassword(email);
+    }
 
 }

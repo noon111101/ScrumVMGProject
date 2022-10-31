@@ -1,8 +1,5 @@
 package com.vmg.scrum.service.impl;
 
-
-
-
 import com.vmg.scrum.exception.LockAccountException;
 import com.vmg.scrum.model.ERole;
 import com.vmg.scrum.model.Role;
@@ -187,6 +184,5 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
             return new MessageResponse("Account lock sucess");
         }
-
     }
 }
