@@ -1,10 +1,12 @@
 package com.vmg.scrum.service.impl;
 
 
+import com.vmg.scrum.model.User;
 import com.vmg.scrum.repository.UserRepository;
 import com.vmg.scrum.security.UserDetailsServiceImpl;
 import com.vmg.scrum.security.jwt.JwtUtils;
 import com.vmg.scrum.service.MailService;
+import com.vmg.scrum.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,12 +14,14 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
+import java.util.Random;
 
 @Service
 @Slf4j
@@ -33,6 +37,8 @@ public class MailServiceImpl implements MailService {
     private final JwtUtils jwtUtils;
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     public MailServiceImpl(JavaMailSender mailSender, UserRepository userRepository, AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
         this.mailSender = mailSender;
@@ -40,7 +46,16 @@ public class MailServiceImpl implements MailService {
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
     }
+    private static String alphaNumericString(int len) {
+        String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        Random rnd = new Random();
 
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            sb.append(AB.charAt(rnd.nextInt(AB.length())));
+        }
+        return sb.toString();
+    }
 @Override
     public void sendEmail(String recipientEmail)
             throws MessagingException, UnsupportedEncodingException {
@@ -90,7 +105,40 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public UserDetails resetPassword(String token) {
+    public UserDetails resetPasswordToken(String token) {
          return  userDetailsService.loadUserByUsername(jwtUtils.getUserNameFromJwtToken(token));
+    }
+
+    @Override
+    public Boolean resetPassword(String email) throws MessagingException, UnsupportedEncodingException {
+        try{
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message);
+            User user = userRepository.findByUsername(email).get();
+            String rootPassword = alphaNumericString(8);
+            user.setRootPassword(passwordEncoder.encode(rootPassword));
+            user.setCheckRootDisable(false);
+            userRepository.save(user);
+            helper.setFrom("VMG@mailnotifi", "VMG");
+            helper.setTo(email);
+            String subject = "Here's the info account";
+            String content = "<p>Hello,</p>"
+                    + "<p>You password have been reset.</p>"
+                    + "Here is account infomation :"
+                    + "<p> Email:yourEmail </p>"
+                    + "<br>"
+                    + "<p> Password:" + rootPassword +"</p>";
+
+            helper.setSubject(subject);
+
+            helper.setText(content, true);
+
+            mailSender.send(message);
+            return true;
+        }
+        catch (Exception e){
+            return false;
+        }
+
     }
 }
