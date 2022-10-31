@@ -25,7 +25,6 @@ public class UserLogDetail {
     }
 
 
-
     public String getName() {
         return name;
     }

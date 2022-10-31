@@ -10,7 +10,6 @@ import com.vmg.scrum.model.option.Department;
 import com.vmg.scrum.payload.request.ChangePasswordRequest;
 import com.vmg.scrum.payload.request.LoginRequest;
 import com.vmg.scrum.payload.request.SignupRequest;
-import com.vmg.scrum.payload.request.UpdateUserRequest;
 import com.vmg.scrum.payload.response.JwtResponse;
 import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.repository.DepartmentRepository;
@@ -147,9 +146,10 @@ public class UserServiceImpl implements UserService {
         try {
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             Long id = changePasswordRequest.getId();
-            String newPassword = changePasswordRequest.getPassword();
+            String newPassword = changePasswordRequest.getNewPassword();
             Optional<User> users = userRepository.findById(id);
             User user =users.get();
+            if(passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword() )){
             boolean check = user.getCheckRootDisable();
             if(!check){
                 String encodedPassword = passwordEncoder.encode(newPassword);
@@ -162,7 +162,8 @@ public class UserServiceImpl implements UserService {
                 String encodedPassword = passwordEncoder.encode(newPassword);
                 user.setPassword(encodedPassword);
                 userRepository.save(user);
-            }
+            }}
+            else return false;
             return true;
         }
         catch (Exception e){
@@ -207,5 +208,20 @@ public class UserServiceImpl implements UserService {
         }
         user.setRoles(roles);
         userRepository.save(user);
+    }
+
+    @Override
+    public MessageResponse lockAccount(Long id, boolean lock) {
+        User user = userRepository.getById(id);
+        if(lock){
+            user.setAvalible(true);
+            userRepository.save(user);
+            return new MessageResponse("Account unlock sucess");
+        }
+        else{
+            user.setAvalible(false);
+            userRepository.save(user);
+            return new MessageResponse("Account lock sucess");
+        }
     }
 }

@@ -41,4 +41,10 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
         body.put("errors", errors);
         return ResponseEntity.badRequest().body(body);
     }
+    @ExceptionHandler(LockAccountException.class)
+    public final ResponseEntity<com.example.blog.exception.ErrorResponse> lockAccountException(LockAccountException ex, WebRequest request) {
+        String details = ex.getLocalizedMessage();
+        com.example.blog.exception.ErrorResponse error = new com.example.blog.exception.ErrorResponse(ex.getMessage(), details);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 }
