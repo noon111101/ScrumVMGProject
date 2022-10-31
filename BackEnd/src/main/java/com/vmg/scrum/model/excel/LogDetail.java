@@ -56,6 +56,7 @@ public class LogDetail {
 
     private String leave_status;
 
+    private String reason;
 
 
 }

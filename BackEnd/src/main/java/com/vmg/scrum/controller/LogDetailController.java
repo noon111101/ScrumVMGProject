@@ -2,20 +2,24 @@ package com.vmg.scrum.controller;
 
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
+import com.vmg.scrum.payload.request.EditLogRequest;
+import com.vmg.scrum.payload.request.SignupRequest;
+import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.payload.response.UserLogDetail;
 import com.vmg.scrum.repository.LogDetailRepository;
 import com.vmg.scrum.repository.UserRepository;
+import com.vmg.scrum.service.LogDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -27,10 +31,13 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/log")
 public class LogDetailController {
+
     @Autowired
     LogDetailRepository logDetailRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    LogDetailService logDetailService;
     @GetMapping("logList")
     public ResponseEntity<Page<LogDetail>> getAll(@RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "5") int size)
@@ -87,13 +94,12 @@ public class LogDetailController {
                     userLogDetail.setCode(user.getCode());
                     userLogDetail.setName(user.getFullName());
                     userLogDetail.setLogDetail(list);
-                    continue;
                 }
-
-                if (userLogDetail.getName() != null) {
+                if(userLogDetail.getName()!=null){
                     userLogDetails.add(userLogDetail);
                 }
-                continue;
+                if(userLogDetail.getName()==null)
+                    continue;
             }
         } else {
             logDetails = logDetailRepository.findByMonth(month);
@@ -104,15 +110,13 @@ public class LogDetailController {
                     if (logDetail.getUser() == user) {
                         list.add(logDetail);
                     } else continue;
+
+
+                }
                     userLogDetail.setCode(user.getCode());
                     userLogDetail.setName(user.getFullName());
                     userLogDetail.setLogDetail(list);
-                    continue;
-                }
-
-                if (userLogDetail.getName() != null) {
                     userLogDetails.add(userLogDetail);
-                }
                 continue;
             }
 
@@ -199,5 +203,14 @@ public class LogDetailController {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    @PostMapping("edit")
+    public ResponseEntity<MessageResponse> updateLogSign(@Valid @RequestBody EditLogRequest[] editLogRequests) throws MessagingException, UnsupportedEncodingException {
+        return ResponseEntity.ok(logDetailService.updateLogDetails(editLogRequests));
+    }
+    @GetMapping("test")
+    public ResponseEntity<List<LogDetail>> test(@RequestParam(name = "month", required = true) Integer month,
+                                                @RequestParam(name = "id", required = true) Long id)  {
+        return ResponseEntity.ok(logDetailRepository.findByMonthAndDepartment(id, month));
     }
 }

@@ -15,14 +15,26 @@ public class ChangePasswordRequest {
         this.id = id;
     }
 
-    public String getPassword() {
-        return password;
+
+    public String getNewPassword() {
+        return newPassword;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
     }
 
     @NotBlank
-    private String password;
+    private String newPassword;
+
+    @NotBlank
+    private String oldPassword;
 }
