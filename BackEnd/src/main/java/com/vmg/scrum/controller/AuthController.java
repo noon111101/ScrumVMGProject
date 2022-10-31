@@ -29,6 +29,7 @@ public class AuthController {
     public ResponseEntity<?> registerUser(@Valid @ModelAttribute SignupRequest signUpRequest) throws MessagingException, UnsupportedEncodingException {
         return ResponseEntity.ok(userService.registerUser(signUpRequest));
     }
+
     @PostMapping("/changePassword")
     public Boolean changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest)  {
         return userService.updatePassword(changePasswordRequest);
