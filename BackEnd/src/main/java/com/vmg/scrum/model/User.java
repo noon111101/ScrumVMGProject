@@ -51,7 +51,6 @@ public class User extends BaseEntity {
     private Department departments;
 
     @Column(columnDefinition = "boolean default true")
-    @JsonIgnore
     private Boolean avalible;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
