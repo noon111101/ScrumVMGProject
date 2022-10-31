@@ -4,6 +4,7 @@ import com.vmg.scrum.model.User;
 import com.vmg.scrum.payload.request.ChangePasswordRequest;
 import com.vmg.scrum.payload.request.LoginRequest;
 import com.vmg.scrum.payload.request.SignupRequest;
+import com.vmg.scrum.payload.request.UpdateUserRequest;
 import com.vmg.scrum.payload.response.JwtResponse;
 import com.vmg.scrum.payload.response.MessageResponse;
 
@@ -17,6 +18,7 @@ public interface UserService  {
 
     Boolean updatePassword(ChangePasswordRequest changePasswordRequest);
 
-    Boolean lockAccount(Long id,boolean lock);
+    MessageResponse lockAccount(Long id, boolean lock);
 
+    void updateUser(long id, UpdateUserRequest updateRequest);
 }

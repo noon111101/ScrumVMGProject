@@ -3,6 +3,7 @@ package com.vmg.scrum.controller;
 import com.vmg.scrum.payload.request.ChangePasswordRequest;
 import com.vmg.scrum.payload.request.LoginRequest;
 import com.vmg.scrum.payload.request.SignupRequest;
+import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,7 @@ public class AuthController {
         return userService.updatePassword(changePasswordRequest);
     }
     @PutMapping("/lockAccount/{id}")
-    public Boolean lockAccount(@PathVariable Long id , @RequestParam boolean lock){
+    public MessageResponse lockAccount(@PathVariable Long id , @RequestParam boolean lock){
         return  userService.lockAccount(id,lock);
     }
 }

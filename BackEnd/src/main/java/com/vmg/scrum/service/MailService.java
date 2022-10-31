@@ -11,7 +11,9 @@ import java.util.Optional;
 public interface MailService {
     void sendEmail(String recipientEmail) throws MessagingException, UnsupportedEncodingException;
 
-    UserDetails resetPassword(String token);
+    UserDetails resetPasswordToken(String token);
+
+    Boolean resetPassword(String email) throws MessagingException, UnsupportedEncodingException;
     public void sendEmailAccountInfo(String recipientEmail,String rootPassword) throws MessagingException, UnsupportedEncodingException;
 
 }

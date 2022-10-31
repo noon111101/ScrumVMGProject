@@ -27,5 +27,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> getUsersByDepartments_Id(long id, Pageable pageable);
 
-
 }

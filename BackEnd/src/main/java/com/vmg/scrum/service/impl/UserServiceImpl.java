@@ -3,7 +3,6 @@ package com.vmg.scrum.service.impl;
 
 
 
-import com.vmg.scrum.exception.LockAccountException;
 import com.vmg.scrum.model.ERole;
 import com.vmg.scrum.model.Role;
 import com.vmg.scrum.model.User;
@@ -11,6 +10,7 @@ import com.vmg.scrum.model.option.Department;
 import com.vmg.scrum.payload.request.ChangePasswordRequest;
 import com.vmg.scrum.payload.request.LoginRequest;
 import com.vmg.scrum.payload.request.SignupRequest;
+import com.vmg.scrum.payload.request.UpdateUserRequest;
 import com.vmg.scrum.payload.response.JwtResponse;
 import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.repository.DepartmentRepository;
@@ -83,8 +83,6 @@ public class UserServiceImpl implements UserService {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
         Boolean check = userRepository.getById(userDetails.getId()).getCheckRootDisable();
-        Boolean avalible = userRepository.getById(userDetails.getId()).getAvalible();
-        if (avalible==false) throw new LockAccountException("Account have been lock by admin");
         return new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
@@ -175,8 +173,56 @@ public class UserServiceImpl implements UserService {
 }
 
     @Override
-    public Boolean lockAccount(Long id,boolean lock) {
+    public void updateUser(long id, UpdateUserRequest updateRequest) {
+        User user = userRepository.findById(id).get();
+        user.setCode(updateRequest.getCode());
+        user.setFullName(updateRequest.getFullName());
+        user.setUsername(updateRequest.getUsername());
+        Department department = departmentRepository.findByName(updateRequest.getDepartment());
+        user.setDepartments(department);
+        Set<String> strRoles = updateRequest.getRole();
+        Set<Role> roles = new HashSet<>();
+        if (strRoles == null) {
+            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            roles.add(userRole);
+        } else {
+            strRoles.forEach(role -> {
+                switch (role) {
+                    case "admin" -> {
+                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(adminRole);
+                    }
+                    case "manage" -> {
+                        Role manageRole = roleRepository.findByName(ERole.ROLE_MANAGE)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(manageRole);
+                    }
+                    default -> {
+                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(userRole);
+                    }
+                }
+            });
+        }
+        user.setRoles(roles);
+        userRepository.save(user);
+    }
+
+    @Override
+    public MessageResponse lockAccount(Long id, boolean lock) {
         User user = userRepository.getById(id);
-        return  true;
+        if(lock){
+            user.setAvalible(true);
+            userRepository.save(user);
+            return new MessageResponse("Account unlock sucess");
+        }
+        else{
+            user.setAvalible(false);
+            userRepository.save(user);
+            return new MessageResponse("Account lock sucess");
+        }
     }
 }
