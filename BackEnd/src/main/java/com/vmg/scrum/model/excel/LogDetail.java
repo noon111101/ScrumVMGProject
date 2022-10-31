@@ -29,7 +29,6 @@ public class LogDetail {
     @JoinColumn(name = "user_id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @JsonIgnore
     private User user;
 
     private LocalDate date_log;

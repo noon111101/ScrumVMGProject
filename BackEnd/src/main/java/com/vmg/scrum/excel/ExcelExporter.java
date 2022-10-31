@@ -1,18 +1,17 @@
 package com.vmg.scrum.excel;
 
 
-import com.vmg.scrum.model.ESign;
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
+import com.vmg.scrum.payload.response.UserLogDetail;
 import com.vmg.scrum.repository.DepartmentRepository;
+import com.vmg.scrum.repository.LogDetailRepository;
 import com.vmg.scrum.repository.UserRepository;
-import com.vmg.scrum.service.LogDetailService;
-import lombok.RequiredArgsConstructor;
+import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
+import org.apache.poi.hssf.usermodel.HSSFComment;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -27,21 +26,27 @@ public class ExcelExporter {
     private XSSFSheet sheet;
     private List<LogDetail> listLogs;
 
-    private LogDetailService logDetailService;
+    private LogDetailRepository logDetailRepository;
     private long id;
 
+    private int dayInMonth;
+    private int month;
+
+    private int year = 2022;
     private DepartmentRepository departmentRepository;
 
     private UserRepository userRepository;
 
-    public ExcelExporter(List<LogDetail> listLogs, Long id,
-                         DepartmentRepository departmentRepository,
-                         UserRepository userRepository) {
+    public ExcelExporter(List<LogDetail> listLogs, Long id, int month, DepartmentRepository departmentRepository,
+                         UserRepository userRepository,
+                         LogDetailRepository logDetailRepository) {
         this.listLogs = listLogs;
         workbook = new XSSFWorkbook();
         this.id = id;
+        this.month = month;
         this.departmentRepository = departmentRepository;
         this.userRepository = userRepository;
+        this.logDetailRepository = logDetailRepository;
     }
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
@@ -88,7 +93,7 @@ public class ExcelExporter {
 
         row = sheet.createRow(2);
         cell = row.createCell(0);
-        cell.setCellValue("Tháng " + 9 + "/" + 2022);
+        cell.setCellValue("Tháng " + month + "/" + 2022);
         cell.setCellStyle(style);
 
         row = sheet.createRow(3);
@@ -126,7 +131,7 @@ public class ExcelExporter {
             cell.setCellStyle(styleTitle);
         }
         Cell cell = row.createCell(0);
-        cell.setCellValue("ID");
+        cell.setCellValue("STT");
         cell.setCellStyle(styleTitle);
 
         cell = row.createCell(1);
@@ -139,17 +144,12 @@ public class ExcelExporter {
         cell.setCellStyle(styleTitle);
 
         cell = row.createCell(33);
-        cell.setCellValue("Tổng số\n" +
-                " ngày\n" +
-                " làm việc \n" +
-                "thực tế");
+        cell.setCellValue("Tổng số\n" + " ngày\n" + " làm việc \n" + "thực tế");
         cell.setCellStyle(styleTitle);
         sheet.setColumnWidth(33, 2000);
 
         cell = row.createCell(34);
-        cell.setCellValue("Tổng số\n" +
-                " ngày hưởng\n" +
-                " lương");
+        cell.setCellValue("Tổng số\n" + " ngày hưởng\n" + " lương");
         cell.setCellStyle(styleTitle);
         sheet.setColumnWidth(34, 2000);
 
@@ -193,6 +193,15 @@ public class ExcelExporter {
         Row row = null;
         Cell cell;
 
+        //comment
+        CreationHelper creationHelper = (XSSFCreationHelper) workbook.getCreationHelper();
+        Drawing drawing1 = ((org.apache.poi.ss.usermodel.Sheet) sheet).createDrawingPatriarch();
+        XSSFDrawing drawing = sheet.createDrawingPatriarch();
+
+
+
+
+
         // style  Body
         CellStyle styleBody = workbook.createCellStyle();
         styleBody.setBorderBottom(BorderStyle.THIN);
@@ -213,7 +222,9 @@ public class ExcelExporter {
         styleBodyColor.setBorderTop(BorderStyle.THIN);
         styleBodyColor.setBorderLeft(BorderStyle.THIN);
         styleBodyColor.setBorderRight(BorderStyle.THIN);
-        styleBodyColor.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+        styleBodyColor.setFillForegroundColor(IndexedColors.TAN.getIndex());
+//        styleBodyColor.setFillForegroundColor(IndexedColors.GREEN.getIndex());
+        styleBodyColor.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
         // font Body
         XSSFFont fontBody = workbook.createFont();
@@ -224,123 +235,349 @@ public class ExcelExporter {
         styleBodyColor.setFont(fontBody);
 
 
+
+
         // Edit Body Table
         List<LogDetail> listLogsByUser = listLogs;
         int rowCount = 6;
         int tt = 1;
         int count = departmentRepository.findById(id).get().getUsers().size();
         List<User> listUsers = userRepository.findAllByDepartments_Id(id);
+        List<UserLogDetail> userLogDetails = new ArrayList<>();
 
 
-        for (int k = 0; k < count; k++) {
+        for (User user : listUsers) {
+            UserLogDetail userLogDetail = new UserLogDetail();
+            List<LogDetail> list = new ArrayList<>();
+            for (LogDetail logDetail : listLogs) {
+                if (logDetail.getUser() == user) {
+                    list.add(logDetail);
+                } else continue;
+                userLogDetail.setCode(user.getCode());
+                userLogDetail.setName(user.getFullName());
+                userLogDetail.setLogDetail(list);
+            }
+            if (userLogDetail.getName() != null) {
+                userLogDetails.add(userLogDetail);
+            }
+            if (userLogDetail.getName() == null) continue;
+        }
+
+
+        for (User user : listUsers) {
             row = sheet.createRow(rowCount++);
             cell = row.createCell(0);
             cell.setCellValue(tt++);
             cell.setCellStyle(styleBody);
-            sheet.setColumnWidth(0, 1500);
+            sheet.setColumnWidth(0, 1200);
 
             cell = row.createCell(1);
-            cell.setCellValue(listUsers.get(k).getFullName());
+            cell.setCellValue(user.getFullName());
             cell.setCellStyle(styleBody);
 
-            List<String> signs = new ArrayList<>();
-            for (LogDetail l : listLogs) {
-                if (l.getUser().getCode() == listUsers.get(k).getCode()) {
-                    if (l.getSigns() == null) {
-                        signs.add("KL");
-                    } else {
-                        if(l.getSigns().getName().toString() == "H_KL"){
-                            signs.add("H/KL");
-                        } else if (l.getSigns().getName().toString() == "KL_H") {
-                            signs.add("KL/H");
-                        }else{
-                            signs.add(l.getSigns().getName().toString());
+
+            for (int i = 0; i <= 30; i++) {
+                if (user != null) {
+                    sheet.setColumnWidth(i + 2, 1500);
+
+                    cell = row.createCell(i + 2);
+                    cell.setCellValue("-");
+                    cell.setCellStyle(styleBody);
+
+                    // Tổng
+                    for (int k = 33; k <= 34; k++) {
+                        cell = row.createCell(k);
+                        cell.setCellStyle(styleBody);
+                        if (k == 33) {
+                            cell.setCellFormula("COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*H*\")" +
+                                    "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*/H*\")/2" +
+                                    "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*H/*\")/2" +
+                                    "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*CT*\")" +
+                                    "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*LB*\")"); // Tổng ngày làm việc
+                            cell.setCellStyle(styleBodyCenter);
+                            cell.setCellStyle(styleBodyCenter);
+                        }
+                        if (k == 34) {
+                            cell.setCellFormula("AH" + rowCount + ""); // Tổng ngày hưởng lương
+                            cell.setCellStyle(styleBodyCenter);
+                        }
+                    }
+                }
+            }
+
+
+            for (UserLogDetail ul : userLogDetails) {
+                if (user.getCode() == ul.getCode()) {
+                    String sign = null;
+                    List<LogDetail> logDetails = ul.getLogDetail();
+                    for (LogDetail logDetail : logDetails) {
+                        cell = row.createCell(logDetail.getDate_log().getDayOfMonth() + 1);
+                        if (logDetail.getSigns().getName().toString() == null) {
+                            cell.setCellValue("-");
+                            cell.setCellStyle(styleBody);
+                        } else if (logDetail.getSigns().getName().toString() == "H_KL") {
+                            cell.setCellValue("H/KL");
+                            cell.setCellStyle(styleBody);
+                            //Comment
+                            if(logDetail.getReason() != null){
+//                                ClientAnchor clientAnchor = drawing.createAnchor(0, 0, 0, 0, 0, 2, 7, 7);
+                                ClientAnchor clientAnchor = creationHelper.createClientAnchor();
+                                clientAnchor.setCol1(cell.getColumnIndex());
+                                clientAnchor.setCol2(cell.getColumnIndex()+5);
+                                clientAnchor.setRow1(row.getRowNum());
+                                clientAnchor.setRow2(row.getRowNum()+2);
+
+                                Comment comment = (Comment) drawing.createCellComment(clientAnchor);
+                                RichTextString richTextString = creationHelper.createRichTextString(logDetail.getReason());
+                                comment.setString(richTextString);
+                                cell.setCellComment(comment);
+                            }
+                        } else if (logDetail.getSigns().getName().toString() == "KL_H") {
+                            cell.setCellValue("KL/H");
+                            cell.setCellStyle(styleBody);
+                            //Comment
+                            if(logDetail.getReason() != null){
+//                                ClientAnchor clientAnchor = drawing.createAnchor(0, 0, 0, 0, 0, 2, 7, 7);
+                                ClientAnchor clientAnchor = creationHelper.createClientAnchor();
+                                clientAnchor.setCol1(cell.getColumnIndex());
+                                clientAnchor.setCol2(cell.getColumnIndex()+5);
+                                clientAnchor.setRow1(row.getRowNum());
+                                clientAnchor.setRow2(row.getRowNum()+2);
+
+                                Comment comment = (Comment) drawing.createCellComment(clientAnchor);
+                                RichTextString richTextString = creationHelper.createRichTextString(logDetail.getReason());
+                                comment.setString(richTextString);
+                                cell.setCellComment(comment);
+                            }
+                        }
+                        else {
+                            cell.setCellValue(logDetail.getSigns().getName().toString());
+                            cell.setCellStyle(styleBody);
+                            //Comment
+                            if(logDetail.getReason() != null){
+                                ClientAnchor clientAnchor = creationHelper.createClientAnchor();
+                                clientAnchor.setCol1(cell.getColumnIndex());
+                                clientAnchor.setCol2(cell.getColumnIndex()+5);
+                                clientAnchor.setRow1(row.getRowNum());
+                                clientAnchor.setRow2(row.getRowNum()+2);
+
+
+                                Comment comment = (Comment) drawing.createCellComment(clientAnchor);
+                                RichTextString richTextString = creationHelper.createRichTextString(logDetail.getReason());
+                                comment.setString(richTextString);
+                                cell.setCellComment(comment);
+                            }
+                        }
+
+
+                        if(logDetail.getDate_log().getDayOfWeek().toString() == "SATURDAY" ||
+                                logDetail.getDate_log().getDayOfWeek().toString() == "SUNDAY"){
+                            cell.setCellValue("NT");
+                            cell.setCellStyle(styleBodyColor);
                         }
 
                     }
 
+                    // Tổng
+                    for (int k = 33; k <= 34; k++) {
+                        cell = row.createCell(k);
+                        cell.setCellStyle(styleBody);
+                        if (k == 33) {
+                            cell.setCellFormula("COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*H*\")" +
+                                    "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*/H*\")/2" +
+                                    "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*H/*\")/2" +
+                                    "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*CT*\")" +
+                                    "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*LB*\")"); // Tổng ngày làm việc
+                            cell.setCellStyle(styleBodyCenter);
+                            cell.setCellStyle(styleBodyCenter);
+                        }
+                        if (k == 34) {
+                            cell.setCellFormula("AH" + rowCount + ""); // Tổng ngày hưởng lương
+                            cell.setCellStyle(styleBodyCenter);
+                        }
+                    }
                 }
-            }
 
-            if (signs.size() == 27) {
-                for (int i = 2; i <= 32; i++) {
-                    // Ký tự tính công
-                    if (i <=28) {
-                        cell = row.createCell(i);
-                        cell.setCellValue(signs.get(i - 2));
-                        cell.setCellStyle(styleBody);
-                    }
-                    if (i >= 29) {
-                        cell = row.createCell(i);
-                        cell.setCellValue("");
-                        cell.setCellStyle(styleBody);
-                    }
-
-                }
             }
-
-            if (signs.size() == 28) {
-                for (int i = 2; i <= 32; i++) {
-                    // Ký tự tính công
-                    if (i <=29) {
-                        cell = row.createCell(i);
-                        cell.setCellValue(signs.get(i - 2));
-                        cell.setCellStyle(styleBody);
-                    }
-                    if (i >= 30) {
-                        cell = row.createCell(i);
-                        cell.setCellValue("");
-                        cell.setCellStyle(styleBody);
-                    }
-
-                }
-            }
-            if (signs.size() == 30) {
-                for (int i = 2; i <= 32; i++) {
-                    // Ký tự tính công
-                    if (i <= 31) {
-                        cell = row.createCell(i);
-                        cell.setCellValue(signs.get(i - 2));
-                        cell.setCellStyle(styleBody);
-                    }
-                    if (i >= 32) {
-                        cell = row.createCell(i);
-                        cell.setCellValue("");
-                        cell.setCellStyle(styleBody);
-                    }
-                }
-            }
-            if (signs.size() == 31) {
-                for (int i = 2; i <= 32; i++) {
-                    // Ký tự tính công
-                    if (i <= 32) {
-                        cell = row.createCell(i);
-                        cell.setCellValue(signs.get(i - 2));
-                        cell.setCellStyle(styleBody);
-                    }
-
-                }
-            }
-            // Tổng
-            for (int i = 33; i <= 34; i++) {
-                cell = row.createCell(i);
-                cell.setCellStyle(styleBody);
-                if (i == 33) {
-                    cell.setCellFormula("COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*H*\")" +
-                            "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*/H*\")/2" +
-                            "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*H/*\")/2" +
-                            "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*CT*\")" +
-                            "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*LB*\")"); // Tổng ngày làm việc
-                    cell.setCellStyle(styleBodyCenter);
-                }
-                if (i == 34) {
-                    cell.setCellFormula("AH" + rowCount + ""); // Tổng ngày hưởng lương
-                    cell.setCellStyle(styleBodyCenter);
-                }
-            }
-
 
         }
+
+
+//        for (UserLogDetail ul : userLogDetails) {
+//            System.out.println(ul.getName());
+//            row = sheet.createRow(rowCount++);
+//            cell = row.createCell(0);
+//            cell.setCellValue(tt++);
+//            cell.setCellStyle(styleBody);
+//            sheet.setColumnWidth(0, 1200);
+//
+//            cell = row.createCell(1);
+//            cell.setCellValue(ul.getName());
+//            cell.setCellStyle(styleBody);
+//            for (int i = 0; i <= 30; i++) {
+//                System.out.println(ul.getLogDetail().get(i).getSigns().getName());
+//                sheet.setColumnWidth(i+2, 1500);
+//
+//                if(ul.getLogDetail().get(i).getDate_log().getDayOfWeek().toString()=="SATURDAY" ||
+//                        ul.getLogDetail().get(i).getDate_log().getDayOfWeek().toString()=="SUNDAY" ){
+//                    cell = row.createCell(i+2);
+//                    cell.setCellValue("NT");
+//                    cell.setCellStyle(styleBodyColor);
+//
+//                }
+//                else{
+//                    cell = row.createCell(i+2);
+//                    if(ul.getLogDetail().get(i).getSigns().getName().toString()=="H_KL"){
+//                        cell.setCellValue("H/KL");
+//                    }
+//                    else if(ul.getLogDetail().get(i).getSigns().getName().toString()=="KL_H"){
+//                        cell.setCellValue("KL/H");
+//                    }
+//                    else{
+//                        cell.setCellValue(ul.getLogDetail().get(i).getSigns().getName().toString());
+//                    }
+//                    cell.setCellStyle(styleBody);
+//                }
+//                cell.setCellComment(comment);
+//            }
+//
+//            // Tổng
+//            for (int i = 33; i <= 34; i++) {
+//                cell = row.createCell(i);
+//                cell.setCellStyle(styleBody);
+//                if (i == 33) {
+//                    cell.setCellFormula("COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*H*\")" +
+//                            "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*/H*\")/2" +
+//                            "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*H/*\")/2" +
+//                            "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*CT*\")" +
+//                            "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*LB*\")"); // Tổng ngày làm việc
+//                    cell.setCellStyle(styleBodyCenter);
+//                }
+//                if (i == 34) {
+//                    cell.setCellFormula("AH" + rowCount + ""); // Tổng ngày hưởng lương
+//                    cell.setCellStyle(styleBodyCenter);
+//                }
+//            }
+//        }
+
+
+//        for (int k = 0; k < count; k++) {
+//            row = sheet.createRow(rowCount++);
+//            cell = row.createCell(0);
+//            cell.setCellValue(tt++);
+//            cell.setCellStyle(styleBody);
+//            sheet.setColumnWidth(0, 1500);
+//
+//            cell = row.createCell(1);
+//            cell.setCellValue(listUsers.get(k).getFullName());
+//            cell.setCellStyle(styleBody);
+//
+//
+//            List<String> signs = new ArrayList<>();
+//            for (LogDetail l : listLogs) {
+//                if (l.getDate_log().getMonthValue() == month) {
+//                    if (l.getUser().getCode() == listUsers.get(k).getCode()) {
+//                        if (l.getDate_log().getDayOfWeek().toString().equals("SATURDAY") ||
+//                                l.getDate_log().getDayOfWeek().toString().equals("SUNDAY")) {
+//                            signs.add("NT");
+//                        } else if (l.getSigns().getName().toString() == "") {
+//                            signs.add("KL");
+//                        } else {
+//                            if (l.getSigns().getName().toString() == "H_KL") {
+//                                signs.add("H/KL");
+//                            } else if (l.getSigns().getName().toString() == "KL_H") {
+//                                signs.add("KL/H");
+//                            } else {
+//                                signs.add(l.getSigns().getName().toString());
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//
+//
+//
+//
+//
+//            if (signs.size() == 29) {
+//                for (int i = 2; i <= 32; i++) {
+//                    // Ký tự tính công
+//                    if (i <= 30) {
+//                        cell = row.createCell(i);
+//                        cell.setCellValue(signs.get(i - 2));
+//                        cell.setCellStyle(styleBody);
+//                    }
+//                    if (i >= 31) {
+//                        cell = row.createCell(i);
+//                        cell.setCellValue("");
+//                        cell.setCellStyle(styleBody);
+//                    }
+//                }
+//            }
+//
+//            if (signs.size() == 28) {
+//                for (int i = 2; i <= 32; i++) {
+//                    // Ký tự tính công
+//                    if (i <= 29) {
+//                        cell = row.createCell(i);
+//                        cell.setCellValue(signs.get(i - 2));
+//                        cell.setCellStyle(styleBody);
+//                    }
+//                    if (i >= 30) {
+//                        cell = row.createCell(i);
+//                        cell.setCellValue("");
+//                        cell.setCellStyle(styleBody);
+//                    }
+//                }
+//            }
+//            if (signs.size() == 30) {
+//                for (int i = 2; i <= 32; i++) {
+//                    // Ký tự tính công
+//                    if (i <= 31) {
+//                        cell = row.createCell(i);
+//                        cell.setCellValue(signs.get(i - 2));
+//                        cell.setCellStyle(styleBody);
+//                    }
+//                    if (i >= 32) {
+//                        cell = row.createCell(i);
+//                        cell.setCellValue("");
+//                        cell.setCellStyle(styleBody);
+//                    }
+//                }
+//            }
+//            if (signs.size() == 31) {
+//                for (int i = 2; i <= 32; i++) {
+//                    // Ký tự tính công
+//                    if (i <= 32) {
+//                        cell = row.createCell(i);
+//                        cell.setCellValue(signs.get(i - 2));
+//                        cell.setCellStyle(styleBody);
+//                    }
+//
+//                }
+//            }
+//
+//
+//            // Tổng
+//            for (int i = 33; i <= 34; i++) {
+//                cell = row.createCell(i);
+//                cell.setCellStyle(styleBody);
+//                if (i == 33) {
+//                    cell.setCellFormula("COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*H*\")" +
+//                            "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*/H*\")/2" +
+//                            "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*H/*\")/2" +
+//                            "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*CT*\")" +
+//                            "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*LB*\")"); // Tổng ngày làm việc
+//                    cell.setCellStyle(styleBodyCenter);
+//                }
+//                if (i == 34) {
+//                    cell.setCellFormula("AH" + rowCount + ""); // Tổng ngày hưởng lương
+//                    cell.setCellStyle(styleBodyCenter);
+//                }
+//            }
+//
+//        }
+
 
         row = sheet.createRow(rowCount++);
         for (int i = 0; i <= 32; i++) {

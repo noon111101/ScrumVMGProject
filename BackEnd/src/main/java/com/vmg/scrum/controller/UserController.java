@@ -28,7 +28,7 @@ public class UserController {
     private UserService userService;
     @GetMapping("users")
     public ResponseEntity<Page<User>> getUsers(@RequestParam(defaultValue = "0") int page,
-                                               @RequestParam(defaultValue = "10") int size,
+                                               @RequestParam(defaultValue = "20") int size,
                                                @RequestParam(name = "departid", required = false) Long departid){
         Pageable pageable = PageRequest.of(page,size);
         Page<User> pageUsers = null;
