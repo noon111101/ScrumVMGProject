@@ -323,9 +323,9 @@ public class ExcelExporter {
 //                                ClientAnchor clientAnchor = drawing.createAnchor(0, 0, 0, 0, 0, 2, 7, 7);
                                 ClientAnchor clientAnchor = creationHelper.createClientAnchor();
                                 clientAnchor.setCol1(cell.getColumnIndex());
-                                clientAnchor.setCol2(cell.getColumnIndex()+2);
+                                clientAnchor.setCol2(cell.getColumnIndex()+5);
                                 clientAnchor.setRow1(row.getRowNum());
-                                clientAnchor.setRow2(row.getRowNum()+5);
+                                clientAnchor.setRow2(row.getRowNum()+2);
 
                                 Comment comment = (Comment) drawing.createCellComment(clientAnchor);
                                 RichTextString richTextString = creationHelper.createRichTextString(logDetail.getReason());
@@ -340,9 +340,9 @@ public class ExcelExporter {
 //                                ClientAnchor clientAnchor = drawing.createAnchor(0, 0, 0, 0, 0, 2, 7, 7);
                                 ClientAnchor clientAnchor = creationHelper.createClientAnchor();
                                 clientAnchor.setCol1(cell.getColumnIndex());
-                                clientAnchor.setCol2(cell.getColumnIndex()+2);
+                                clientAnchor.setCol2(cell.getColumnIndex()+5);
                                 clientAnchor.setRow1(row.getRowNum());
-                                clientAnchor.setRow2(row.getRowNum()+5);
+                                clientAnchor.setRow2(row.getRowNum()+2);
 
                                 Comment comment = (Comment) drawing.createCellComment(clientAnchor);
                                 RichTextString richTextString = creationHelper.createRichTextString(logDetail.getReason());
@@ -357,9 +357,9 @@ public class ExcelExporter {
                             if(logDetail.getReason() != null){
                                 ClientAnchor clientAnchor = creationHelper.createClientAnchor();
                                 clientAnchor.setCol1(cell.getColumnIndex());
-                                clientAnchor.setCol2(cell.getColumnIndex()+2);
+                                clientAnchor.setCol2(cell.getColumnIndex()+5);
                                 clientAnchor.setRow1(row.getRowNum());
-                                clientAnchor.setRow2(row.getRowNum()+5);
+                                clientAnchor.setRow2(row.getRowNum()+2);
 
 
                                 Comment comment = (Comment) drawing.createCellComment(clientAnchor);
