@@ -7,9 +7,8 @@ import com.vmg.scrum.payload.response.UserLogDetail;
 import com.vmg.scrum.repository.DepartmentRepository;
 import com.vmg.scrum.repository.LogDetailRepository;
 import com.vmg.scrum.repository.UserRepository;
-import com.vmg.scrum.service.LogDetailService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
+import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
+import org.apache.poi.hssf.usermodel.HSSFComment;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
@@ -18,7 +17,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.Color;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -194,16 +192,14 @@ public class ExcelExporter {
     private void writeBodyTable() {
         Row row = null;
         Cell cell;
+
+        //comment
         CreationHelper creationHelper = (XSSFCreationHelper) workbook.getCreationHelper();
-
+        Drawing drawing1 = ((org.apache.poi.ss.usermodel.Sheet) sheet).createDrawingPatriarch();
         XSSFDrawing drawing = sheet.createDrawingPatriarch();
-        ClientAnchor clientAnchor = drawing.createAnchor(0, 0, 0, 0, 0, 2, 7, 12);
 
-        Comment comment = (Comment) drawing.createCellComment(clientAnchor);
-        RichTextString richTextString = creationHelper.createRichTextString("We can put a long comment here with \n a new line text followed by another \n new line text");
 
-        comment.setString(richTextString);
-        comment.setAuthor("Soumitra");
+
 
 
         // style  Body
@@ -237,6 +233,8 @@ public class ExcelExporter {
         styleBody.setFont(fontBody);
         styleBodyCenter.setFont(fontBody);
         styleBodyColor.setFont(fontBody);
+
+
 
 
         // Edit Body Table
@@ -285,7 +283,6 @@ public class ExcelExporter {
                     cell = row.createCell(i + 2);
                     cell.setCellValue("-");
                     cell.setCellStyle(styleBody);
-                    cell.setCellComment(comment);
 
                     // Tổng
                     for (int k = 33; k <= 34; k++) {
@@ -321,13 +318,52 @@ public class ExcelExporter {
                         } else if (logDetail.getSigns().getName().toString() == "H_KL") {
                             cell.setCellValue("H/KL");
                             cell.setCellStyle(styleBody);
+                            if(logDetail.getReason() != null){
+//                                ClientAnchor clientAnchor = drawing.createAnchor(0, 0, 0, 0, 0, 2, 7, 7);
+                                ClientAnchor clientAnchor = creationHelper.createClientAnchor();
+                                clientAnchor.setCol1(cell.getColumnIndex());
+                                clientAnchor.setCol2(cell.getColumnIndex()+2);
+                                clientAnchor.setRow1(row.getRowNum());
+                                clientAnchor.setRow2(row.getRowNum()+5);
+
+                                Comment comment = (Comment) drawing.createCellComment(clientAnchor);
+                                RichTextString richTextString = creationHelper.createRichTextString(logDetail.getReason());
+                                comment.setString(richTextString);
+                                cell.setCellComment(comment);
+                            }
                         } else if (logDetail.getSigns().getName().toString() == "KL_H") {
                             cell.setCellValue("KL/H");
                             cell.setCellStyle(styleBody);
+                            if(logDetail.getReason() != null){
+//                                ClientAnchor clientAnchor = drawing.createAnchor(0, 0, 0, 0, 0, 2, 7, 7);
+                                ClientAnchor clientAnchor = creationHelper.createClientAnchor();
+                                clientAnchor.setCol1(cell.getColumnIndex());
+                                clientAnchor.setCol2(cell.getColumnIndex()+2);
+                                clientAnchor.setRow1(row.getRowNum());
+                                clientAnchor.setRow2(row.getRowNum()+5);
+
+                                Comment comment = (Comment) drawing.createCellComment(clientAnchor);
+                                RichTextString richTextString = creationHelper.createRichTextString(logDetail.getReason());
+                                comment.setString(richTextString);
+                                cell.setCellComment(comment);
+                            }
                         }
                         else {
                             cell.setCellValue(logDetail.getSigns().getName().toString());
                             cell.setCellStyle(styleBody);
+                            if(logDetail.getReason() != null){
+                                ClientAnchor clientAnchor = creationHelper.createClientAnchor();
+                                clientAnchor.setCol1(cell.getColumnIndex());
+                                clientAnchor.setCol2(cell.getColumnIndex()+2);
+                                clientAnchor.setRow1(row.getRowNum());
+                                clientAnchor.setRow2(row.getRowNum()+5);
+
+
+                                Comment comment = (Comment) drawing.createCellComment(clientAnchor);
+                                RichTextString richTextString = creationHelper.createRichTextString(logDetail.getReason());
+                                comment.setString(richTextString);
+                                cell.setCellComment(comment);
+                            }
                         }
 
 
