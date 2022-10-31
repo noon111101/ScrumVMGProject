@@ -3,6 +3,7 @@ package com.vmg.scrum.service.impl;
 
 
 
+import com.vmg.scrum.exception.LockAccountException;
 import com.vmg.scrum.model.ERole;
 import com.vmg.scrum.model.Role;
 import com.vmg.scrum.model.User;
@@ -82,6 +83,8 @@ public class UserServiceImpl implements UserService {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
         Boolean check = userRepository.getById(userDetails.getId()).getCheckRootDisable();
+        Boolean avalible = userRepository.getById(userDetails.getId()).getAvalible();
+        if (avalible==false) throw new LockAccountException("Account have been lock by admin");
         return new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
@@ -146,9 +149,10 @@ public class UserServiceImpl implements UserService {
         try {
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             Long id = changePasswordRequest.getId();
-            String newPassword = changePasswordRequest.getPassword();
+            String newPassword = changePasswordRequest.getNewPassword();
             Optional<User> users = userRepository.findById(id);
             User user =users.get();
+            if(passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword() )){
             boolean check = user.getCheckRootDisable();
             if(!check){
                 String encodedPassword = passwordEncoder.encode(newPassword);
@@ -161,11 +165,18 @@ public class UserServiceImpl implements UserService {
                 String encodedPassword = passwordEncoder.encode(newPassword);
                 user.setPassword(encodedPassword);
                 userRepository.save(user);
-            }
+            }}
+            else return false;
             return true;
         }
         catch (Exception e){
             return false;
         }
 }
+
+    @Override
+    public Boolean lockAccount(Long id,boolean lock) {
+        User user = userRepository.getById(id);
+        return  true;
+    }
 }
