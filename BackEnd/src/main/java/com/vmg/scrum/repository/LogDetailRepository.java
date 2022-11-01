@@ -37,14 +37,6 @@ public interface LogDetailRepository extends JpaRepository<LogDetail,Long> {
             "where l.date_log between ?1 and ?2")
     Page<LogDetail> findByDate_AllDepartment(LocalDate from, LocalDate to,Pageable pageable);
 
-            "where u.departments.id = ?1 and l.date_log between ?2 and ?3 " +
-            "order by l.date_log desc")
-    Page<LogDetail> findByDate_DepartmentId(long id,LocalDate from, LocalDate to, Pageable pageable);
-
-    @Query(value = "select l from LogDetail l\n" +
-            "where l.date_log between ?1 and ?2" +
-            " order by l.date_log desc ")
-    Page<LogDetail> findByDate_AllDepartment(LocalDate from, LocalDate to, Pageable pageable);
 
     @Query(value = " select l from LogDetail l\n " +
             " join l.user u " +
@@ -91,47 +83,36 @@ public interface LogDetailRepository extends JpaRepository<LogDetail,Long> {
 
     List<LogDetail> findByUserCode(Double code);
 
-    @Query(value = "select * from log_detail l \n" +
-            "join user u on l.user_id = u.id \n " +
-            "join department d on d.id = u.department_id\n " +
-            "where u.department_id = ?1 " +
-            "and l.date_log = ?2 ", nativeQuery = true)
-    Page<LogDetail> findDateandDepartment(Integer key, LocalDate date, Pageable pageable);
+//    @Query(value = "select * from log_detail l \n" +
+//            "join user u on l.user_id = u.id \n " +
+//            "join department d on d.id = u.department_id\n " +
+//            "where u.department_id = ?1 " +
+//            "and l.date_log = ?2 ", nativeQuery = true)
+//    Page<LogDetail> findDateandDepartment(Integer key, LocalDate date, Pageable pageable);
+//
+//    @Query(value = "select * from log_detail l \n" +
+//            "join user u on l.user_id = u.id \n " +
+//            "join department d on d.id = u.department_id\n " +
+//            "where l.date_log = ?1 ", nativeQuery = true)
+//    Page<LogDetail> findByDate(LocalDate date,Pageable pageable);
+//
+//    @Query(value = "select * from log_detail l \n" +
+//            "join user u on l.user_id = u.id \n " +
+//            "join department d on d.id = u.department_id\n " +
+//            "where u.department_id = ?1 ", nativeQuery = true)
+//    Page<LogDetail> findByDepartment(Integer key,Pageable pageable);
+//
+//    @Query(value = "select * from log_detail l \n" +
+//            "join user u on l.user_id = u.id \n " +
+//            "join department d on d.id = u.department_id " , nativeQuery = true)
+//    Page<LogDetail> findAllUser(Pageable pageable);
+//
+//    @Query(value = "select * from log_detail l \n" +
+//            "join user u on l.user_id = u.id \n " +
+//            "where u.code = ?1 " +
+//            "and l.date_log = ?2 ", nativeQuery = true)
+//    LogDetail findByUserCodeAndDate(Double code , LocalDate date);
 
-    @Query(value = "select * from log_detail l \n" +
-            "join user u on l.user_id = u.id \n " +
-            "join department d on d.id = u.department_id\n " +
-            "where l.date_log = ?1 ", nativeQuery = true)
-    Page<LogDetail> findByDate(LocalDate date,Pageable pageable);
-
-    @Query(value = "select * from log_detail l \n" +
-            "join user u on l.user_id = u.id \n " +
-            "join department d on d.id = u.department_id\n " +
-            "where u.department_id = ?1 ", nativeQuery = true)
-    Page<LogDetail> findByDepartment(Integer key,Pageable pageable);
-
-    @Query(value = "select * from log_detail l \n" +
-            "join user u on l.user_id = u.id \n " +
-            "join department d on d.id = u.department_id " , nativeQuery = true)
-    Page<LogDetail> findAllUser(Pageable pageable);
-
-    @Query(value = "select * from log_detail l \n" +
-            "join user u on l.user_id = u.id \n " +
-            "where u.code = ?1 " +
-            "and l.date_log = ?2 ", nativeQuery = true)
-    LogDetail findByUserCodeAndDate(Double code , LocalDate date);
 
 
-    @Query(value = " select l from LogDetail l\n " +
-            " join l.user u " +
-            " where u.departments.id = ?1 " +
-            " order by l.date_log desc "
-    )
-    Page<LogDetail> findByDepartmentId(long id, Pageable pageable);
-
-    @Query(value = " select l from LogDetail l\n " +
-            " join l.user u " +
-            " order by l.date_log desc "
-    )
-    Page<LogDetail> findByAllDepartmentId(Pageable pageable);
 }
