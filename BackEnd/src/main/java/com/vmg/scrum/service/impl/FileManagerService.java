@@ -1,6 +1,6 @@
 package com.vmg.scrum.service.impl;
 
-import com.vmg.scrum.exception.FileNullException;
+import com.vmg.scrum.exception.custom.FileNullException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

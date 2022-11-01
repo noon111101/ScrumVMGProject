@@ -3,6 +3,7 @@ package com.vmg.scrum.service.impl;
 
 
 
+import com.vmg.scrum.exception.custom.LockAccountException;
 import com.vmg.scrum.model.ERole;
 import com.vmg.scrum.model.Role;
 import com.vmg.scrum.model.User;
@@ -83,6 +84,8 @@ public class UserServiceImpl implements UserService {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
         Boolean check = userRepository.getById(userDetails.getId()).getCheckRootDisable();
+        Boolean avalible = userRepository.getById(userDetails.getId()).getAvalible();
+        if (avalible==false) throw new LockAccountException("Account have been lock by admin");
         return new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
