@@ -26,7 +26,7 @@ public class FileController {
     }
 
     @GetMapping("info")
-    public Map<String,Double> download ( ) {
+    public Map<String,Double> download () {
         List<User> user = userRepository.findAll();
         Map<String,Double> listInfo = new HashMap<>();
         for(User u : user){

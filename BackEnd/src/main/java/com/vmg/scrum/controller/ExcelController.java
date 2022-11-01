@@ -22,8 +22,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/excel")
@@ -46,7 +48,7 @@ public class ExcelController {
 
 
     @GetMapping("/export")
-    public ResponseEntity exportToExcel(@RequestParam Long id, HttpServletResponse response) throws IOException {
+    public ResponseEntity exportToExcel(@RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam int month, HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
         String currentDateTime = dateFormatter.format(new Date());
@@ -55,12 +57,18 @@ public class ExcelController {
         String headerValue = "attachment; filename=Bang_Cham_Cong_" + currentDateTime + ".xlsx";
 
         response.setHeader(headerKey, headerValue);
+        List<LogDetail> listLogs = new ArrayList<>();
+        if(id==0){
+            listLogs = logDetailRepository.findByMonthSortDate(month);
+            ExcelExporter excelExporter = new ExcelExporter(listLogs,month,departmentRepository,userRepository,logDetailRepository);
+            excelExporter.export(response);
+        }
+        else {
+            listLogs = logDetailRepository.findByMonthAndDepartmentSortDate(id, month);
+            ExcelExporter excelExporter = new ExcelExporter(listLogs, id,month,departmentRepository,userRepository,logDetailRepository);
+            excelExporter.export(response);
+        }
 
-        List<LogDetail> listLogs = logDetailRepository.findByUserDepartmentsId(id);
-
-        ExcelExporter excelExporter = new ExcelExporter(listLogs, id,departmentRepository,userRepository);
-
-        excelExporter.export(response);
         return new ResponseEntity(HttpStatus.OK);
     }
 

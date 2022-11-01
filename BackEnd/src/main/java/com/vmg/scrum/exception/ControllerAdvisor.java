@@ -42,9 +42,15 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest().body(body);
     }
     @ExceptionHandler(LockAccountException.class)
-    public final ResponseEntity<com.example.blog.exception.ErrorResponse> lockAccountException(LockAccountException ex, WebRequest request) {
+    public final ResponseEntity<ErrorResponse> lockAccountException(LockAccountException ex, WebRequest request) {
         String details = ex.getLocalizedMessage();
-        com.example.blog.exception.ErrorResponse error = new com.example.blog.exception.ErrorResponse(ex.getMessage(), details);
+        ErrorResponse error = new ErrorResponse(ex.getMessage(), details);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(UpdateNullException.class)
+    public final ResponseEntity<ErrorResponse> updateNullException(UpdateNullException ex, WebRequest request) {
+        String details = ex.getLocalizedMessage();
+        ErrorResponse error = new ErrorResponse(ex.getMessage(), details);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }
