@@ -1,5 +1,6 @@
 package com.vmg.scrum.service.impl;
 
+import com.vmg.scrum.exception.UpdateNullException;
 import com.vmg.scrum.model.ESign;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.payload.request.EditLogRequest;
@@ -22,7 +23,10 @@ public class LogDetailServiceImpl  implements LogDetailService{
 
     @Override
     public MessageResponse updateLogDetails(EditLogRequest[] editLogRequest) {
-        try {
+
+            if(editLogRequest.length==0){
+                throw  new UpdateNullException("Chưa có chỉnh sửa nào");
+            }
             for(EditLogRequest editLogRequest1 : editLogRequest){
                 String[] time = editLogRequest1.getDate().split("-");
                 LocalDate date = LocalDate.of(Integer.parseInt(time[0]), Integer.parseInt(time[1]), Integer.parseInt(time[2]));
@@ -33,10 +37,6 @@ public class LogDetailServiceImpl  implements LogDetailService{
                 logDetailRepository.save(logDetail);
             }
             return new MessageResponse("Sign updated successfully!");
-        } catch (Exception e){
-            return new MessageResponse("Sign update fail!");
-        }
-
     }
 
 }
