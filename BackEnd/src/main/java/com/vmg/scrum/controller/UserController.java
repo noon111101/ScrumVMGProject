@@ -1,9 +1,6 @@
 package com.vmg.scrum.controller;
 
-import com.vmg.scrum.model.Role;
 import com.vmg.scrum.model.User;
-import com.vmg.scrum.model.excel.LogDetail;
-import com.vmg.scrum.payload.request.SignupRequest;
 import com.vmg.scrum.payload.request.UpdateUserRequest;
 import com.vmg.scrum.repository.UserRepository;
 import com.vmg.scrum.service.UserService;
@@ -15,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -52,22 +47,7 @@ public class UserController {
         return new ResponseEntity<>(userRepository.findAll(pageable), HttpStatus.OK);
     }
 
-//    @PutMapping("users/{id}")
-//    public ResponseEntity<User> updateUser(@PathVariable("id") long id, @RequestBody User user) {
-//        Optional<User> userData = userRepository.findById(id);
-//        if (userData.isPresent()) {
-//            User users = userData.get();
-//            users.setCode(user.getCode());
-//            users.setFullName(user.getFullName());
-//            users.setDepartments(user.getDepartments());
-//            users.setRoles(user.getRoles());
-//            return new ResponseEntity<>(userRepository.save(users), HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
-
-    @PutMapping("/users/{id}")
+    @PutMapping("/user/{id}")
     public ResponseEntity<User> updateTodo(@PathVariable("id") long id,@ModelAttribute UpdateUserRequest updateRequest) {
         userService.updateUser(id, updateRequest);
         return new ResponseEntity<>(userRepository.findById(id).get(), HttpStatus.OK);

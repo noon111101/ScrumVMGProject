@@ -178,6 +178,7 @@ public class UserServiceImpl implements UserService {
         user.setCode(updateRequest.getCode());
         user.setFullName(updateRequest.getFullName());
         user.setUsername(updateRequest.getUsername());
+        user.setGender(updateRequest.getGender());
         Department department = departmentRepository.findByName(updateRequest.getDepartment());
         user.setDepartments(department);
         Set<String> strRoles = updateRequest.getRole();
