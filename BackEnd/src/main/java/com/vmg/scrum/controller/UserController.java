@@ -2,6 +2,7 @@ package com.vmg.scrum.controller;
 
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
+import com.vmg.scrum.payload.request.UpdateUserRequest;
 import com.vmg.scrum.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
