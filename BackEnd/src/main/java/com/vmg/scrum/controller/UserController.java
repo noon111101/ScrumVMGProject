@@ -46,24 +46,4 @@ public class UserController {
         return new ResponseEntity<>(userRepository.findAll(pageable), HttpStatus.OK);
     }
 
-//    @PutMapping("users/{id}")
-//    public ResponseEntity<User> updateUser(@PathVariable("id") long id, @RequestBody User user) {
-//        Optional<User> userData = userRepository.findById(id);
-//        if (userData.isPresent()) {
-//            User users = userData.get();
-//            users.setCode(user.getCode());
-//            users.setFullName(user.getFullName());
-//            users.setDepartments(user.getDepartments());
-//            users.setRoles(user.getRoles());
-//            return new ResponseEntity<>(userRepository.save(users), HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
-
-    @PutMapping("/users/{id}")
-    public ResponseEntity<User> updateTodo(@PathVariable("id") long id,@ModelAttribute UpdateUserRequest updateRequest) {
-        userService.updateUser(id, updateRequest);
-        return new ResponseEntity<>(userRepository.findById(id).get(), HttpStatus.OK);
-    }
 }

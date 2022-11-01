@@ -3,10 +3,10 @@ package com.vmg.scrum.payload.request;
 import javax.validation.constraints.NotBlank;
 
 public class LoginRequest {
-    @NotBlank
+    @NotBlank(message = "Chưa nhập tên")
     private String username;
 
-    @NotBlank
+    @NotBlank(message = "Chưa nhập mật khẩu")
     private String password;
 
     public String getUsername() {
