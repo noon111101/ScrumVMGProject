@@ -66,6 +66,13 @@ public interface LogDetailRepository extends JpaRepository<LogDetail,Long> {
 
     @Query(value = "select l from LogDetail l\n" +
             " join l.user u " +
+            "where  MONTH (l.date_log) = ?1 " +
+            "order by l.date_log asc ")
+    List<LogDetail> findByMonthSortDate(Integer month);
+
+
+    @Query(value = "select l from LogDetail l\n" +
+            " join l.user u " +
             "where MONTH (l.date_log) = ?1 ")
     List<LogDetail> findByMonth(Integer month);
 
