@@ -29,6 +29,14 @@ public interface LogDetailRepository extends JpaRepository<LogDetail,Long> {
 
     @Query(value = "select l from LogDetail l\n" +
             " join l.user u " +
+
+            "where u.departments.id = ?1 and l.date_log between ?2 and ?3")
+    Page<LogDetail> findByDate_DepartmentId(long id, LocalDate from, LocalDate to, Pageable pageable);
+
+    @Query(value = "select l from LogDetail l\n" +
+            "where l.date_log between ?1 and ?2")
+    Page<LogDetail> findByDate_AllDepartment(LocalDate from, LocalDate to,Pageable pageable);
+
             "where u.departments.id = ?1 and l.date_log between ?2 and ?3 " +
             "order by l.date_log desc")
     Page<LogDetail> findByDate_DepartmentId(long id,LocalDate from, LocalDate to, Pageable pageable);
@@ -50,6 +58,7 @@ public interface LogDetailRepository extends JpaRepository<LogDetail,Long> {
             " order by l.date_log desc "
     )
     Page<LogDetail> findByAllDepartmentId(Pageable pageable);
+
 
 
 
@@ -113,6 +122,16 @@ public interface LogDetailRepository extends JpaRepository<LogDetail,Long> {
     LogDetail findByUserCodeAndDate(Double code , LocalDate date);
 
 
+    @Query(value = " select l from LogDetail l\n " +
+            " join l.user u " +
+            " where u.departments.id = ?1 " +
+            " order by l.date_log desc "
+    )
+    Page<LogDetail> findByDepartmentId(long id, Pageable pageable);
 
-
+    @Query(value = " select l from LogDetail l\n " +
+            " join l.user u " +
+            " order by l.date_log desc "
+    )
+    Page<LogDetail> findByAllDepartmentId(Pageable pageable);
 }
