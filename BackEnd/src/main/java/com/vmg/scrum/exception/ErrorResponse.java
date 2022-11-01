@@ -1,4 +1,4 @@
-package com.example.blog.exception;
+package com.vmg.scrum.exception;
 
 public class ErrorResponse
 {
