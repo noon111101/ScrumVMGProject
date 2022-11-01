@@ -49,6 +49,17 @@ public class ExcelExporter {
         this.logDetailRepository = logDetailRepository;
     }
 
+    public ExcelExporter(List<LogDetail> listLogs, int month, DepartmentRepository departmentRepository,
+                         UserRepository userRepository,
+                         LogDetailRepository logDetailRepository) {
+        this.listLogs = listLogs;
+        workbook = new XSSFWorkbook();
+        this.month = month;
+        this.departmentRepository = departmentRepository;
+        this.userRepository = userRepository;
+        this.logDetailRepository = logDetailRepository;
+    }
+
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
         sheet.autoSizeColumn(columnCount);
         Cell cell = row.createCell(columnCount);
@@ -98,7 +109,13 @@ public class ExcelExporter {
 
         row = sheet.createRow(3);
         cell = row.createCell(1);
-        cell.setCellValue("Bộ phận: " + departmentRepository.getById(id).getName());
+        if(id==0){
+            cell.setCellValue("Tất cả các bộ phận");
+        }
+        else {
+            cell.setCellValue("Bộ phận: " + departmentRepository.getById(id).getName());
+        }
+//        cell.setCellValue("Bộ phận: " + departmentRepository.getById(id).getName());
         cell.setCellStyle(style);
 
 
@@ -195,11 +212,7 @@ public class ExcelExporter {
 
         //comment
         CreationHelper creationHelper = (XSSFCreationHelper) workbook.getCreationHelper();
-        Drawing drawing1 = ((org.apache.poi.ss.usermodel.Sheet) sheet).createDrawingPatriarch();
         XSSFDrawing drawing = sheet.createDrawingPatriarch();
-
-
-
 
 
         // style  Body
@@ -238,11 +251,17 @@ public class ExcelExporter {
 
 
         // Edit Body Table
-        List<LogDetail> listLogsByUser = listLogs;
         int rowCount = 6;
         int tt = 1;
-        int count = departmentRepository.findById(id).get().getUsers().size();
-        List<User> listUsers = userRepository.findAllByDepartments_Id(id);
+        List<User> listUsers =new ArrayList<>();
+//        int count = departmentRepository.findById(id).get().getUsers().size();
+        if(id==0){
+            listUsers = userRepository.findAll();
+        }
+        else {
+            listUsers = userRepository.findAllByDepartments_Id(id);
+        }
+//        List<User> listUsers = userRepository.findAllByDepartments_Id(id);
         List<UserLogDetail> userLogDetails = new ArrayList<>();
 
 
@@ -330,6 +349,7 @@ public class ExcelExporter {
                                 Comment comment = (Comment) drawing.createCellComment(clientAnchor);
                                 RichTextString richTextString = creationHelper.createRichTextString(logDetail.getReason());
                                 comment.setString(richTextString);
+                                comment.setAuthor("Apache POI");
                                 cell.setCellComment(comment);
                             }
                         } else if (logDetail.getSigns().getName().toString() == "KL_H") {
@@ -347,6 +367,7 @@ public class ExcelExporter {
                                 Comment comment = (Comment) drawing.createCellComment(clientAnchor);
                                 RichTextString richTextString = creationHelper.createRichTextString(logDetail.getReason());
                                 comment.setString(richTextString);
+                                comment.setAuthor("Apache POI");
                                 cell.setCellComment(comment);
                             }
                         }
@@ -365,6 +386,7 @@ public class ExcelExporter {
                                 Comment comment = (Comment) drawing.createCellComment(clientAnchor);
                                 RichTextString richTextString = creationHelper.createRichTextString(logDetail.getReason());
                                 comment.setString(richTextString);
+                                comment.setAuthor("Apache POI");
                                 cell.setCellComment(comment);
                             }
                         }
