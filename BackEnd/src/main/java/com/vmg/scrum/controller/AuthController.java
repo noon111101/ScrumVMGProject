@@ -35,8 +35,8 @@ public class AuthController {
     public Boolean changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest)  {
         return userService.updatePassword(changePasswordRequest);
     }
-    @PutMapping("/lockAccount/{id}")
-    public MessageResponse lockAccount(@PathVariable Long id , @RequestParam boolean lock){
-        return  userService.lockAccount(id,lock);
+        @PutMapping("/lockAccount/{id}")
+    public MessageResponse lockAccount(@PathVariable Long id){
+        return  userService.lockAccount(id);
     }
 }

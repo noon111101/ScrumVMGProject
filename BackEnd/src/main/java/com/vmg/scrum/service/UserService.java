@@ -18,7 +18,7 @@ public interface UserService  {
 
     Boolean updatePassword(ChangePasswordRequest changePasswordRequest);
 
-    MessageResponse lockAccount(Long id, boolean lock);
+    MessageResponse lockAccount(Long id);
 
     void updateUser(long id, UpdateUserRequest updateRequest);
 }
