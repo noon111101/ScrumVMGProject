@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4260541f-7ef0-496f-bfb2-041c6e73dfdf" name="Changes" comment="feat :add send email" />
+    <list default="true" id="4260541f-7ef0-496f-bfb2-041c6e73dfdf" name="Changes" comment="feat :add send email">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BackEnd/src/main/java/com/vmg/scrum/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/BackEnd/src/main/java/com/vmg/scrum/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BackEnd/src/main/java/com/vmg/scrum/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/BackEnd/src/main/java/com/vmg/scrum/model/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BackEnd/src/main/resources/application-dev.properties" beforeDir="false" afterPath="$PROJECT_DIR$/BackEnd/src/main/resources/application-dev.properties" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -67,18 +73,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/ADMIN/ScrumVMG&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "D:/ScrumVmgProjectBE/ScrumVMGProject/BackEnd",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "spring.configuration.checksum": "8a28bff05964bcd6786a9cc224da98b5",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\ADMIN\ScrumVMG\ScrumProject\BackEnd\src\main\java\com\vmg\scrum\entity\â" />
@@ -94,7 +103,7 @@
       <recent name="com.vmg.scrum.repository" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.Application">
     <configuration name="Application" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.vmg.scrum.Application" />
       <module name="ScrumProject" />
@@ -104,6 +113,13 @@
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="ScrumProject" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.vmg.scrum.Application" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -122,6 +138,11 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1665395005752</updated>
+      <workItem from="1666105893554" duration="10937000" />
+      <workItem from="1666156270046" duration="11825000" />
+      <workItem from="1666259149812" duration="2000" />
+      <workItem from="1666259682498" duration="5421000" />
+      <workItem from="1666318774890" duration="1730000" />
     </task>
     <task id="LOCAL-00001" summary="feat : create structure">
       <created>1665416102071</created>
@@ -146,6 +167,9 @@
     </task>
     <option name="localTasksCounter" value="4" />
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">

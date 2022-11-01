@@ -21,11 +21,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findAllByDepartments_Id(long id);
 
+    List<User> findAll();
+
     User findByCode(Double code);
     @Override
     Page<User> findAll(Pageable pageable);
 
     Page<User> getUsersByDepartments_Id(long id, Pageable pageable);
-
 
 }
