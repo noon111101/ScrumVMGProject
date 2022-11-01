@@ -4,20 +4,22 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
 public class SignupRequest {
-    @NotBlank
+    @NotBlank(message = "Chưa nhập email")
     @Size(min = 3, max = 50)
     private String username;
 
     private Set<String> role;
 
-    @NotBlank
+    @NotBlank(message = "Chưa nhập tên")
     @Size(min = 6, max = 50)
     private String fullName;
 
+    @NotBlank(message = "Chưa nhập mã nhân viên")
     private Double code;
 
     public String getDepartment() {
@@ -28,9 +30,9 @@ public class SignupRequest {
         this.department = department;
     }
 
-    @NotBlank
+    @NotBlank(message = "Chưa chọn phòng ban")
     private String department;
-    @NotBlank
+    @NotBlank(message = "Chưa chọn giới tính")
     private String gender;
 
     public MultipartFile getCover() {
@@ -41,6 +43,7 @@ public class SignupRequest {
         this.cover = cover;
     }
 
+    @NotNull(message = "Chưa upload ảnh")
     private MultipartFile cover;
 
 

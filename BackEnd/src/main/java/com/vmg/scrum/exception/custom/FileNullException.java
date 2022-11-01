@@ -1,4 +1,4 @@
-package com.vmg.scrum.exception;
+package com.vmg.scrum.exception.custom;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

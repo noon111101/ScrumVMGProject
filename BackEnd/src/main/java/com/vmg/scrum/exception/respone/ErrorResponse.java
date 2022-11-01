@@ -1,4 +1,4 @@
-package com.vmg.scrum.exception;
+package com.vmg.scrum.exception.respone;
 
 public class ErrorResponse
 {

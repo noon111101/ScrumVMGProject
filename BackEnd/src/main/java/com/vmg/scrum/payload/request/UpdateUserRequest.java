@@ -9,13 +9,13 @@ import java.util.Set;
 
 public class UpdateUserRequest {
 
-    @NotBlank
+    @NotBlank(message = "Chưa nhập email")
     @Size(min = 3, max = 50)
     private String username;
 
     private Set<String> role;
 
-    @NotBlank
+    @NotBlank(message = "Chưa nhập tên")
     @Size(min = 6, max = 50)
     private String fullName;
 
@@ -29,9 +29,9 @@ public class UpdateUserRequest {
         this.department = department;
     }
 
-    @NotBlank
+    @NotBlank(message = "Chưa chọn phòng ban")
     private String department;
-    @NotBlank
+    @NotBlank(message = "Chưa chọn giới tính")
     private String gender;
 
     public String getUsername() {

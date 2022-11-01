@@ -32,9 +32,9 @@ public class ChangePasswordRequest {
         this.oldPassword = oldPassword;
     }
 
-    @NotBlank
+    @NotBlank(message = "Chưa nhập mật khẩu mới")
     private String newPassword;
 
-    @NotBlank
+    @NotBlank(message = "Chưa nhập mật khẩu cũ")
     private String oldPassword;
 }

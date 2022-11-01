@@ -1,11 +1,13 @@
-package com.vmg.scrum.exception;
+package com.vmg.scrum.exception.custom;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-public class UpdateNullException extends RuntimeException{
-    public UpdateNullException(String message) {
+public class InvalidResourceException extends RuntimeException {
+
+    public InvalidResourceException(String message) {
         super(message);
     }
+
 }
