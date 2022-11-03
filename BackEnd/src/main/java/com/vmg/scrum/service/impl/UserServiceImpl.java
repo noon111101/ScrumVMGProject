@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public MessageResponse registerUser(SignupRequest signUpRequest) throws MessagingException, UnsupportedEncodingException {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return new MessageResponse("Error: Email is already taken!");
+             throw new RuntimeException("Email is already taken!");
         }
         String genarate =alphaNumericString(8);
         Department department = departmentRepository.findByName(signUpRequest.getDepartment());
@@ -221,10 +221,10 @@ public class UserServiceImpl implements UserService {
         user.setAvalible(!user.getAvalible());
         userRepository.save(user);
         if(user.getAvalible()==true){
-            return new MessageResponse("Account unlock sucess");
+            return new MessageResponse("Mở khóa tài khoản thành công!");
         }
         else{
-            return new MessageResponse("Account lock sucess");
+            return new MessageResponse("Khóa tài khoản thành công!");
         }
     }
 }
