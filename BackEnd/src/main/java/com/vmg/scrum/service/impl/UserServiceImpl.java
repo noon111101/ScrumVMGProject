@@ -152,22 +152,40 @@ public class UserServiceImpl implements UserService {
             Long id = changePasswordRequest.getId();
             String newPassword = changePasswordRequest.getNewPassword();
             Optional<User> users = userRepository.findById(id);
-            User user =users.get();
-            if(passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword() )){
+            User user = users.get();
             boolean check = user.getCheckRootDisable();
-            if(!check){
-                String encodedPassword = passwordEncoder.encode(newPassword);
-                user.setPassword(encodedPassword);
-                user.setRootPassword(passwordEncoder.encode(""));
-                user.setCheckRootDisable(true);
-                userRepository.save(user);
+            if(user.getPassword()==null || user.getPassword()==""){
+                if(passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getRootPassword() )){
+                    if(!check){
+                        String encodedPassword = passwordEncoder.encode(newPassword);
+                        user.setPassword(encodedPassword);
+                        user.setRootPassword(passwordEncoder.encode(""));
+                        user.setCheckRootDisable(true);
+                        userRepository.save(user);
+                    }
+                    if(check){
+                        String encodedPassword = passwordEncoder.encode(newPassword);
+                        user.setPassword(encodedPassword);
+                        userRepository.save(user);
+                    }}
+                else return false;
             }
-            if(check){
-                String encodedPassword = passwordEncoder.encode(newPassword);
-                user.setPassword(encodedPassword);
-                userRepository.save(user);
-            }}
-            else return false;
+            else{
+                if(passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword() )){
+                    if(!check){
+                        String encodedPassword = passwordEncoder.encode(newPassword);
+                        user.setPassword(encodedPassword);
+                        user.setRootPassword(passwordEncoder.encode(""));
+                        user.setCheckRootDisable(true);
+                        userRepository.save(user);
+                    }
+                    if(check){
+                        String encodedPassword = passwordEncoder.encode(newPassword);
+                        user.setPassword(encodedPassword);
+                        userRepository.save(user);
+                    }}
+                else return false;
+            }
             return true;
         }
         catch (Exception e){
