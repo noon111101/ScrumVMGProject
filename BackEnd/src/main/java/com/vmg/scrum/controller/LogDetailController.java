@@ -50,7 +50,7 @@ public class LogDetailController {
                                                   @RequestParam(defaultValue = "5") int size,@RequestParam Double code)
     {
         Pageable pageable = PageRequest.of(page, size);
-        return new ResponseEntity<>(logDetailRepository.findByUserCode(pageable,code), HttpStatus.OK);
+        return new ResponseEntity<>(logDetailRepository.findByUserCode(code, pageable), HttpStatus.OK);
     }
 
     @GetMapping("byDate_Usercode")
@@ -69,7 +69,7 @@ public class LogDetailController {
 
         }
         else{
-            pageLogs = logDetailRepository.findByUserCode(pageable, code);
+            pageLogs = logDetailRepository.findByUserCode( code, pageable);
 
         }
         return new ResponseEntity<>(pageLogs, HttpStatus.OK);

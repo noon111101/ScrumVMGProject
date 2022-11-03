@@ -20,11 +20,16 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
     @Override
     Page<LogDetail> findAll(Pageable pageable);
 
-    Page<LogDetail> findByUserCode(Pageable pageable, Double code);
+    @Query(value = "select l from LogDetail l\n" +
+            " join l.user u " +
+            " where u.code = ?1" +
+            " order by l.date_log desc ")
+    Page<LogDetail> findByUserCode( Double code, Pageable pageable);
 
     @Query(value = "select l from LogDetail l\n" +
             " join l.user u " +
-            "where u.code = ?1 and l.date_log between ?2 and ?3")
+            "where u.code = ?1 and l.date_log between ?2 and ?3" +
+            " order by l.date_log desc ")
     Page<LogDetail> findByDate_UserCode(Double code, LocalDate from, LocalDate to, Pageable pageable);
 
 
