@@ -95,12 +95,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public MessageResponse registerUser(SignupRequest signUpRequest) throws MessagingException, UnsupportedEncodingException {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return new MessageResponse("Error: Email is already taken!");
+             throw  new RuntimeException("Email is already taken!");
         }
         String genarate =alphaNumericString(8);
         Department department = departmentRepository.findByName(signUpRequest.getDepartment());
         //file
-        String filename = fileManagerService.save("images",signUpRequest.getCover());
+        String filename = "default.png";
+        if(signUpRequest.getCover()!=null)
+         filename = fileManagerService.save("images",signUpRequest.getCover());
         // Create new user's account
         User user = new User(signUpRequest.getUsername(),
                 encoder.encode(genarate),

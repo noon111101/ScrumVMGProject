@@ -13,41 +13,12 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Map<String, ErrorDetails>> resourceNotFoundException(ResourceNotFoundException ex,
-                                                                               ServletWebRequest request) {
-        Map<String, ErrorDetails> data = new HashMap<>();
-        ErrorDetails errorDetails = new ErrorDetails(
-                new Date(),
-                HttpStatus.NOT_FOUND.value(),
-                HttpStatus.NOT_FOUND.getReasonPhrase(),
-                ex.getMessage(),
-                request.getRequest().getRequestURI()
-        );
-        data.put("error", errorDetails);
-        return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(InvalidResourceException.class)
-    public ResponseEntity<Map<String, ErrorDetails>> invalidResourceException(InvalidResourceException ex,
-                                                                              ServletWebRequest request) {
-        Map<String, ErrorDetails> data = new HashMap<>();
-        ErrorDetails errorDetails = new ErrorDetails(
-                new Date(),
-                HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                ex.getMessage(),
-                request.getRequest().getRequestURI()
-        );
-        data.put("error", errorDetails);
-        return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, ErrorDetails>> globalExceptionHandler(Exception ex,
                                                                             ServletWebRequest request) {
@@ -91,7 +62,33 @@ public class GlobalExceptionHandler {
         data.put("error", errorDetails);
         return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
     }
-
+    @ExceptionHandler(MessagingException.class)
+    public ResponseEntity<Map<String, ErrorDetails>> validateException(MessagingException ex,
+                                                                       ServletWebRequest request) {
+        Map<String, ErrorDetails> data = new HashMap<>();
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                "Email không tồn tại",
+                request.getRequest().getRequestURI()
+        );
+        data.put("error", errorDetails);
+        return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
+    }    @ExceptionHandler(UnsupportedEncodingException.class)
+    public ResponseEntity<Map<String, ErrorDetails>> validateException(UnsupportedEncodingException ex,
+                                                                       ServletWebRequest request) {
+        Map<String, ErrorDetails> data = new HashMap<>();
+        ErrorDetails errorDetails = new ErrorDetails(
+                new Date(),
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                "Email không tồn tại",
+                request.getRequest().getRequestURI()
+        );
+        data.put("error", errorDetails);
+        return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
+    }
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Map<String, ErrorDetails>> validateException(MethodArgumentTypeMismatchException ex,
                                                                        ServletWebRequest request) {
@@ -116,13 +113,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(LockAccountException.class)
     public final ResponseEntity<ErrorResponse> lockAccountException(LockAccountException ex, WebRequest request) {
-        String details = ex.getLocalizedMessage();
+        String details = "Tài khoản của bạn bị khóa hiện tại chưa thể đăng nhập";
         ErrorResponse error = new ErrorResponse(ex.getMessage(), details);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(UpdateNullException.class)
     public final ResponseEntity<ErrorResponse> updateNullException(UpdateNullException ex, WebRequest request) {
-        String details = ex.getLocalizedMessage();
+        String details = "Bạn cần chỉnh sửa trước khi cập nhật";
         ErrorResponse error = new ErrorResponse(ex.getMessage(), details);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }

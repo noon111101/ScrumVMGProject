@@ -79,7 +79,6 @@ public class ExcelController {
         if (excelImporter.hasExcelFormat(file)) {
             try {
                 fileService.save(file);
-
                 message = "Uploaded the file successfully: " + file.getOriginalFilename();
                 return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse(message));
             } catch (Exception e) {
@@ -91,7 +90,10 @@ public class ExcelController {
         message = "Please upload an excel file!";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse(message));
     }
-
+    @PostMapping("/import/user")
+    public void importUser(@ModelAttribute("file") MultipartFile file) throws IOException {
+        fileService.saveUser(file);
+    }
     @GetMapping("/test")
     public void test(){
         dataExcelCalculation.convertSign(logDetailRepository.findAll());
