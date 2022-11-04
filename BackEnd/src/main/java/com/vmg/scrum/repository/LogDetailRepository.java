@@ -43,7 +43,9 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
     @Query(value = "select l from LogDetail l\n" +
             " join l.user u " +
             " where u.departments.id = ?1 and l.date_log between ?2 and ?3 " +
-            " and u.fullName LIKE %?4%")
+            " and u.fullName LIKE %?4% " +
+            " or u.username LIKE %?4%  " +
+            " or u.departments.name LIKE %?4% ")
     Page<LogDetail> findByDate_DepartmentId_Search(long id, LocalDate from, LocalDate to, String search, Pageable pageable);
 
     @Query(value = "select l from LogDetail l\n" +
@@ -53,7 +55,9 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
     @Query(value = "select l from LogDetail l\n" +
             " join l.user u " +
             " where l.date_log between ?1 and ?2 " +
-            " and u.fullName LIKE %?3%")
+            " and u.fullName LIKE %?3% " +
+            " or u.username LIKE %?3%  " +
+            " or u.departments.name LIKE %?3% " )
     Page<LogDetail> findByDate_AllDepartment_Search(LocalDate from, LocalDate to, String search, Pageable pageable);
 
 
@@ -68,6 +72,8 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
             " join l.user u " +
             " where u.departments.id = ?1 " +
             " and u.fullName LIKE %?2% " +
+            " or u.username LIKE %?2%  " +
+            " or u.departments.name LIKE %?2% " +
             " order by l.date_log desc "
     )
     Page<LogDetail> findByDepartmentId_Search(long id, String search, Pageable pageable);
@@ -80,13 +86,11 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
 
     @Query(value = "select l from LogDetail l\n " +
             " join l.user u " +
-            " where u.fullName LIKE %?1% " +
+            " where u.fullName LIKE %?1%" +
+            " or u.username LIKE %?1%  " +
+            " or u.departments.name LIKE %?1% " +
             " order by l.date_log desc "
     )
-//    @Query(value = "select * from log_detail l\n" +
-//            "           join user u on u.id = l.user_id\n" +
-//            "    where u.full_name LIKE %?1% \n" +
-//            "order by l.date_log desc", nativeQuery = true)
     Page<LogDetail> findByAllDepartment_Search(@Param("search")String search, Pageable pageable);
 
 

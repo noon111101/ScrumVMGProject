@@ -133,24 +133,6 @@ public class LogDetailController {
         DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         Pageable pageable = PageRequest.of(page, size);
         Page<LogDetail> pageLogs = null;
-//        if(from != null && to!=null && from != "" && to!=""){
-//            LocalDate from1 = LocalDate.parse(from, sdf);
-//            LocalDate to1 = LocalDate.parse(to, sdf);
-//
-//            if(id!=0){
-//                pageLogs = logDetailRepository.findByDate_DepartmentId(id , from1, to1, pageable);
-//            }
-//            else{
-//                pageLogs = logDetailRepository.findByDate_AllDepartment(from1, to1, pageable);
-//            }
-//        } else  {
-//            if(id!=0){
-//                pageLogs = logDetailRepository.findByDepartmentId(id , pageable);
-//            }
-//            else{
-//                pageLogs = logDetailRepository.findByAllDepartment(pageable);
-//            }
-//        }
         if(from != null && to!=null && from != "" && to!=""){
             LocalDate from1 = LocalDate.parse(from, sdf);
             LocalDate to1 = LocalDate.parse(to, sdf);
