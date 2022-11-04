@@ -43,7 +43,6 @@ public class SignupRequest {
         this.cover = cover;
     }
 
-    @NotNull(message = "Chưa upload ảnh")
     private MultipartFile cover;
 
 

@@ -2,6 +2,7 @@ package com.vmg.scrum.service.impl;
 
 import com.vmg.scrum.excel.DataExcelCalculation;
 import com.vmg.scrum.excel.ExcelImporter;
+import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.repository.LogDetailRepository;
 import com.vmg.scrum.repository.LogDetailTotalRepository;
@@ -29,6 +30,9 @@ public class ExcelService {
         } catch (IOException e) {
             throw new RuntimeException("fail to store excel data: " + e.getMessage());
         }
+    }
+    public void saveUser(MultipartFile file) throws IOException {
+            List<User> userList = excelImporter.readUser(file.getInputStream());
     }
 
     public List<LogDetail> getAllLog() {
