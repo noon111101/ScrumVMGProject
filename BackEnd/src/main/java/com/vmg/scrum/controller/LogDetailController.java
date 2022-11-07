@@ -77,32 +77,37 @@ public class LogDetailController {
     @GetMapping("allByMonthAndDepartment")
     public ResponseEntity<List<UserLogDetail>> getAllByMonthAndDepartment(
                                                         @RequestParam(name = "month", required = true) Integer month,
-                                                        @RequestParam(name = "id", required = false) Long id
+                                                        @RequestParam(name = "id", required = false) Long id,
+                                                        @RequestParam(name = "search",required = false) String search
                                                         ) throws ParseException {
         List<LogDetail> logDetails = null;
         List<User> users = userRepository.findAll();
         List<UserLogDetail> userLogDetails = new ArrayList<>();
         if (id != null) {
-            logDetails = logDetailRepository.findByMonthAndDepartment(id, month);
-            for (User user : users) {
+            List<User> usersDepart = userRepository.findAllByDepartments_Id(id);
+            logDetails = logDetailRepository.findByMonthAndDepartment(id, month,search);
+            for (User user : usersDepart) {
                 UserLogDetail userLogDetail = new UserLogDetail();
                 List<LogDetail> list = new ArrayList<>();
                 for (LogDetail logDetail : logDetails) {
                     if (logDetail.getUser() == user) {
                         list.add(logDetail);
                     } else continue;
+                }
                     userLogDetail.setCode(user.getCode());
                     userLogDetail.setName(user.getFullName());
                     userLogDetail.setLogDetail(list);
-                }
-                if(userLogDetail.getName()!=null){
+                if(search == "" )
                     userLogDetails.add(userLogDetail);
-                }
-                if(userLogDetail.getName()==null)
-                    continue;
+                else{
+                    if(!userLogDetail.getLogDetail().isEmpty()){
+                        userLogDetails.add(userLogDetail);
+                        }
+                    }
+                continue;
             }
         } else {
-            logDetails = logDetailRepository.findByMonth(month);
+            logDetails = logDetailRepository.findByMonth(month,search);
             for (User user : users) {
                 UserLogDetail userLogDetail = new UserLogDetail();
                 List<LogDetail> list = new ArrayList<>();
@@ -116,13 +121,20 @@ public class LogDetailController {
                     userLogDetail.setCode(user.getCode());
                     userLogDetail.setName(user.getFullName());
                     userLogDetail.setLogDetail(list);
+                if(search=="")
                     userLogDetails.add(userLogDetail);
+                else{
+                    if(!userLogDetail.getLogDetail().isEmpty()){
+                        userLogDetails.add(userLogDetail);
+                    }
+                }
                 continue;
             }
 
         }
         return new ResponseEntity<>(userLogDetails, HttpStatus.OK);
-    }
+  }
+
     @GetMapping("byDate_Department")
     public ResponseEntity<Page<LogDetail>> getLogsByDate_Department(@RequestParam(name="page", defaultValue = "0") int page,
                                                                     @RequestParam(name="size",defaultValue = "30") int size,
@@ -229,10 +241,5 @@ public class LogDetailController {
     @PostMapping("edit")
     public ResponseEntity<MessageResponse> updateLogSign(@Valid @RequestBody EditLogRequest[] editLogRequests) throws MessagingException, UnsupportedEncodingException {
         return ResponseEntity.ok(logDetailService.updateLogDetails(editLogRequests));
-    }
-    @GetMapping("test")
-    public ResponseEntity<List<LogDetail>> test(@RequestParam(name = "month", required = true) Integer month,
-                                                @RequestParam(name = "id", required = true) Long id)  {
-        return ResponseEntity.ok(logDetailRepository.findByMonthAndDepartment(id, month));
     }
 }

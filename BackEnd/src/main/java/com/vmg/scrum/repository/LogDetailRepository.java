@@ -98,8 +98,8 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
 
     @Query(value = "select l from LogDetail l\n" +
             " join l.user u " +
-            "where u.departments.id= ?1 and MONTH (l.date_log) = ?2  ")
-    List<LogDetail> findByMonthAndDepartment(Long id, Integer month);
+            "where u.departments.id= ?1 and MONTH (l.date_log) = ?2 and u.fullName LIKE %?3%  ")
+    List<LogDetail> findByMonthAndDepartment(Long id, Integer month,String search);
 
     @Query(value = "select l from LogDetail l\n" +
             " join l.user u " +
@@ -116,8 +116,8 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
 
     @Query(value = "select l from LogDetail l\n" +
             " join l.user u " +
-            "where MONTH (l.date_log) = ?1 ")
-    List<LogDetail> findByMonth(Integer month);
+            "where MONTH (l.date_log) = ?1  and u.fullName LIKE %?2% ")
+    List<LogDetail> findByMonth(Integer month,String search);
 
     Page<LogDetail> findByUserDepartmentsId(Pageable pageable, Long id);
 
@@ -155,6 +155,4 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
             "where u.code = ?1 " +
             "and l.date_log = ?2 ", nativeQuery = true)
     LogDetail findByUserCodeAndDate(Double code, LocalDate date);
-
-
 }
