@@ -203,14 +203,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUser(long id, UpdateUserRequest updateRequest) {
         User user = userRepository.findById(id).get();
-        user.setCode(updateRequest.getCode());
+        if(Objects.nonNull(updateRequest.getUsername()) && !"".equalsIgnoreCase(user.getUsername())){
+            user.setUsername(updateRequest.getUsername());
+        }   if(Objects.nonNull(updateRequest.getCode()) && updateRequest.getCode()!=user.getCode()){
+            user.setCode(updateRequest.getCode());
+        }
         user.setFullName(updateRequest.getFullName());
-        user.setUsername(updateRequest.getUsername());
         user.setGender(updateRequest.getGender());
         Department department = departmentRepository.findByName(updateRequest.getDepartment());
         user.setDepartments(department);
-        String filename = fileManagerService.save("images",updateRequest.getCover());
-        user.setCover(filename);
+        if(updateRequest.getCover()!=null){
+            String filename = fileManagerService.save("images",updateRequest.getCover());
+            user.setCover(filename);
+        }
         Set<String> strRoles = updateRequest.getRole();
         Set<Role> roles = new HashSet<>();
         if (strRoles == null) {

@@ -29,7 +29,6 @@ public class UpdateUserRequest {
         this.department = department;
     }
 
-    @NotNull(message = "Chưa upload ảnh")
     private MultipartFile cover;
 
     @NotBlank(message = "Chưa chọn phòng ban")
