@@ -29,6 +29,9 @@ public class UpdateUserRequest {
         this.department = department;
     }
 
+    @NotNull(message = "Chưa upload ảnh")
+    private MultipartFile cover;
+
     @NotBlank(message = "Chưa chọn phòng ban")
     private String department;
     @NotBlank(message = "Chưa chọn giới tính")
@@ -71,5 +74,12 @@ public class UpdateUserRequest {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+    public MultipartFile getCover() {
+        return cover;
+    }
+
+    public void setCover(MultipartFile cover) {
+        this.cover = cover;
     }
 }

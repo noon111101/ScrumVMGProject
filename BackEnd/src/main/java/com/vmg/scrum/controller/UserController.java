@@ -59,4 +59,9 @@ public class UserController {
         userService.updateUser(id, updateRequest);
         return new ResponseEntity<>(userRepository.findById(id).get(), HttpStatus.OK);
     }
+
+    @GetMapping("/getAllUser")
+    public ResponseEntity<List<User>> getUser(){
+        return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
+    }
 }

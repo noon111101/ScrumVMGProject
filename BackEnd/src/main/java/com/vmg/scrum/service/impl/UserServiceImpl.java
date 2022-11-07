@@ -97,6 +97,9 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return new MessageResponse("Error: Email is already taken!");
         }
+        if (userRepository.existsByCode(signUpRequest.getCode())) {
+            return new MessageResponse("Error: Code is already taken!");
+        }
         String genarate =alphaNumericString(8);
         Department department = departmentRepository.findByName(signUpRequest.getDepartment());
         //file
@@ -184,6 +187,8 @@ public class UserServiceImpl implements UserService {
         user.setGender(updateRequest.getGender());
         Department department = departmentRepository.findByName(updateRequest.getDepartment());
         user.setDepartments(department);
+        String filename = fileManagerService.save("images",updateRequest.getCover());
+        user.setCover(filename);
         Set<String> strRoles = updateRequest.getRole();
         Set<Role> roles = new HashSet<>();
         if (strRoles == null) {
@@ -229,4 +234,5 @@ public class UserServiceImpl implements UserService {
             return new MessageResponse("Account lock sucess");
         }
     }
+
 }

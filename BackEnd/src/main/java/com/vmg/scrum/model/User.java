@@ -72,7 +72,7 @@ public class User extends BaseEntity {
         this.checkRootDisable=false;
         this.avalible=true;
     }
-    public User(String username, String fullName,String gender,Double code,Department department) {
+    public User(String username, String fullName,String gender,Double code,Department department,String cover) {
         this.username = username;
         this.fullName = fullName;
         this.code=code;
@@ -80,6 +80,7 @@ public class User extends BaseEntity {
         this.departments=department;
         this.checkRootDisable=false;
         this.avalible=true;
+        this.cover=cover;
     }
 
 }
