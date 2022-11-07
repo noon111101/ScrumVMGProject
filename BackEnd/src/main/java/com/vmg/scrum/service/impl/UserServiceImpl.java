@@ -95,12 +95,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public MessageResponse registerUser(SignupRequest signUpRequest) throws MessagingException, UnsupportedEncodingException {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-             throw new RuntimeException("Email is already taken!");
+
+             throw  new RuntimeException("Email is already taken!");
+        }
+        if (userRepository.existsByCode(signUpRequest.getCode())) {
+            return new MessageResponse("Error: Code is already taken!");
+
         }
         String genarate =alphaNumericString(8);
         Department department = departmentRepository.findByName(signUpRequest.getDepartment());
         //file
-        String filename = fileManagerService.save("images",signUpRequest.getCover());
+        String filename = "default.png";
+        if(signUpRequest.getCover()!=null)
+         filename = fileManagerService.save("images",signUpRequest.getCover());
         // Create new user's account
         User user = new User(signUpRequest.getUsername(),
                 encoder.encode(genarate),
@@ -202,6 +209,8 @@ public class UserServiceImpl implements UserService {
         user.setGender(updateRequest.getGender());
         Department department = departmentRepository.findByName(updateRequest.getDepartment());
         user.setDepartments(department);
+        String filename = fileManagerService.save("images",updateRequest.getCover());
+        user.setCover(filename);
         Set<String> strRoles = updateRequest.getRole();
         Set<Role> roles = new HashSet<>();
         if (strRoles == null) {
@@ -245,4 +254,5 @@ public class UserServiceImpl implements UserService {
             return new MessageResponse("Khóa tài khoản thành công!");
         }
     }
+
 }
