@@ -3,7 +3,7 @@ package com.vmg.scrum.payload.request;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-public class EditLogRequest {
+public class        EditLogRequest {
     @NotNull
     private double code;
 
