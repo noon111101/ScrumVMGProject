@@ -1,13 +1,19 @@
 package com.vmg.scrum.excel;
 
 
+import com.vmg.scrum.model.ERole;
+import com.vmg.scrum.model.Role;
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.model.excel.LogDetailTotal;
 import com.vmg.scrum.model.option.Department;
 import com.vmg.scrum.model.option.Shift;
+import com.vmg.scrum.payload.request.SignupRequest;
+import com.vmg.scrum.repository.DepartmentRepository;
+import com.vmg.scrum.repository.RoleRepository;
 import com.vmg.scrum.repository.ShiftRepository;
 import com.vmg.scrum.repository.UserRepository;
+import com.vmg.scrum.service.impl.UserServiceImpl;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -17,13 +23,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+
 @Service
 public class ExcelImporter {
 
@@ -31,6 +38,8 @@ public class ExcelImporter {
     UserRepository userRepository;
     @Autowired
     ShiftRepository shiftRepository;
+    @Autowired
+    UserServiceImpl userService;
     public String getPathExcelFile(){
     return "C:/Users/ADMIN/Documents/ExcelDataLogTest.xlsx";
     }
@@ -45,21 +54,17 @@ public class ExcelImporter {
 
         return true;
     }
-//    public List<LogDetailTotal> logDetailTotals;
     public List<LogDetail> read(InputStream inputStream) throws IOException {
         List<LogDetail> logDetails;
-        List<LogDetailTotal> logDetailTotals;
         try {
             XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
 
-//            XSSFSheet sheet = workbook.getSheet("2. TTS T9.2022");
             XSSFSheet sheet = workbook.getSheet("Sheet1");
 
             Iterator<Row> rows = sheet.iterator();
 
             logDetails = new ArrayList<LogDetail>();
 
-            logDetailTotals= new ArrayList<LogDetailTotal>();
             int rowNumber = 0;
 
             while (rows.hasNext()) {
@@ -69,17 +74,16 @@ public class ExcelImporter {
                     continue;
                 }
                 Iterator<Cell> cellsInRow = currentRow.iterator();
-
+                boolean check = false;
                 LogDetail logDetail = new LogDetail();
-                LogDetailTotal logDetailTotal= new LogDetailTotal();
                 User user = new User();
                 int cellIdx = 0;
-                while (cellsInRow.hasNext() && cellIdx<=11) {
+                while (cellsInRow.hasNext()) {
                     Cell currentCell = cellsInRow.next();
                     switch (cellIdx) {
                         case 0:
                             if(currentCell.getStringCellValue().contains("(")){
-                                logDetailTotal.setName(currentCell.getStringCellValue());
+                                check = true;
                                 System.out.println("Skip Total");
                                 break;
                             }
@@ -87,16 +91,14 @@ public class ExcelImporter {
                                 user.setFullName(currentCell.getStringCellValue());
                             break;
                         case 1:
-                            if(logDetailTotal.getName()!=null){
-                                logDetailTotal.setRegularHour(currentCell.getLocalDateTimeCellValue());
+                            if(check){
                                 break;
                             }
                             user.setCode(currentCell.getNumericCellValue());
                             System.out.println(currentCell.getNumericCellValue());
                             break;
                         case 2:
-                            if(logDetailTotal.getName()!=null){
-                                logDetailTotal.setOverTime(currentCell.getLocalDateTimeCellValue());
+                            if(check){
                                 break;
                             }
                             Department department = new Department();
@@ -104,16 +106,21 @@ public class ExcelImporter {
                             user.setDepartments(department);
                             break;
                         case 3:
-                            if(logDetailTotal.getName()!=null){
-                                logDetailTotal.setTotalWork(currentCell.getLocalDateTimeCellValue());
+                            if(check){
                                 break;
                             }
                             logDetail.setRegularHour(currentCell.getLocalDateTimeCellValue().toLocalTime());
                             break;
                         case 4:
+                            if(check){
+                                break;
+                            }
                             logDetail.setOverTime(currentCell.getLocalDateTimeCellValue().toLocalTime());
                             break;
                         case 5:
+                            if(check){
+                                break;
+                            }
                             logDetail.setTotalWork(currentCell.getLocalDateTimeCellValue().toLocalTime());
                             break;
                         case 6:
@@ -152,9 +159,7 @@ public class ExcelImporter {
                 if(user.getFullName()!=null){
                     logDetail.setUser(userRepository.findByCode(user.getCode()));
                     logDetails.add(logDetail);
-                    logDetailTotals.add(logDetailTotal);
                 }
-//                this.logDetailTotals=logDetailTotals;
 
             }
             workbook.close();
@@ -162,6 +167,66 @@ public class ExcelImporter {
             throw new RuntimeException("fail to parse Excel file: " + e.getMessage());
         }
         return logDetails;
+    }
+    public List<User> readUser(InputStream inputStream) throws IOException {
+        List<User> users;
+        try {
+            XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
+
+            XSSFSheet sheet = workbook.getSheet("Sheet2");
+
+            Iterator<Row> rows = sheet.iterator();
+
+            users = new ArrayList<User>();
+
+            int rowNumber = 0;
+            while (rows.hasNext()) {
+                Row currentRow = rows.next();
+                if (rowNumber == 0) {
+                    rowNumber++;
+                    continue;
+                }
+                Iterator<Cell> cellsInRow = currentRow.iterator();
+                SignupRequest signupRequest = new SignupRequest();
+                int cellIdx = 0;
+                while (cellsInRow.hasNext()) {
+                    Cell currentCell = cellsInRow.next();
+                    switch (cellIdx) {
+                        case 0:
+                            signupRequest.setFullName(currentCell.getStringCellValue());
+                            break;
+                        case 1:
+                            signupRequest.setCode(currentCell.getNumericCellValue());
+                            break;
+                        case 2:
+                            signupRequest.setDepartment(currentCell.getStringCellValue());
+                            break;
+                        case 3:
+                            signupRequest.setUsername(currentCell.getStringCellValue());
+                            break;
+                        case 4:
+                            String role = currentCell.getStringCellValue();
+                            Set<String> roles = new HashSet<>();
+                            roles.add(role);
+                            signupRequest.setRole(roles);
+                            break;
+                        case 5:
+                            signupRequest.setGender(currentCell.getStringCellValue());
+                            break;
+                        default:
+                            break;
+                    }
+                    cellIdx++;
+                }
+                userService.registerUser(signupRequest);
+            }
+            workbook.close();
+        } catch (IOException e) {
+            throw new RuntimeException("fail to parse Excel file: " + e.getMessage());
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+        return users;
     }
 }
 
