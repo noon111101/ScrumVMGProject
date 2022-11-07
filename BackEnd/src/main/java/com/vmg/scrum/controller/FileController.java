@@ -20,17 +20,12 @@ public class FileController {
 
     @Autowired
     UserRepository userRepository;
-    @GetMapping("files/{folder}")
-    public byte[] download (@PathVariable("folder") String folder, @RequestParam("file") String file) {
-        return fileManagerService.read(folder, file);
-    }
-
     @GetMapping("info")
     public Map<String,Double> download () {
         List<User> user = userRepository.findAll();
         Map<String,Double> listInfo = new HashMap<>();
         for(User u : user){
-        String pathFile = "http://localhost:8080/uploads/images/"+u.getCover();
+        String pathFile = "http://localhost:8080/"+u.getCover();
         listInfo.put(pathFile,u.getCode());
         }
         return listInfo;

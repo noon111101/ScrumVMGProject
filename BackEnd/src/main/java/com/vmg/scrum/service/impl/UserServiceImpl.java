@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
         //file
         String filename = "default.png";
         if(signUpRequest.getCover()!=null)
-         filename = fileManagerService.save("images",signUpRequest.getCover());
+         filename = fileManagerService.save(signUpRequest.getCover());
         // Create new user's account
         User user = new User(signUpRequest.getUsername(),
                 encoder.encode(genarate),
@@ -213,7 +213,8 @@ public class UserServiceImpl implements UserService {
         Department department = departmentRepository.findByName(updateRequest.getDepartment());
         user.setDepartments(department);
         if(updateRequest.getCover()!=null){
-            String filename = fileManagerService.save("images",updateRequest.getCover());
+            fileManagerService.delete(user.getCover());
+            String filename = fileManagerService.save(updateRequest.getCover());
             user.setCover(filename);
         }
         Set<String> strRoles = updateRequest.getRole();
