@@ -2,6 +2,7 @@ package com.vmg.scrum.service.impl;
 
 
 import com.vmg.scrum.model.User;
+import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.repository.UserRepository;
 import com.vmg.scrum.security.UserDetailsServiceImpl;
 import com.vmg.scrum.security.jwt.JwtUtils;
@@ -57,16 +58,15 @@ public class MailServiceImpl implements MailService {
         return sb.toString();
     }
 @Override
-    public void sendEmail(String recipientEmail)
-            throws MessagingException, UnsupportedEncodingException {
+    public MessageResponse sendEmail(String recipientEmail)
+          throws MessagingException, UnsupportedEncodingException {
+    try {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-
         helper.setFrom("contact@shopme.com", "Shopme Support");
         helper.setTo(recipientEmail);
         String subject = "Here's the link to reset your password";
-        String token = jwtUtils.generateJwtToken(SecurityContextHolder.getContext().getAuthentication());
-        String resetPasswordLink = "http://localhost:3000" + "/reset_password?token=" + token;
+        String resetPasswordLink = "http://localhost:3000" + "/reset_password?token=";
         String content = "<p>Hello,</p>"
                 + "<p>You have requested to reset your password.</p>"
                 + "<p>Click the link below to change your password:</p>"
@@ -80,28 +80,33 @@ public class MailServiceImpl implements MailService {
         helper.setText(content, true);
 
         mailSender.send(message);
+        return new MessageResponse("ok");
+    } catch (Exception e){
+        return new MessageResponse(e.getMessage());
+    }
     }
     @Override
-    public void sendEmailAccountInfo(String recipientEmail,String rootPassword)
+    public void sendEmailAccountInfo(String recipientEmail, String rootPassword)
             throws MessagingException, UnsupportedEncodingException {
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
+         MimeMessage message = mailSender.createMimeMessage();
+         MimeMessageHelper helper = new MimeMessageHelper(message);
 
-        helper.setFrom("VMG@mailnotifi", "VMG");
-        helper.setTo(recipientEmail);
-        String subject = "Here's the info account";
-        String content = "<p>Hello,</p>"
-                + "<p>You have to logIn and change your password.</p>"
-                + "Here is account infomation :"
-                + "<p> Email:yourEmail </p>"
-                + "<br>"
-                + "<p> Password:" + rootPassword +"</p>";
+         helper.setFrom("VMG@mailnotifi", "VMG");
+         helper.setTo(recipientEmail);
+         String subject = "Here's the info account";
+         String content = "<p>Hello,</p>"
+                 + "<p>You have to logIn and change your password.</p>"
+                 + "Here is account infomation :"
+                 + "<p> Email:yourEmail </p>"
+                 + "<br>"
+                 + "<p> Password:" + rootPassword + "</p>";
 
-        helper.setSubject(subject);
+         helper.setSubject(subject);
 
-        helper.setText(content, true);
+         helper.setText(content, true);
 
-        mailSender.send(message);
+         mailSender.send(message);
+
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.vmg.scrum.service;
 
 
+import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.security.UserDetailsServiceImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,7 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 
 public interface MailService {
-    void sendEmail(String recipientEmail) throws MessagingException, UnsupportedEncodingException;
+    MessageResponse sendEmail(String recipientEmail) throws MessagingException, UnsupportedEncodingException;
 
     UserDetails resetPasswordToken(String token);
 

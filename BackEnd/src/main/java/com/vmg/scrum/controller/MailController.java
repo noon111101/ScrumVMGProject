@@ -1,5 +1,6 @@
 package com.vmg.scrum.controller;
 
+import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,11 +15,9 @@ public class MailController {
     @Autowired
     MailService mailService;
     @GetMapping("send")
-    public boolean sendmail() throws MessagingException, UnsupportedEncodingException {
+    public MessageResponse sendmail() throws MessagingException, UnsupportedEncodingException {
 
-           mailService.sendEmail("trieu11112001@gmail.com");
-           return true;
-
+         return  mailService.sendEmail("trieu11sdsadadadas112001@gmail.com");
     }
     @PostMapping("reset_password-tokenLink")
     public UserDetails resetpasswordtoken(@RequestParam(name ="token") String token){
