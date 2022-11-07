@@ -50,7 +50,7 @@ public class LogDetailController {
                                                   @RequestParam(defaultValue = "5") int size,@RequestParam Double code)
     {
         Pageable pageable = PageRequest.of(page, size);
-        return new ResponseEntity<>(logDetailRepository.findByUserCode(pageable,code), HttpStatus.OK);
+        return new ResponseEntity<>(logDetailRepository.findByUserCode(code, pageable), HttpStatus.OK);
     }
 
     @GetMapping("byDate_Usercode")
@@ -69,7 +69,7 @@ public class LogDetailController {
 
         }
         else{
-            pageLogs = logDetailRepository.findByUserCode(pageable, code);
+            pageLogs = logDetailRepository.findByUserCode( code, pageable);
 
         }
         return new ResponseEntity<>(pageLogs, HttpStatus.OK);
@@ -128,27 +128,49 @@ public class LogDetailController {
                                                                     @RequestParam(name="size",defaultValue = "30") int size,
                                                                     @RequestParam(name="id", defaultValue = "0") long id,
                                                                     @RequestParam(name = "from", required = false) String from,
-                                                                    @RequestParam(name = "to", required = false) String to) throws ParseException {
+                                                                    @RequestParam(name = "to", required = false) String to,
+                                                                    @RequestParam(name = "search", required = false) String search) throws ParseException {
         DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         Pageable pageable = PageRequest.of(page, size);
         Page<LogDetail> pageLogs = null;
         if(from != null && to!=null && from != "" && to!=""){
             LocalDate from1 = LocalDate.parse(from, sdf);
             LocalDate to1 = LocalDate.parse(to, sdf);
-            if(id!=0){
-                pageLogs = logDetailRepository.findByDate_DepartmentId(id , from1, to1, pageable);
+            if(search!=null && search!=""){
+                if(id!=0){
+                    pageLogs = logDetailRepository.findByDate_DepartmentId_Search(id , from1, to1,search, pageable);
+                }
+                else{
+                    pageLogs = logDetailRepository.findByDate_AllDepartment_Search(from1, to1,search, pageable);
+                }
             }
             else{
-                pageLogs = logDetailRepository.findByDate_AllDepartment(from1, to1, pageable);
+                if(id!=0){
+                    pageLogs = logDetailRepository.findByDate_DepartmentId(id , from1, to1, pageable);
+                }
+                else{
+                    pageLogs = logDetailRepository.findByDate_AllDepartment(from1, to1, pageable);
+                }
             }
         } else  {
-            if(id!=0){
-                pageLogs = logDetailRepository.findByDepartmentId(id , pageable);
+            if(search!=null && search!=""){
+                if(id!=0){
+                    pageLogs = logDetailRepository.findByDepartmentId_Search(id ,search, pageable);
+                }
+                else{
+                    pageLogs = logDetailRepository.findByAllDepartment_Search(search, pageable);
+                }
             }
             else{
-                pageLogs = logDetailRepository.findByAllDepartmentId(pageable);
+                if(id!=0){
+                    pageLogs = logDetailRepository.findByDepartmentId(id , pageable);
+                }
+                else{
+                    pageLogs = logDetailRepository.findByAllDepartment(pageable);
+                }
             }
         }
+
         return new ResponseEntity<>(pageLogs, HttpStatus.OK);
     }
 
