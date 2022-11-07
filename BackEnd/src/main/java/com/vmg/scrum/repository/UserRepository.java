@@ -40,10 +40,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findAll_Search(String search, Pageable pageable);
 
     @Query(value = "select u from User u " +
-            " where u.fullName LIKE %?1% " +
-            " or u.username LIKE %?1% " +
+            " where (u.fullName LIKE %?1% " +
+            " or u.username LIKE %?1% )" +
             " and u.avalible = ?2 ")
     Page<User> findAll_Search_Status(String search,boolean status, Pageable pageable);
+
 
 
 
@@ -55,15 +56,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "select u from User u " +
             " where u.departments.id = ?1 " +
-            " and u.fullName LIKE %?2% " +
-            " or u.username LIKE %?2% ")
+            " and (u.fullName LIKE %?2% " +
+            " or u.username LIKE %?2% )")
     Page<User> getUsersByDepartments_Id_Search(long id,String search, Pageable pageable);
 
     @Query(value = "select u from User u " +
             " where u.departments.id = ?1 " +
             " and u.avalible = ?3 " +
-            " and u.fullName LIKE %?2% " +
-            " or u.username LIKE %?2% ")
+            " and (u.fullName LIKE %?2% " +
+            " or u.username LIKE %?2% )")
     Page<User> getUsersByDepartments_Id_Search_Status(long id,String search, boolean status, Pageable pageable);
 
 }

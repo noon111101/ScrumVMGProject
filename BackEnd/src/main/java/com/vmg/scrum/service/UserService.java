@@ -18,6 +18,7 @@ public interface UserService   {
 
     Boolean updatePassword(ChangePasswordRequest changePasswordRequest);
 
+
     MessageResponse lockAccount(Long id);
 
 

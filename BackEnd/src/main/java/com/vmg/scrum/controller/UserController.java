@@ -62,6 +62,7 @@ public class UserController {
             if(status!=null ){
 //                Boolean available = Boolean.parseBoolean(status);
                 if(search!=null && search!=""){
+                    System.out.println("aaaa");
                     pageUsers = userRepository.findAll_Search_Status(search,status, pageable);
                 }
                 else{
@@ -80,6 +81,9 @@ public class UserController {
         }
         return new ResponseEntity<>(pageUsers, HttpStatus.OK);
     }
+
+
+
     @GetMapping("users/{id}")
     public Optional<User> getUsers(@PathVariable Long id){
         return userRepository.findById(id);

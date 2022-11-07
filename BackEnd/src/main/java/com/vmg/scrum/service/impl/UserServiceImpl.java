@@ -95,10 +95,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public MessageResponse registerUser(SignupRequest signUpRequest) throws MessagingException, UnsupportedEncodingException {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+
              throw  new RuntimeException("Email is already taken!");
         }
         if (userRepository.existsByCode(signUpRequest.getCode())) {
             return new MessageResponse("Error: Code is already taken!");
+
         }
         String genarate =alphaNumericString(8);
         Department department = departmentRepository.findByName(signUpRequest.getDepartment());
