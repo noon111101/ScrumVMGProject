@@ -19,7 +19,8 @@ public class SignupRequest {
     @Size(min = 6, max = 50)
     private String fullName;
 
-//    @NotBlank(message = "Chưa nhập mã nhân viên")
+
+    @NotNull(message = "Chưa nhập mã nhân viên")
     private Double code;
 
     public String getDepartment() {
@@ -43,7 +44,6 @@ public class SignupRequest {
         this.cover = cover;
     }
 
-    @NotNull(message = "Chưa upload ảnh")
     private MultipartFile cover;
 
 

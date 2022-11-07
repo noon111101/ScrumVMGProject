@@ -4,6 +4,7 @@ import com.vmg.scrum.payload.request.ChangePasswordRequest;
 import com.vmg.scrum.payload.request.LoginRequest;
 import com.vmg.scrum.payload.request.SignupRequest;
 import com.vmg.scrum.payload.response.MessageResponse;
+import com.vmg.scrum.repository.UserRepository;
 import com.vmg.scrum.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,9 @@ import java.io.UnsupportedEncodingException;
 @RequestMapping("/api/auth")
 public class AuthController {
     private final UserService userService;
+
+    UserRepository userRepository;
+
 
     public AuthController(UserService userService) {
         this.userService = userService;

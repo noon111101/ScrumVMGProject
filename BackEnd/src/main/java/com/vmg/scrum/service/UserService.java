@@ -12,7 +12,7 @@ import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 
 
-public interface UserService  {
+public interface UserService   {
     JwtResponse authenticateUser(LoginRequest loginRequest);
     MessageResponse registerUser(SignupRequest signUpRequest) throws MessagingException, UnsupportedEncodingException;
 
@@ -20,5 +20,7 @@ public interface UserService  {
 
     MessageResponse lockAccount(Long id);
 
+
     void updateUser(long id, UpdateUserRequest updateRequest);
+
 }
