@@ -36,7 +36,7 @@ public class AuthController {
     }
 
     @PostMapping("/changePassword")
-    public Boolean changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest)  {
+    public MessageResponse changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest)  {
         return userService.updatePassword(changePasswordRequest);
     }
         @PutMapping("/lockAccount/{id}")

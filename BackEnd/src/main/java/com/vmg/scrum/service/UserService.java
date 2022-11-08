@@ -16,7 +16,7 @@ public interface UserService   {
     JwtResponse authenticateUser(LoginRequest loginRequest);
     MessageResponse registerUser(SignupRequest signUpRequest) throws MessagingException, UnsupportedEncodingException;
 
-    Boolean updatePassword(ChangePasswordRequest changePasswordRequest);
+    MessageResponse updatePassword(ChangePasswordRequest changePasswordRequest);
 
 
     MessageResponse lockAccount(Long id);
