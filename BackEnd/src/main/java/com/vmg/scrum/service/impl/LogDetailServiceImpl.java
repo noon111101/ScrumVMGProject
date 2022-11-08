@@ -37,6 +37,9 @@ public class LogDetailServiceImpl  implements LogDetailService{
                 LogDetail logDetail = new LogDetail() ;
                 if(logDetailRepository.findByUserCodeAndDate(editLogRequest1.getCode(), date)!=null){
                     logDetail=logDetailRepository.findByUserCodeAndDate(editLogRequest1.getCode(), date);
+                    if(editLogRequest1.getSign()==null)
+                        logDetail.setSigns(null);
+                    else
                     logDetail.setSigns(signRepository.findByName(ESign.valueOf(editLogRequest1.getSign())));
                     logDetail.setReason(editLogRequest1.getReason());
                 }
@@ -44,6 +47,9 @@ public class LogDetailServiceImpl  implements LogDetailService{
                     DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                     logDetail.setUser(userRepository.findByCode(editLogRequest1.getCode()));
                     logDetail.setDate_log(LocalDate.parse(editLogRequest1.getDate(),sdf));
+                    if(editLogRequest1.getSign()==null)
+                        logDetail.setSigns(null);
+                    else
                     logDetail.setSigns(signRepository.findByName(ESign.valueOf(editLogRequest1.getSign())));
                     logDetail.setReason(editLogRequest1.getReason());
                 }
