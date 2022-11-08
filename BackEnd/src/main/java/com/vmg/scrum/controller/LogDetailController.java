@@ -53,6 +53,7 @@ public class LogDetailController {
         return new ResponseEntity<>(logDetailRepository.findByUserCode(code, pageable), HttpStatus.OK);
     }
 
+    // Lấy log theo ngày, Nhân viên, search
     @GetMapping("byDate_Usercode")
     public ResponseEntity<Page<LogDetail>> getLogsByDate_UserCode(@RequestParam(name = "page", defaultValue = "0") int page,
                                                      @RequestParam(name = "size", defaultValue = "30") int size,
@@ -97,7 +98,7 @@ public class LogDetailController {
                     userLogDetail.setCode(user.getCode());
                     userLogDetail.setName(user.getFullName());
                     userLogDetail.setLogDetail(list);
-                if(search == "" )
+                if(search.equals("") )
                     userLogDetails.add(userLogDetail);
                 else{
                     if(!userLogDetail.getLogDetail().isEmpty()){
@@ -135,6 +136,7 @@ public class LogDetailController {
         return new ResponseEntity<>(userLogDetails, HttpStatus.OK);
   }
 
+    // Lấy log theo ngày, phòng ban, search
     @GetMapping("byDate_Department")
     public ResponseEntity<Page<LogDetail>> getLogsByDate_Department(@RequestParam(name="page", defaultValue = "0") int page,
                                                                     @RequestParam(name="size",defaultValue = "30") int size,
@@ -199,45 +201,7 @@ public class LogDetailController {
         return new ResponseEntity<>(logDetailRepository.findByUserDepartmentsId(pageable,id), HttpStatus.OK);
     }
 
-    @GetMapping("search")
-    public ResponseEntity<Page<LogDetail>> searchByDepartmentAndDate(@RequestParam(name = "key") String key,
-                                                                     @RequestParam(name = "date") String date,
-                                                                     @RequestParam(defaultValue = "0") int page,
-                                                                     @RequestParam(defaultValue = "5") int size) {
-        try {
-        List<LogDetail> logDetails = new ArrayList<LogDetail>();
-        if (key.isEmpty() && !date.isEmpty()) {
-            String[] time = date.split("-");
-            LocalDate dates = LocalDate.of(Integer.parseInt(time[0]), Integer.parseInt(time[1]), Integer.parseInt(time[2]));
-            System.out.println(dates.toString());
-            Pageable pageable = PageRequest.of(page, size);
-            return new ResponseEntity<>(logDetailRepository.findByDate(dates, pageable), HttpStatus.OK);
-        }
 
-        else if (date.isEmpty() && !key.isEmpty()) {
-            Pageable pageable = PageRequest.of(page, size);
-            return new ResponseEntity<>(logDetailRepository.findByDepartment(Integer.parseInt(key), pageable), HttpStatus.OK);
-        }
-        else if (!key.isEmpty() && !date.isEmpty()) {
-            String[] time = date.split("-");
-            LocalDate dates = LocalDate.of(Integer.parseInt(time[0]), Integer.parseInt(time[1]), Integer.parseInt(time[2]));
-            System.out.println(dates.toString());
-            Pageable pageable = PageRequest.of(page, size);
-            return new ResponseEntity<>(logDetailRepository.findDateandDepartment(Integer.parseInt(key), dates, pageable), HttpStatus.OK);
-        }
-        if (key.isEmpty() && date.isEmpty()) {
-            Pageable pageable = PageRequest.of(page, size);
-            return new ResponseEntity<>(logDetailRepository.findAll(pageable), HttpStatus.OK);
-        }
-        if (logDetails.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-            return null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
     @PostMapping("edit")
     public ResponseEntity<MessageResponse> updateLogSign(@Valid @RequestBody EditLogRequest[] editLogRequests) throws MessagingException, UnsupportedEncodingException {
         return ResponseEntity.ok(logDetailService.updateLogDetails(editLogRequests));

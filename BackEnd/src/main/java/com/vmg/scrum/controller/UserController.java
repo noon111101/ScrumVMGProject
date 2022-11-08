@@ -28,6 +28,8 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    // Hiển thị User (theo phòng ban, search, trạng thái)
     @GetMapping("users")
     public ResponseEntity<Page<User>> getUsers(@RequestParam(defaultValue = "0") int page,
                                                @RequestParam(defaultValue = "10") int size,

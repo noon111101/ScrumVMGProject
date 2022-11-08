@@ -282,7 +282,7 @@ public class ExcelExporter {
             if (userLogDetail.getName() == null) continue;
         }
 
-
+        // in tất cả tên các nhân viên
         for (User user : listUsers) {
             row = sheet.createRow(rowCount++);
             cell = row.createCell(0);
@@ -294,7 +294,7 @@ public class ExcelExporter {
             cell.setCellValue(user.getFullName());
             cell.setCellStyle(styleBody);
 
-
+            // in gạch -
             for (int i = 0; i <= 30; i++) {
                 if (user != null) {
                     sheet.setColumnWidth(i + 2, 1500);
@@ -324,7 +324,7 @@ public class ExcelExporter {
                 }
             }
 
-
+            // Gán các ký tự chấm công vào cột tương ứng
             for (UserLogDetail ul : userLogDetails) {
                 if (user.getCode() == ul.getCode()) {
                     String sign = null;
@@ -423,8 +423,7 @@ public class ExcelExporter {
             }
 
         }
-
-
+        
         row = sheet.createRow(rowCount++);
         for (int i = 0; i <= 32; i++) {
             cell = row.createCell(i);

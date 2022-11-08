@@ -33,7 +33,7 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
     Page<LogDetail> findByDate_UserCode(Double code, LocalDate from, LocalDate to, Pageable pageable);
 
 
-    // Log List ============
+    // Log List (Lọc, tìm kiếm) ============
 
     @Query(value = "select l from LogDetail l\n" +
             " join l.user u " +
@@ -95,6 +95,8 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
 
 
 //===========================================================================================
+
+
 
     @Query(value = "select l from LogDetail l\n" +
             " join l.user u " +
