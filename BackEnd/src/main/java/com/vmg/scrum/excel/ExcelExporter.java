@@ -282,7 +282,7 @@ public class ExcelExporter {
             if (userLogDetail.getName() == null) continue;
         }
 
-
+        // in tất cả tên các nhân viên
         for (User user : listUsers) {
             row = sheet.createRow(rowCount++);
             cell = row.createCell(0);
@@ -294,7 +294,7 @@ public class ExcelExporter {
             cell.setCellValue(user.getFullName());
             cell.setCellStyle(styleBody);
 
-
+            // in gạch -
             for (int i = 0; i <= 30; i++) {
                 if (user != null) {
                     sheet.setColumnWidth(i + 2, 1500);
@@ -324,7 +324,7 @@ public class ExcelExporter {
                 }
             }
 
-
+            // Gán các ký tự chấm công vào cột tương ứng
             for (UserLogDetail ul : userLogDetails) {
                 if (user.getCode() == ul.getCode()) {
                     String sign = null;
@@ -423,184 +423,6 @@ public class ExcelExporter {
             }
 
         }
-
-
-//        for (UserLogDetail ul : userLogDetails) {
-//            System.out.println(ul.getName());
-//            row = sheet.createRow(rowCount++);
-//            cell = row.createCell(0);
-//            cell.setCellValue(tt++);
-//            cell.setCellStyle(styleBody);
-//            sheet.setColumnWidth(0, 1200);
-//
-//            cell = row.createCell(1);
-//            cell.setCellValue(ul.getName());
-//            cell.setCellStyle(styleBody);
-//            for (int i = 0; i <= 30; i++) {
-//                System.out.println(ul.getLogDetail().get(i).getSigns().getName());
-//                sheet.setColumnWidth(i+2, 1500);
-//
-//                if(ul.getLogDetail().get(i).getDate_log().getDayOfWeek().toString()=="SATURDAY" ||
-//                        ul.getLogDetail().get(i).getDate_log().getDayOfWeek().toString()=="SUNDAY" ){
-//                    cell = row.createCell(i+2);
-//                    cell.setCellValue("NT");
-//                    cell.setCellStyle(styleBodyColor);
-//
-//                }
-//                else{
-//                    cell = row.createCell(i+2);
-//                    if(ul.getLogDetail().get(i).getSigns().getName().toString()=="H_KL"){
-//                        cell.setCellValue("H/KL");
-//                    }
-//                    else if(ul.getLogDetail().get(i).getSigns().getName().toString()=="KL_H"){
-//                        cell.setCellValue("KL/H");
-//                    }
-//                    else{
-//                        cell.setCellValue(ul.getLogDetail().get(i).getSigns().getName().toString());
-//                    }
-//                    cell.setCellStyle(styleBody);
-//                }
-//                cell.setCellComment(comment);
-//            }
-//
-//            // Tổng
-//            for (int i = 33; i <= 34; i++) {
-//                cell = row.createCell(i);
-//                cell.setCellStyle(styleBody);
-//                if (i == 33) {
-//                    cell.setCellFormula("COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*H*\")" +
-//                            "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*/H*\")/2" +
-//                            "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*H/*\")/2" +
-//                            "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*CT*\")" +
-//                            "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*LB*\")"); // Tổng ngày làm việc
-//                    cell.setCellStyle(styleBodyCenter);
-//                }
-//                if (i == 34) {
-//                    cell.setCellFormula("AH" + rowCount + ""); // Tổng ngày hưởng lương
-//                    cell.setCellStyle(styleBodyCenter);
-//                }
-//            }
-//        }
-
-
-//        for (int k = 0; k < count; k++) {
-//            row = sheet.createRow(rowCount++);
-//            cell = row.createCell(0);
-//            cell.setCellValue(tt++);
-//            cell.setCellStyle(styleBody);
-//            sheet.setColumnWidth(0, 1500);
-//
-//            cell = row.createCell(1);
-//            cell.setCellValue(listUsers.get(k).getFullName());
-//            cell.setCellStyle(styleBody);
-//
-//
-//            List<String> signs = new ArrayList<>();
-//            for (LogDetail l : listLogs) {
-//                if (l.getDate_log().getMonthValue() == month) {
-//                    if (l.getUser().getCode() == listUsers.get(k).getCode()) {
-//                        if (l.getDate_log().getDayOfWeek().toString().equals("SATURDAY") ||
-//                                l.getDate_log().getDayOfWeek().toString().equals("SUNDAY")) {
-//                            signs.add("NT");
-//                        } else if (l.getSigns().getName().toString() == "") {
-//                            signs.add("KL");
-//                        } else {
-//                            if (l.getSigns().getName().toString() == "H_KL") {
-//                                signs.add("H/KL");
-//                            } else if (l.getSigns().getName().toString() == "KL_H") {
-//                                signs.add("KL/H");
-//                            } else {
-//                                signs.add(l.getSigns().getName().toString());
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//
-//
-//
-//
-//
-//            if (signs.size() == 29) {
-//                for (int i = 2; i <= 32; i++) {
-//                    // Ký tự tính công
-//                    if (i <= 30) {
-//                        cell = row.createCell(i);
-//                        cell.setCellValue(signs.get(i - 2));
-//                        cell.setCellStyle(styleBody);
-//                    }
-//                    if (i >= 31) {
-//                        cell = row.createCell(i);
-//                        cell.setCellValue("");
-//                        cell.setCellStyle(styleBody);
-//                    }
-//                }
-//            }
-//
-//            if (signs.size() == 28) {
-//                for (int i = 2; i <= 32; i++) {
-//                    // Ký tự tính công
-//                    if (i <= 29) {
-//                        cell = row.createCell(i);
-//                        cell.setCellValue(signs.get(i - 2));
-//                        cell.setCellStyle(styleBody);
-//                    }
-//                    if (i >= 30) {
-//                        cell = row.createCell(i);
-//                        cell.setCellValue("");
-//                        cell.setCellStyle(styleBody);
-//                    }
-//                }
-//            }
-//            if (signs.size() == 30) {
-//                for (int i = 2; i <= 32; i++) {
-//                    // Ký tự tính công
-//                    if (i <= 31) {
-//                        cell = row.createCell(i);
-//                        cell.setCellValue(signs.get(i - 2));
-//                        cell.setCellStyle(styleBody);
-//                    }
-//                    if (i >= 32) {
-//                        cell = row.createCell(i);
-//                        cell.setCellValue("");
-//                        cell.setCellStyle(styleBody);
-//                    }
-//                }
-//            }
-//            if (signs.size() == 31) {
-//                for (int i = 2; i <= 32; i++) {
-//                    // Ký tự tính công
-//                    if (i <= 32) {
-//                        cell = row.createCell(i);
-//                        cell.setCellValue(signs.get(i - 2));
-//                        cell.setCellStyle(styleBody);
-//                    }
-//
-//                }
-//            }
-//
-//
-//            // Tổng
-//            for (int i = 33; i <= 34; i++) {
-//                cell = row.createCell(i);
-//                cell.setCellStyle(styleBody);
-//                if (i == 33) {
-//                    cell.setCellFormula("COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*H*\")" +
-//                            "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*/H*\")/2" +
-//                            "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*H/*\")/2" +
-//                            "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*CT*\")" +
-//                            "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*LB*\")"); // Tổng ngày làm việc
-//                    cell.setCellStyle(styleBodyCenter);
-//                }
-//                if (i == 34) {
-//                    cell.setCellFormula("AH" + rowCount + ""); // Tổng ngày hưởng lương
-//                    cell.setCellStyle(styleBodyCenter);
-//                }
-//            }
-//
-//        }
-
-
         row = sheet.createRow(rowCount++);
         for (int i = 0; i <= 32; i++) {
             cell = row.createCell(i);

@@ -50,15 +50,17 @@ public class FileManagerService {
     }
 
     public String save(MultipartFile file) {
+        try {
             String name = System.currentTimeMillis() + file.getOriginalFilename();
             String filename = Integer.toHexString(name.hashCode()) + name.substring(name.lastIndexOf("."));
             Path path = this.getPath(filename);
-            try {
                 file.transferTo(path);
+                return  filename;
             } catch (Exception e) {
                 e.printStackTrace();
+                return "default.png";
             }
 
-        return filename;
+
     }
 }

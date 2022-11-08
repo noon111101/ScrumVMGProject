@@ -95,17 +95,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public MessageResponse registerUser(SignupRequest signUpRequest) throws MessagingException, UnsupportedEncodingException {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-
-            throw new RuntimeException("Email is already taken!");
+            throw new RuntimeException("Email đã tồn tại!");
         }
         if (userRepository.existsByCode(signUpRequest.getCode())) {
-            return new MessageResponse("Error: Code is already taken!");
-
+            throw  new RuntimeException("Mã nhân viên đã tồn tại!");
         }
         String genarate = alphaNumericString(8);
         Department department = departmentRepository.findByName(signUpRequest.getDepartment());
         //file
         String filename = "default.png";
+        System.out.println("11212" + signUpRequest.getCover().getSize());
         if (signUpRequest.getCover() != null)
             filename = fileManagerService.save(signUpRequest.getCover());
         // Create new user's account
@@ -149,7 +148,7 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
         userRepository.save(user);
         mailService.sendEmailAccountInfo(signUpRequest.getUsername(), genarate);
-        return new MessageResponse("User registered successfully!");
+        return new MessageResponse("Tạo tài khoản thành công!");
     }
 
     @Override
@@ -217,7 +216,8 @@ public class UserServiceImpl implements UserService {
         user.setGender(updateRequest.getGender());
         Department department = departmentRepository.findByName(updateRequest.getDepartment());
         user.setDepartments(department);
-        if (updateRequest.getCover() != null) {
+        System.out.println(updateRequest.getCover().getSize());
+        if (updateRequest.getCover() != null && updateRequest.getCover().getSize() > 0) {
             fileManagerService.delete(user.getCover());
             String filename = fileManagerService.save(updateRequest.getCover());
             user.setCover(filename);
