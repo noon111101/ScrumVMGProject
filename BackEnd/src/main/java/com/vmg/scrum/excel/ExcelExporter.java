@@ -331,7 +331,7 @@ public class ExcelExporter {
                     List<LogDetail> logDetails = ul.getLogDetail();
                     for (LogDetail logDetail : logDetails) {
                         cell = row.createCell(logDetail.getDate_log().getDayOfMonth() + 1);
-                        if (logDetail.getSigns().getName().toString() == null) {
+                        if (logDetail.getSigns() == null) {
                             cell.setCellValue("-");
                             cell.setCellStyle(styleBody);
                         } else if (logDetail.getSigns().getName().toString() == "H_KL") {
@@ -423,6 +423,7 @@ public class ExcelExporter {
             }
 
         }
+        
         row = sheet.createRow(rowCount++);
         for (int i = 0; i <= 32; i++) {
             cell = row.createCell(i);
