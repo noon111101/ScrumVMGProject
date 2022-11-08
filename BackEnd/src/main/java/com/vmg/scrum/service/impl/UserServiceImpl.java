@@ -258,7 +258,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.getById(id);
         user.setAvalible(!user.getAvalible());
         userRepository.save(user);
-        if (user.getAvalible() == true) {
+        if (user.getAvalible()) {
             return new MessageResponse("Mở khóa tài khoản thành công!");
         } else {
             return new MessageResponse("Khóa tài khoản thành công!");

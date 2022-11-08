@@ -98,7 +98,7 @@ public class LogDetailController {
                     userLogDetail.setCode(user.getCode());
                     userLogDetail.setName(user.getFullName());
                     userLogDetail.setLogDetail(list);
-                if(search == "" )
+                if(search.equals("") )
                     userLogDetails.add(userLogDetail);
                 else{
                     if(!userLogDetail.getLogDetail().isEmpty()){
