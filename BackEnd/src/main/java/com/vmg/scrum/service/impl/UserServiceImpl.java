@@ -95,17 +95,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public MessageResponse registerUser(SignupRequest signUpRequest) throws MessagingException, UnsupportedEncodingException {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+
              throw  new RuntimeException("Email is already taken!");
         }
         if (userRepository.existsByCode(signUpRequest.getCode())) {
             return new MessageResponse("Error: Code is already taken!");
+
         }
         String genarate =alphaNumericString(8);
         Department department = departmentRepository.findByName(signUpRequest.getDepartment());
         //file
         String filename = "default.png";
         if(signUpRequest.getCover()!=null)
-         filename = fileManagerService.save("images",signUpRequest.getCover());
+         filename = fileManagerService.save(signUpRequest.getCover());
         // Create new user's account
         User user = new User(signUpRequest.getUsername(),
                 encoder.encode(genarate),
@@ -157,22 +159,40 @@ public class UserServiceImpl implements UserService {
             Long id = changePasswordRequest.getId();
             String newPassword = changePasswordRequest.getNewPassword();
             Optional<User> users = userRepository.findById(id);
-            User user =users.get();
-            if(passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword() )){
+            User user = users.get();
             boolean check = user.getCheckRootDisable();
-            if(!check){
-                String encodedPassword = passwordEncoder.encode(newPassword);
-                user.setPassword(encodedPassword);
-                user.setRootPassword(passwordEncoder.encode(""));
-                user.setCheckRootDisable(true);
-                userRepository.save(user);
+            if(user.getPassword()==null || user.getPassword()==""){
+                if(passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getRootPassword() )){
+                    if(!check){
+                        String encodedPassword = passwordEncoder.encode(newPassword);
+                        user.setPassword(encodedPassword);
+                        user.setRootPassword(passwordEncoder.encode(""));
+                        user.setCheckRootDisable(true);
+                        userRepository.save(user);
+                    }
+                    if(check){
+                        String encodedPassword = passwordEncoder.encode(newPassword);
+                        user.setPassword(encodedPassword);
+                        userRepository.save(user);
+                    }}
+                else return false;
             }
-            if(check){
-                String encodedPassword = passwordEncoder.encode(newPassword);
-                user.setPassword(encodedPassword);
-                userRepository.save(user);
-            }}
-            else return false;
+            else{
+                if(passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword() )){
+                    if(!check){
+                        String encodedPassword = passwordEncoder.encode(newPassword);
+                        user.setPassword(encodedPassword);
+                        user.setRootPassword(passwordEncoder.encode(""));
+                        user.setCheckRootDisable(true);
+                        userRepository.save(user);
+                    }
+                    if(check){
+                        String encodedPassword = passwordEncoder.encode(newPassword);
+                        user.setPassword(encodedPassword);
+                        userRepository.save(user);
+                    }}
+                else return false;
+            }
             return true;
         }
         catch (Exception e){
@@ -183,14 +203,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUser(long id, UpdateUserRequest updateRequest) {
         User user = userRepository.findById(id).get();
-        user.setCode(updateRequest.getCode());
+        if(Objects.nonNull(updateRequest.getUsername()) && !"".equalsIgnoreCase(user.getUsername())){
+            user.setUsername(updateRequest.getUsername());
+        }   if(Objects.nonNull(updateRequest.getCode()) && updateRequest.getCode()!=user.getCode()){
+            user.setCode(updateRequest.getCode());
+        }
         user.setFullName(updateRequest.getFullName());
-        user.setUsername(updateRequest.getUsername());
         user.setGender(updateRequest.getGender());
         Department department = departmentRepository.findByName(updateRequest.getDepartment());
         user.setDepartments(department);
-        String filename = fileManagerService.save("images",updateRequest.getCover());
-        user.setCover(filename);
+        if(updateRequest.getCover()!=null){
+            fileManagerService.delete(user.getCover());
+            String filename = fileManagerService.save(updateRequest.getCover());
+            user.setCover(filename);
+        }
         Set<String> strRoles = updateRequest.getRole();
         Set<Role> roles = new HashSet<>();
         if (strRoles == null) {
@@ -223,17 +249,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public MessageResponse lockAccount(Long id, boolean lock) {
+    public MessageResponse lockAccount(Long id) {
         User user = userRepository.getById(id);
-        if(lock){
-            user.setAvalible(true);
-            userRepository.save(user);
-            return new MessageResponse("Account unlock sucess");
+        user.setAvalible(!user.getAvalible());
+        userRepository.save(user);
+        if(user.getAvalible()==true){
+            return new MessageResponse("Mở khóa tài khoản thành công!");
         }
         else{
-            user.setAvalible(false);
-            userRepository.save(user);
-            return new MessageResponse("Account lock sucess");
+            return new MessageResponse("Khóa tài khoản thành công!");
         }
     }
 

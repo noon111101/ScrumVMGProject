@@ -19,7 +19,9 @@ public class SignupRequest {
     @Size(min = 6, max = 50)
     private String fullName;
 
+
     @NotNull(message = "Chưa nhập mã nhân viên")
+
     private Double code;
 
     public String getDepartment() {

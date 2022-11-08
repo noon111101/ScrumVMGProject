@@ -13,29 +13,52 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface LogDetailRepository extends JpaRepository<LogDetail,Long> {
+public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
     @Override
     List<LogDetail> findAll();
 
     @Override
     Page<LogDetail> findAll(Pageable pageable);
 
-    Page<LogDetail> findByUserCode(Pageable pageable,Double code);
+    @Query(value = "select l from LogDetail l\n" +
+            " join l.user u " +
+            " where u.code = ?1" +
+            " order by l.date_log desc ")
+    Page<LogDetail> findByUserCode( Double code, Pageable pageable);
 
     @Query(value = "select l from LogDetail l\n" +
             " join l.user u " +
-            "where u.code = ?1 and l.date_log between ?2 and ?3")
+            "where u.code = ?1 and l.date_log between ?2 and ?3" +
+            " order by l.date_log desc ")
     Page<LogDetail> findByDate_UserCode(Double code, LocalDate from, LocalDate to, Pageable pageable);
 
+
+    // Log List ============
+
     @Query(value = "select l from LogDetail l\n" +
             " join l.user u " +
-
             "where u.departments.id = ?1 and l.date_log between ?2 and ?3")
     Page<LogDetail> findByDate_DepartmentId(long id, LocalDate from, LocalDate to, Pageable pageable);
 
     @Query(value = "select l from LogDetail l\n" +
+            " join l.user u " +
+            " where u.departments.id = ?1 and l.date_log between ?2 and ?3 " +
+            " and u.fullName LIKE %?4% " +
+            " or u.username LIKE %?4%  " +
+            " or u.departments.name LIKE %?4% ")
+    Page<LogDetail> findByDate_DepartmentId_Search(long id, LocalDate from, LocalDate to, String search, Pageable pageable);
+
+    @Query(value = "select l from LogDetail l\n" +
             "where l.date_log between ?1 and ?2")
-    Page<LogDetail> findByDate_AllDepartment(LocalDate from, LocalDate to,Pageable pageable);
+    Page<LogDetail> findByDate_AllDepartment(LocalDate from, LocalDate to, Pageable pageable);
+
+    @Query(value = "select l from LogDetail l\n" +
+            " join l.user u " +
+            " where l.date_log between ?1 and ?2 " +
+            " and u.fullName LIKE %?3% " +
+            " or u.username LIKE %?3%  " +
+            " or u.departments.name LIKE %?3% " )
+    Page<LogDetail> findByDate_AllDepartment_Search(LocalDate from, LocalDate to, String search, Pageable pageable);
 
 
     @Query(value = " select l from LogDetail l\n " +
@@ -45,25 +68,44 @@ public interface LogDetailRepository extends JpaRepository<LogDetail,Long> {
     )
     Page<LogDetail> findByDepartmentId(long id, Pageable pageable);
 
+    @Query(value = " select l from LogDetail l\n " +
+            " join l.user u " +
+            " where u.departments.id = ?1 " +
+            " and u.fullName LIKE %?2% " +
+            " or u.username LIKE %?2%  " +
+            " or u.departments.name LIKE %?2% " +
+            " order by l.date_log desc "
+    )
+    Page<LogDetail> findByDepartmentId_Search(long id, String search, Pageable pageable);
+
     @Query(value = "select l from LogDetail l\n " +
             " join l.user u " +
             " order by l.date_log desc "
     )
-    Page<LogDetail> findByAllDepartmentId(Pageable pageable);
+    Page<LogDetail> findByAllDepartment(Pageable pageable);
+
+    @Query(value = "select l from LogDetail l\n " +
+            " join l.user u " +
+            " where u.fullName LIKE %?1%" +
+            " or u.username LIKE %?1%  " +
+            " or u.departments.name LIKE %?1% " +
+            " order by l.date_log desc "
+    )
+    Page<LogDetail> findByAllDepartment_Search(@Param("search")String search, Pageable pageable);
 
 
-
+//===========================================================================================
 
     @Query(value = "select l from LogDetail l\n" +
-        " join l.user u " +
-        "where u.departments.id= ?1 and MONTH (l.date_log) = ?2  ")
-    List<LogDetail> findByMonthAndDepartment(Long id,Integer month);
+            " join l.user u " +
+            "where u.departments.id= ?1 and MONTH (l.date_log) = ?2 and u.fullName LIKE %?3%  ")
+    List<LogDetail> findByMonthAndDepartment(Long id, Integer month,String search);
 
     @Query(value = "select l from LogDetail l\n" +
             " join l.user u " +
             "where u.departments.id= ?1 and MONTH (l.date_log) = ?2 " +
             "order by l.date_log asc ")
-    List<LogDetail> findByMonthAndDepartmentSortDate(Long id,Integer month);
+    List<LogDetail> findByMonthAndDepartmentSortDate(Long id, Integer month);
 
     @Query(value = "select l from LogDetail l\n" +
             " join l.user u " +
@@ -74,10 +116,10 @@ public interface LogDetailRepository extends JpaRepository<LogDetail,Long> {
 
     @Query(value = "select l from LogDetail l\n" +
             " join l.user u " +
-            "where MONTH (l.date_log) = ?1 ")
-    List<LogDetail> findByMonth(Integer month);
+            "where MONTH (l.date_log) = ?1  and u.fullName LIKE %?2% ")
+    List<LogDetail> findByMonth(Integer month,String search);
 
-    Page<LogDetail> findByUserDepartmentsId(Pageable pageable,Long id);
+    Page<LogDetail> findByUserDepartmentsId(Pageable pageable, Long id);
 
     List<LogDetail> findByUserDepartmentsId(Long id);
 
@@ -94,25 +136,23 @@ public interface LogDetailRepository extends JpaRepository<LogDetail,Long> {
             "join user u on l.user_id = u.id \n " +
             "join department d on d.id = u.department_id\n " +
             "where l.date_log = ?1 ", nativeQuery = true)
-    Page<LogDetail> findByDate(LocalDate date,Pageable pageable);
+    Page<LogDetail> findByDate(LocalDate date, Pageable pageable);
 
     @Query(value = "select * from log_detail l \n" +
             "join user u on l.user_id = u.id \n " +
             "join department d on d.id = u.department_id\n " +
             "where u.department_id = ?1 ", nativeQuery = true)
-    Page<LogDetail> findByDepartment(Integer key,Pageable pageable);
+    Page<LogDetail> findByDepartment(Integer key, Pageable pageable);
 
     @Query(value = "select * from log_detail l \n" +
             "join user u on l.user_id = u.id \n " +
-            "join department d on d.id = u.department_id " , nativeQuery = true)
+            "join department d on d.id = u.department_id ", nativeQuery = true)
     Page<LogDetail> findAllUser(Pageable pageable);
-//
+
+    //
     @Query(value = "select * from log_detail l \n" +
             "join user u on l.user_id = u.id \n " +
             "where u.code = ?1 " +
             "and l.date_log = ?2 ", nativeQuery = true)
-    LogDetail findByUserCodeAndDate(Double code , LocalDate date);
-
-
-
+    LogDetail findByUserCodeAndDate(Double code, LocalDate date);
 }

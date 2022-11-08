@@ -27,9 +27,44 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAll();
 
     User findByCode(Double code);
+
+    // MANAGE USER
     @Override
     Page<User> findAll(Pageable pageable);
+    @Query(value = "select u from User u " +
+            " where u.avalible = ?1 ")
+    Page<User> findAll_Status(boolean status, Pageable pageable);
+    @Query(value = "select u from User u " +
+            " where u.fullName LIKE %?1% " +
+            " or u.username LIKE %?1% ")
+    Page<User> findAll_Search(String search, Pageable pageable);
+
+    @Query(value = "select u from User u " +
+            " where (u.fullName LIKE %?1% " +
+            " or u.username LIKE %?1% )" +
+            " and u.avalible = ?2 ")
+    Page<User> findAll_Search_Status(String search,boolean status, Pageable pageable);
+
+
+
 
     Page<User> getUsersByDepartments_Id(long id, Pageable pageable);
+    @Query(value = "select u from User u " +
+            " where u.departments.id = ?1 " +
+            " and u.avalible = ?2")
+    Page<User> getUsersByDepartments_Id_Status(long id, boolean status, Pageable pageable);
+
+    @Query(value = "select u from User u " +
+            " where u.departments.id = ?1 " +
+            " and (u.fullName LIKE %?2% " +
+            " or u.username LIKE %?2% )")
+    Page<User> getUsersByDepartments_Id_Search(long id,String search, Pageable pageable);
+
+    @Query(value = "select u from User u " +
+            " where u.departments.id = ?1 " +
+            " and u.avalible = ?3 " +
+            " and (u.fullName LIKE %?2% " +
+            " or u.username LIKE %?2% )")
+    Page<User> getUsersByDepartments_Id_Search_Status(long id,String search, boolean status, Pageable pageable);
 
 }
