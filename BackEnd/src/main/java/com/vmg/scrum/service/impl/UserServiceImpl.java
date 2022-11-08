@@ -1,8 +1,6 @@
 package com.vmg.scrum.service.impl;
 
 
-
-
 import com.vmg.scrum.exception.custom.LockAccountException;
 import com.vmg.scrum.model.ERole;
 import com.vmg.scrum.model.Role;
@@ -53,6 +51,7 @@ public class UserServiceImpl implements UserService {
     DepartmentRepository departmentRepository;
     @Autowired
     FileManagerService fileManagerService;
+
     public UserServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
@@ -71,6 +70,7 @@ public class UserServiceImpl implements UserService {
         }
         return sb.toString();
     }
+
     @Override
     public JwtResponse authenticateUser(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
@@ -85,29 +85,29 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
         Boolean check = userRepository.getById(userDetails.getId()).getCheckRootDisable();
         Boolean avalible = userRepository.getById(userDetails.getId()).getAvalible();
-        if (avalible==false) throw new LockAccountException("Account have been lock by admin");
+        if (avalible == false) throw new LockAccountException("Account have been lock by admin");
         return new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
-                roles,userRepository.getById(userDetails.getId()),check);
+                roles, userRepository.getById(userDetails.getId()), check);
     }
 
     @Override
     public MessageResponse registerUser(SignupRequest signUpRequest) throws MessagingException, UnsupportedEncodingException {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
 
-             throw  new RuntimeException("Email is already taken!");
+            throw new RuntimeException("Email is already taken!");
         }
         if (userRepository.existsByCode(signUpRequest.getCode())) {
             return new MessageResponse("Error: Code is already taken!");
 
         }
-        String genarate =alphaNumericString(8);
+        String genarate = alphaNumericString(8);
         Department department = departmentRepository.findByName(signUpRequest.getDepartment());
         //file
         String filename = "default.png";
-        if(signUpRequest.getCover()!=null)
-         filename = fileManagerService.save(signUpRequest.getCover());
+        if (signUpRequest.getCover() != null)
+            filename = fileManagerService.save(signUpRequest.getCover());
         // Create new user's account
         User user = new User(signUpRequest.getUsername(),
                 encoder.encode(genarate),
@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
                 filename,
                 signUpRequest.getCode(),
                 department
-                );
+        );
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
 
@@ -148,71 +148,76 @@ public class UserServiceImpl implements UserService {
 
         user.setRoles(roles);
         userRepository.save(user);
-        mailService.sendEmailAccountInfo(signUpRequest.getUsername(),genarate);
+        mailService.sendEmailAccountInfo(signUpRequest.getUsername(), genarate);
         return new MessageResponse("User registered successfully!");
     }
 
     @Override
-    public Boolean updatePassword(ChangePasswordRequest changePasswordRequest) {
-        try {
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            Long id = changePasswordRequest.getId();
-            String newPassword = changePasswordRequest.getNewPassword();
-            Optional<User> users = userRepository.findById(id);
-            User user = users.get();
-            boolean check = user.getCheckRootDisable();
-            if(user.getPassword()==null || user.getPassword()==""){
-                if(passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getRootPassword() )){
-                    if(!check){
-                        String encodedPassword = passwordEncoder.encode(newPassword);
-                        user.setPassword(encodedPassword);
-                        user.setRootPassword(passwordEncoder.encode(""));
-                        user.setCheckRootDisable(true);
-                        userRepository.save(user);
-                    }
-                    if(check){
-                        String encodedPassword = passwordEncoder.encode(newPassword);
-                        user.setPassword(encodedPassword);
-                        userRepository.save(user);
-                    }}
-                else return false;
-            }
-            else{
-                if(passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword() )){
-                    if(!check){
-                        String encodedPassword = passwordEncoder.encode(newPassword);
-                        user.setPassword(encodedPassword);
-                        user.setRootPassword(passwordEncoder.encode(""));
-                        user.setCheckRootDisable(true);
-                        userRepository.save(user);
-                    }
-                    if(check){
-                        String encodedPassword = passwordEncoder.encode(newPassword);
-                        user.setPassword(encodedPassword);
-                        userRepository.save(user);
-                    }}
-                else return false;
-            }
-            return true;
+    public MessageResponse updatePassword(ChangePasswordRequest changePasswordRequest) {
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        Long id = changePasswordRequest.getId();
+        String newPassword = changePasswordRequest.getNewPassword();
+        Optional<User> users = userRepository.findById(id);
+        User user = users.get();
+        boolean check = user.getCheckRootDisable();
+        if (user.getPassword() == null || user.getPassword() == "") {
+
+            if (passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getRootPassword())) {
+                if (passwordEncoder.matches(newPassword, user.getRootPassword())) {
+                    throw new RuntimeException("Mật khẩu mới phải khác mật khẩu hiện tại");
+                }
+                if (!check) {
+                    String encodedPassword = passwordEncoder.encode(newPassword);
+                    user.setPassword(encodedPassword);
+                    user.setRootPassword(passwordEncoder.encode(""));
+                    user.setCheckRootDisable(true);
+                    userRepository.save(user);
+                }
+                if (check) {
+                    String encodedPassword = passwordEncoder.encode(newPassword);
+                    user.setPassword(encodedPassword);
+                    userRepository.save(user);
+                }
+            } else throw new RuntimeException("Mật khẩu hiện tại không chính xác");
+        } else {
+
+            if (passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
+                if (passwordEncoder.matches(newPassword, user.getPassword())) {
+                    throw new RuntimeException("Mật khẩu mới phải khác mật khẩu hiện tại");
+                }
+                if (!check) {
+                    String encodedPassword = passwordEncoder.encode(newPassword);
+                    user.setPassword(encodedPassword);
+                    user.setRootPassword(passwordEncoder.encode(""));
+                    user.setCheckRootDisable(true);
+                    userRepository.save(user);
+                }
+                if (check) {
+                    String encodedPassword = passwordEncoder.encode(newPassword);
+                    user.setPassword(encodedPassword);
+                    userRepository.save(user);
+                }
+            } else throw new RuntimeException("Mật khẩu hiện tại không chính xác");
         }
-        catch (Exception e){
-            return false;
-        }
-}
+        return new MessageResponse("Thay đổi mật khẩu thành công!");
+
+    }
 
     @Override
     public void updateUser(long id, UpdateUserRequest updateRequest) {
         User user = userRepository.findById(id).get();
-        if(Objects.nonNull(updateRequest.getUsername()) && !"".equalsIgnoreCase(user.getUsername())){
+        if (Objects.nonNull(updateRequest.getUsername()) && !"".equalsIgnoreCase(user.getUsername())) {
             user.setUsername(updateRequest.getUsername());
-        }   if(Objects.nonNull(updateRequest.getCode()) && updateRequest.getCode()!=user.getCode()){
+        }
+        if (Objects.nonNull(updateRequest.getCode()) && updateRequest.getCode() != user.getCode()) {
             user.setCode(updateRequest.getCode());
         }
         user.setFullName(updateRequest.getFullName());
         user.setGender(updateRequest.getGender());
         Department department = departmentRepository.findByName(updateRequest.getDepartment());
         user.setDepartments(department);
-        if(updateRequest.getCover()!=null){
+        if (updateRequest.getCover() != null) {
             fileManagerService.delete(user.getCover());
             String filename = fileManagerService.save(updateRequest.getCover());
             user.setCover(filename);
@@ -253,10 +258,9 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.getById(id);
         user.setAvalible(!user.getAvalible());
         userRepository.save(user);
-        if(user.getAvalible()==true){
+        if (user.getAvalible() == true) {
             return new MessageResponse("Mở khóa tài khoản thành công!");
-        }
-        else{
+        } else {
             return new MessageResponse("Khóa tài khoản thành công!");
         }
     }
