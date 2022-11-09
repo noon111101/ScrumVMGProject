@@ -55,7 +55,7 @@ public class LogDetailController {
 
     // Lấy log theo ngày, Nhân viên, search
     @GetMapping("byDate_Usercode")
-    public ResponseEntity<Page<LogDetail>> getLogsByDate_UserCode(@RequestParam(name = "page", defaultValue = "0") int page,
+    public ResponseEntity<Page<LogDetail>> getLogsByDateUserCode(@RequestParam(name = "page", defaultValue = "0") int page,
                                                      @RequestParam(name = "size", defaultValue = "30") int size,
                                                      @RequestParam Double code,
                                                      @RequestParam(name = "from", required = false) String from,
@@ -138,7 +138,7 @@ public class LogDetailController {
 
     // Lấy log theo ngày, phòng ban, search
     @GetMapping("byDate_Department")
-    public ResponseEntity<Page<LogDetail>> getLogsByDate_Department(@RequestParam(name="page", defaultValue = "0") int page,
+    public ResponseEntity<Page<LogDetail>> getLogsByDateDepartment(@RequestParam(name="page", defaultValue = "0") int page,
                                                                     @RequestParam(name="size",defaultValue = "30") int size,
                                                                     @RequestParam(name="id", defaultValue = "0") long id,
                                                                     @RequestParam(name = "from", required = false) String from,

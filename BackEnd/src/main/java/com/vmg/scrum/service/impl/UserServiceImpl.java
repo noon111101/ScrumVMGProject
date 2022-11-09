@@ -103,10 +103,8 @@ public class UserServiceImpl implements UserService {
         String genarate = alphaNumericString(8);
         Department department = departmentRepository.findByName(signUpRequest.getDepartment());
         //file
-        String filename = "default.png";
-        System.out.println("11212" + signUpRequest.getCover().getSize());
-        if (signUpRequest.getCover() != null)
-            filename = fileManagerService.save(signUpRequest.getCover());
+
+        String filename = fileManagerService.save(signUpRequest.getCover());
         // Create new user's account
         User user = new User(signUpRequest.getUsername(),
                 encoder.encode(genarate),

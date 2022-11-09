@@ -334,7 +334,7 @@ public class ExcelExporter {
                         if (logDetail.getSigns() == null) {
                             cell.setCellValue("-");
                             cell.setCellStyle(styleBody);
-                        } else if (logDetail.getSigns().getName().toString() == "H_KL") {
+                        } else if (logDetail.getSigns().getName().toString().equals("H_KL")) {
                             cell.setCellValue("H/KL");
                             cell.setCellStyle(styleBody);
                             //Comment
@@ -352,7 +352,7 @@ public class ExcelExporter {
                                 comment.setAuthor("Apache POI");
                                 cell.setCellComment(comment);
                             }
-                        } else if (logDetail.getSigns().getName().toString() == "KL_H") {
+                        } else if (logDetail.getSigns().getName().toString().equals("KL_H")) {
                             cell.setCellValue("KL/H");
                             cell.setCellStyle(styleBody);
                             //Comment
@@ -394,8 +394,23 @@ public class ExcelExporter {
 
                         if(logDetail.getDate_log().getDayOfWeek().toString() == "SATURDAY" ||
                                 logDetail.getDate_log().getDayOfWeek().toString() == "SUNDAY"){
-                            cell.setCellValue("NT");
-                            cell.setCellStyle(styleBodyColor);
+                            if (logDetail.getSigns() == null) {
+                                cell.setCellValue("-");
+                                cell.setCellStyle(styleBodyColor);
+                            }
+                            else if (logDetail.getSigns().getName().toString().equals("H_KL")) {
+                                cell.setCellValue("H/KL");
+                                cell.setCellStyle(styleBodyColor);
+                            }
+                            else if (logDetail.getSigns().getName().toString().equals("KL_H")) {
+                                cell.setCellValue("KL/H");
+                                cell.setCellStyle(styleBodyColor);
+                            }
+                            else {
+                                cell.setCellValue(logDetail.getSigns().getName().toString());
+                                cell.setCellStyle(styleBodyColor);
+                            }
+
                         }
 
                     }
