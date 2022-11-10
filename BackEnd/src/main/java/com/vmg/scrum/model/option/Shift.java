@@ -22,8 +22,5 @@ public class Shift {
 
     private String name;
 
-    @OneToOne(mappedBy = "shift")
-    @JsonIgnore
-    private LogDetail logDetail;
 
 }
