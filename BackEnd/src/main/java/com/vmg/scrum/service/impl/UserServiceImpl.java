@@ -204,10 +204,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUser(long id, UpdateUserRequest updateRequest) {
         User user = userRepository.findById(id).get();
-        if(userRepository.findByUsername(updateRequest.getUsername()).isPresent())
-            throw new RuntimeException("Email đã tồn tại");
-        if(userRepository.findByCode(updateRequest.getCode())!=null)
-            throw new RuntimeException("Mã nhân viên đã tồn tại");
+        List<User> users = userRepository.findAll();
+        for(User u: users){
+            if(u.getUsername().equals(updateRequest.getUsername()) || u.getCode()==updateRequest.getCode()){
+                if(u.getId()!=user.getId()){
+                    throw new RuntimeException("Mã hoặc email đã tồn tại!");
+                }
+                else{
+                    break;
+                }
+            }
+        }
+//        if(userRepository.findByUsername(updateRequest.getUsername()).isPresent())
+//            throw new RuntimeException("Email đã tồn tại");
+//        if(userRepository.findByCode(updateRequest.getCode())!=null)
+//            throw new RuntimeException("Mã nhân viên đã tồn tại");
         if (Objects.nonNull(updateRequest.getUsername()) && !"".equalsIgnoreCase(user.getUsername())) {
             user.setUsername(updateRequest.getUsername());
         }
