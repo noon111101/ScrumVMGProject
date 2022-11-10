@@ -49,7 +49,7 @@ public class LogDetail {
     @JoinColumn(name = "signs_id")
     private Sign signs ;
 
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shift_id", referencedColumnName = "id")
     @JsonIgnore
     private Shift shift;
