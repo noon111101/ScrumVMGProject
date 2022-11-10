@@ -23,13 +23,9 @@ public class ExcelService {
     ExcelImporter excelImporter;
     @Autowired
     DataExcelCalculation dataExcelCalculation;
-    public void save(MultipartFile file) {
-        try {
-            List<LogDetail> logDetailList = excelImporter.read(file.getInputStream());
-            logDetailRepository.saveAll(dataExcelCalculation.convertSign(logDetailList));
-        } catch (IOException e) {
-            throw new RuntimeException("fail to store excel data: " + e.getMessage());
-        }
+    public void save(MultipartFile file) throws IOException {
+        List<LogDetail> logDetailList = excelImporter.read(file.getInputStream());
+        logDetailRepository.saveAll(dataExcelCalculation.convertSign(logDetailList));
     }
     public void saveUser(MultipartFile file) throws IOException {
             List<User> userList = excelImporter.readUser(file.getInputStream());

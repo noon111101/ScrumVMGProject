@@ -40,9 +40,8 @@ public class ExcelImporter {
     ShiftRepository shiftRepository;
     @Autowired
     UserServiceImpl userService;
-    public String getPathExcelFile(){
-    return "C:/Users/ADMIN/Documents/ExcelDataLogTest.xlsx";
-    }
+    @Autowired
+    DepartmentRepository departmentRepository;
     public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
 
@@ -98,12 +97,6 @@ public class ExcelImporter {
                             System.out.println(currentCell.getNumericCellValue());
                             break;
                         case 2:
-                            if(check){
-                                break;
-                            }
-                            Department department = new Department();
-                            department.setName(currentCell.getStringCellValue());
-                            user.setDepartments(department);
                             break;
                         case 3:
                             if(check){
