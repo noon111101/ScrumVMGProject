@@ -204,27 +204,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUser(long id, UpdateUserRequest updateRequest) {
         User user = userRepository.findById(id).get();
-        List<User> users = userRepository.findAll();
-        for(User u: users){
-            if(u.getUsername().equals(updateRequest.getUsername()) || u.getCode()==updateRequest.getCode()){
-                if(u.getId()!=user.getId()){
-                    throw new RuntimeException("Mã hoặc email đã tồn tại!");
-                }
-                else{
-                    break;
-                }
-            }
+        if(!user.getUsername().equals(updateRequest.getUsername())){
+            if(userRepository.findByUsername(updateRequest.getUsername()).isPresent())
+                throw new RuntimeException("Email đã tồn tại");
         }
-//        if(userRepository.findByUsername(updateRequest.getUsername()).isPresent())
-//            throw new RuntimeException("Email đã tồn tại");
-//        if(userRepository.findByCode(updateRequest.getCode())!=null)
-//            throw new RuntimeException("Mã nhân viên đã tồn tại");
-        if (Objects.nonNull(updateRequest.getUsername()) && !"".equalsIgnoreCase(user.getUsername())) {
-            user.setUsername(updateRequest.getUsername());
+        if(updateRequest.getCode()!=user.getCode()){
+            if(userRepository.findByCode(updateRequest.getCode())!=null)
+                throw new RuntimeException("Mã nhân viên đã tồn tại");
         }
-        if (Objects.nonNull(updateRequest.getCode()) && updateRequest.getCode() != user.getCode()) {
-            user.setCode(updateRequest.getCode());
-        }
+
+        user.setUsername(updateRequest.getUsername());
+        user.setCode(updateRequest.getCode());
         user.setFullName(updateRequest.getFullName());
         user.setGender(updateRequest.getGender());
         Department department = departmentRepository.findByName(updateRequest.getDepartment());
