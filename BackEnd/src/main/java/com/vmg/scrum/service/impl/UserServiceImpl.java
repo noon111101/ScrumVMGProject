@@ -52,6 +52,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     FileManagerService fileManagerService;
 
+
     public UserServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
@@ -146,6 +147,63 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
         userRepository.save(user);
         mailService.sendEmailAccountInfo(signUpRequest.getUsername(), genarate);
+        return new MessageResponse("Tạo tài khoản thành công!");
+    }
+    @Override
+    public MessageResponse registerUserPasswordDefault(SignupRequest signUpRequest)  {
+        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+            throw new RuntimeException("Email đã tồn tại!");
+        }
+        if (userRepository.existsByCode(signUpRequest.getCode())) {
+            throw  new RuntimeException("Mã nhân viên đã tồn tại!");
+        }
+        String genarate = alphaNumericString(8);
+        Department department = departmentRepository.findByName(signUpRequest.getDepartment());
+        //file
+
+        String filename = fileManagerService.save(signUpRequest.getCover());
+        // Create new user's account
+        User user = new User(signUpRequest.getUsername(),
+                encoder.encode(genarate),
+                signUpRequest.getFullName(),
+                signUpRequest.getGender(),
+                filename,
+                signUpRequest.getCode(),
+                department
+        );
+        Set<String> strRoles = signUpRequest.getRole();
+        Set<Role> roles = new HashSet<>();
+
+        if (strRoles == null) {
+            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            roles.add(userRole);
+        } else {
+            strRoles.forEach(role -> {
+                switch (role) {
+                    case "admin" -> {
+                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(adminRole);
+                    }
+                    case "manage" -> {
+                        Role manageRole = roleRepository.findByName(ERole.ROLE_MANAGE)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(manageRole);
+                    }
+                    default -> {
+                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(userRole);
+                    }
+                }
+            });
+        }
+
+        user.setRoles(roles);
+        //vmg123456
+        user.setRootPassword(encoder.encode("vmg123456"));
+        userRepository.save(user);
         return new MessageResponse("Tạo tài khoản thành công!");
     }
 
