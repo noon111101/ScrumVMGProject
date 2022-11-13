@@ -51,7 +51,6 @@ public class DataExcelCalculation {
                 if(hourOut==null && hourIn==null){
                     if(dayOfWeek.toString().equals("SUNDAY") || dayOfWeek.toString().equals("SATURDAY")){
                         logDetail.setSigns(signRepository.findByName(ESign.NT));
-
                     }
                     if(!dayOfWeek.toString().equals("SUNDAY") && !dayOfWeek.toString().equals("SATURDAY")){
                         logDetail.setSigns(signRepository.findByName(ESign.KL));

@@ -206,4 +206,15 @@ public class LogDetailController {
     public ResponseEntity<MessageResponse> updateLogSign(@Valid @RequestBody EditLogRequest[] editLogRequests) throws MessagingException, UnsupportedEncodingException {
         return ResponseEntity.ok(logDetailService.updateLogDetails(editLogRequests));
     }
+    @PostMapping("create")
+    public MessageResponse importLogExcel(@RequestBody LogDetail[] logDetails){
+        try {
+            for(LogDetail l : logDetails){
+                logDetailRepository.save(l);
+            }
+            return new MessageResponse("Thêm chấm công thành công");
+        } catch (Exception e) {
+            throw new RuntimeException("Đăng kí lỗi trường thông tin chưa đúng quy định");
+        }
+    }
 }

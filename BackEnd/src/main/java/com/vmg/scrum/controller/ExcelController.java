@@ -6,6 +6,7 @@ import com.vmg.scrum.excel.ExcelExporter;
 import com.vmg.scrum.excel.ExcelImporter;
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
+import com.vmg.scrum.payload.request.SignupRequest;
 import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.repository.DepartmentRepository;
 import com.vmg.scrum.repository.LogDetailRepository;
@@ -73,30 +74,29 @@ public class ExcelController {
     }
 
     @PostMapping("/import")
-    public ResponseEntity<MessageResponse> uploadFile(@ModelAttribute("file") MultipartFile file) {
-        String message = "";
-
-        if (excelImporter.hasExcelFormat(file)) {
-            try {
-                fileService.save(file);
-                message = "Uploaded the file successfully: " + file.getOriginalFilename();
-                return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse(message));
-            } catch (Exception e) {
-                message = "Could not upload the file: " + file.getOriginalFilename() + "!";
-                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new MessageResponse(message));
+    public List<LogDetail> uploadFileLog(@ModelAttribute("file") MultipartFile file) throws IOException {
+        try{
+            if (excelImporter.hasExcelFormat(file)) {
+                return  fileService.listLog(file);
             }
-        }
+            else throw new RuntimeException("File không đúng định dạng (phải có đuôi .xlsx)");
 
-        message = "Please upload an excel file!";
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse(message));
+        } catch (IOException e) {
+            throw new RuntimeException("Upload file không thành công ");
+        }
     }
     @PostMapping("/import/user")
-    public void importUser(@ModelAttribute("file") MultipartFile file) throws IOException {
-        fileService.saveUser(file);
-    }
-    @GetMapping("/test")
-    public void test(){
-        dataExcelCalculation.convertSign(logDetailRepository.findAll());
+    public List<SignupRequest> uploadFileUser(@ModelAttribute("file") MultipartFile file) throws IOException {
+        try{
+            if (excelImporter.hasExcelFormat(file)) {
+                return  fileService.listUser(file);
+            }
+            else throw new RuntimeException("File không đúng định dạng (phải có đuôi .xlsx)");
+
+        } catch (IOException e) {
+            throw new RuntimeException("Upload file không thành công ");
+        }
+
     }
 
 }
