@@ -15,6 +15,7 @@ import java.io.UnsupportedEncodingException;
 public interface UserService   {
     JwtResponse authenticateUser(LoginRequest loginRequest);
     MessageResponse registerUser(SignupRequest signUpRequest) throws MessagingException, UnsupportedEncodingException;
+    MessageResponse registerUserPasswordDefault(SignupRequest signUpRequest) ;
 
     MessageResponse updatePassword(ChangePasswordRequest changePasswordRequest);
 

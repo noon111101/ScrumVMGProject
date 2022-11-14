@@ -4,6 +4,7 @@ import com.vmg.scrum.excel.DataExcelCalculation;
 import com.vmg.scrum.excel.ExcelImporter;
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
+import com.vmg.scrum.payload.request.SignupRequest;
 import com.vmg.scrum.repository.LogDetailRepository;
 import com.vmg.scrum.repository.LogDetailTotalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +24,12 @@ public class ExcelService {
     ExcelImporter excelImporter;
     @Autowired
     DataExcelCalculation dataExcelCalculation;
-    public void save(MultipartFile file) throws IOException {
+    public List<LogDetail> listLog(MultipartFile file) throws IOException {
         List<LogDetail> logDetailList = excelImporter.read(file.getInputStream());
-        logDetailRepository.saveAll(dataExcelCalculation.convertSign(logDetailList));
+        return dataExcelCalculation.convertSign(logDetailList);
     }
-    public void saveUser(MultipartFile file) throws IOException {
-            List<User> userList = excelImporter.readUser(file.getInputStream());
-    }
-
-    public List<LogDetail> getAllLog() {
-        return logDetailRepository.findAll();
+    public List<SignupRequest> listUser(MultipartFile file) throws IOException {
+           return excelImporter.readUser(file.getInputStream());
     }
 
 }
