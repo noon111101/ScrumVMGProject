@@ -13,8 +13,13 @@ import java.util.Set;
 @Setter
 @Entity
 public class Role extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "role_id", nullable = false)
+    private Long id;
+
     @Enumerated(EnumType.STRING)
-    @Column(length = 20)
+    @Column(name = "role_name",length = 20)
     private ERole name;
     @ManyToMany(mappedBy = "roles")
     @JsonIgnore

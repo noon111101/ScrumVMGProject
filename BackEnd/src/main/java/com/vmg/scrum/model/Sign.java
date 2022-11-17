@@ -17,11 +17,11 @@ import java.util.Set;
 public class Sign {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @Column(name = "sign_id", nullable = false)
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 20)
+    @Column(name = "sign_name",length = 20)
     private ESign name;
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "signs")
