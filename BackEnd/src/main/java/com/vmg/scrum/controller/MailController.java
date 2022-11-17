@@ -17,7 +17,7 @@ public class MailController {
     @GetMapping("send")
     public MessageResponse sendmail() throws MessagingException, UnsupportedEncodingException {
 
-         return  mailService.sendEmail("trieu11sdsadadadas112001@gmail.com");
+         return  mailService.sendEmail("trieu11112001@gmail.com");
     }
     @PostMapping("reset_password-tokenLink")
     public UserDetails resetpasswordtoken(@RequestParam(name ="token") String token){

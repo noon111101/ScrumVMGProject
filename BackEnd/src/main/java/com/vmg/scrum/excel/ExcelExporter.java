@@ -7,8 +7,6 @@ import com.vmg.scrum.payload.response.UserLogDetail;
 import com.vmg.scrum.repository.DepartmentRepository;
 import com.vmg.scrum.repository.LogDetailRepository;
 import com.vmg.scrum.repository.UserRepository;
-import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
-import org.apache.poi.hssf.usermodel.HSSFComment;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
@@ -330,7 +328,7 @@ public class ExcelExporter {
                     String sign = null;
                     List<LogDetail> logDetails = ul.getLogDetail();
                     for (LogDetail logDetail : logDetails) {
-                        cell = row.createCell(logDetail.getDate_log().getDayOfMonth() + 1);
+                        cell = row.createCell(logDetail.getDateLog().getDayOfMonth() + 1);
                         if (logDetail.getSigns() == null) {
                             cell.setCellValue("-");
                             cell.setCellStyle(styleBody);
@@ -392,8 +390,8 @@ public class ExcelExporter {
                         }
 
 
-                        if(logDetail.getDate_log().getDayOfWeek().toString() == "SATURDAY" ||
-                                logDetail.getDate_log().getDayOfWeek().toString() == "SUNDAY"){
+                        if(logDetail.getDateLog().getDayOfWeek().toString() == "SATURDAY" ||
+                                logDetail.getDateLog().getDayOfWeek().toString() == "SUNDAY"){
                             if (logDetail.getSigns() == null) {
                                 cell.setCellValue("-");
                                 cell.setCellStyle(styleBodyColor);
