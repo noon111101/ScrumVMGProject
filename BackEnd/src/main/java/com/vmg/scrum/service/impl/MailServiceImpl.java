@@ -10,6 +10,7 @@ import com.vmg.scrum.service.MailService;
 import com.vmg.scrum.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +28,8 @@ import java.util.Random;
 @Service
 @Slf4j
 public class MailServiceImpl implements MailService {
+    @Value("${application.domain.cors}")
+    private String domain ;
     @Autowired
     private JavaMailSender mailSender;
 
@@ -63,14 +66,14 @@ public class MailServiceImpl implements MailService {
     try {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        helper.setFrom("contact@shopme.com", "Shopme Support");
+        helper.setFrom("VMG@contact.com", "VMG");
         helper.setTo(recipientEmail);
         String subject = "Here's the link to reset your password";
-        String resetPasswordLink = "http://localhost:3000" + "/reset_password?token=";
+        String resetPasswordLink = domain + "/reset_password-tokenLink?token=";
         String content = "<p>Hello,</p>"
                 + "<p>You have requested to reset your password.</p>"
                 + "<p>Click the link below to change your password:</p>"
-                + "<p><a href=\"" + resetPasswordLink + "\">Change my password</a></p>"
+                + "<p><a href=\"" + resetPasswordLink + "\">Click here to direct change your password</a></p>"
                 + "<br>"
                 + "<p>Ignore this email if you do remember your password, "
                 + "or you have not made the request.</p>";

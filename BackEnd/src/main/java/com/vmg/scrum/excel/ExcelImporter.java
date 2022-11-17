@@ -1,16 +1,10 @@
 package com.vmg.scrum.excel;
 
 
-import com.vmg.scrum.model.ERole;
-import com.vmg.scrum.model.Role;
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
-import com.vmg.scrum.model.excel.LogDetailTotal;
-import com.vmg.scrum.model.option.Department;
-import com.vmg.scrum.model.option.Shift;
 import com.vmg.scrum.payload.request.SignupRequest;
 import com.vmg.scrum.repository.DepartmentRepository;
-import com.vmg.scrum.repository.RoleRepository;
 import com.vmg.scrum.repository.ShiftRepository;
 import com.vmg.scrum.repository.UserRepository;
 import com.vmg.scrum.service.impl.UserServiceImpl;
@@ -23,12 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.mail.MessagingException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 
 @Service
@@ -120,13 +111,13 @@ public class ExcelImporter {
                             break;
                         case 6:
                             LocalDate localDate = currentCell.getLocalDateTimeCellValue().toLocalDate();
-                            logDetail.setDate_log(localDate);
+                            logDetail.setDateLog(localDate);
                             break;
                         case 7:
                             logDetail.setShift(shiftRepository.findByName(currentCell.getStringCellValue()));
                             break;
                         case 8:
-                            logDetail.setLeave_status(currentCell.getStringCellValue());
+                            logDetail.setLeaveStatus(currentCell.getStringCellValue());
                             break;
                         case 9:
                             if(currentCell.getCellType()==CellType.STRING){

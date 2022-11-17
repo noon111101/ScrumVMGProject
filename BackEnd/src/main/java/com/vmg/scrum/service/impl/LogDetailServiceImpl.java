@@ -46,7 +46,7 @@ public class LogDetailServiceImpl  implements LogDetailService{
                 else {
                     DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                     logDetail.setUser(userRepository.findByCode(editLogRequest1.getCode()));
-                    logDetail.setDate_log(LocalDate.parse(editLogRequest1.getDate(),sdf));
+                    logDetail.setDateLog(LocalDate.parse(editLogRequest1.getDate(),sdf));
                     if(editLogRequest1.getSign()==null)
                         logDetail.setSigns(null);
                     else
