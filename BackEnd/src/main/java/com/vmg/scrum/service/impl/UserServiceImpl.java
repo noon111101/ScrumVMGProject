@@ -281,6 +281,7 @@ public class UserServiceImpl implements UserService {
         user.setDepartments(department);
         System.out.println(updateRequest.getCover().getSize());
         if (updateRequest.getCover() != null && updateRequest.getCover().getSize() > 0) {
+            if(!user.getCover().equals("default.png"))
             fileManagerService.delete(user.getCover());
             String filename = fileManagerService.save(updateRequest.getCover());
             user.setCover(filename);

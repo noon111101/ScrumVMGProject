@@ -503,15 +503,24 @@ public class ExcelExporter {
         cell = row.createCell(2);
         cell.setCellValue("H- Làm hành chính");
         cell.setCellStyle(styleThinLeft);
+        cell = row.createCell(20);
+        cell.setCellValue("C- Làm ca chiều");
+        cell.setCellStyle(styleThinLeft);
 
         row = sheet.createRow(++rowCurrent);
         cell = row.createCell(2);
         cell.setCellValue("P-  Nghỉ phép");
         cell.setCellStyle(styleThinLeft);
+        cell = row.createCell(20);
+        cell.setCellValue("Ô - Nghỉ Ốm");
+        cell.setCellStyle(styleThinLeft);
 
         row = sheet.createRow(++rowCurrent);
         cell = row.createCell(2);
         cell.setCellValue("CT - Công tác");
+        cell.setCellStyle(styleThinLeft);
+        cell = row.createCell(20);
+        cell.setCellValue("CĐ - Nghỉ Chế độ ( Nghỉ đẻ, Khám thai,Sảy thai,..)");
         cell.setCellStyle(styleThinLeft);
 
         row = sheet.createRow(++rowCurrent);
@@ -519,20 +528,21 @@ public class ExcelExporter {
         cell.setCellValue("TC - Nghỉ tiêu chuẩn (Cưới, Tứ thân phụ mẫu mất,...)");
         cell.setCellStyle(styleThinLeft);
 
-        row = sheet.createRow(++rowCurrent);
-        cell = row.createCell(2);
-        cell.setCellValue("C- Làm ca chiều");
-        cell.setCellStyle(styleThinLeft);
-
-        row = sheet.createRow(++rowCurrent);
-        cell = row.createCell(2);
-        cell.setCellValue("Ô - Nghỉ Ốm");
-        cell.setCellStyle(styleThinLeft);
-
-        row = sheet.createRow(++rowCurrent);
-        cell = row.createCell(2);
-        cell.setCellValue("CĐ - Nghỉ Chế độ ( Nghỉ đẻ, Khám thai,Sảy thai,..)");
-        cell.setCellStyle(styleThinLeft);
+//        row = sheet.createRow(++rowCurrent);
+//        cell = row.createCell(2);
+//        cell.setCellValue("C- Làm ca chiều");
+//        cell.setCellStyle(styleThinLeft);
+//
+//
+//        row = sheet.createRow(++rowCurrent);
+//        cell = row.createCell(2);
+//        cell.setCellValue("Ô - Nghỉ Ốm");
+//        cell.setCellStyle(styleThinLeft);
+//
+//        row = sheet.createRow(++rowCurrent);
+//        cell = row.createCell(2);
+//        cell.setCellValue("CĐ - Nghỉ Chế độ ( Nghỉ đẻ, Khám thai,Sảy thai,..)");
+//        cell.setCellStyle(styleThinLeft);
 
         ++rowCurrent;
 
