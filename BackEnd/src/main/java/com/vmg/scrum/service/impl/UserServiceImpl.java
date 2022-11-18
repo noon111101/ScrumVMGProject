@@ -6,16 +6,14 @@ import com.vmg.scrum.model.ERole;
 import com.vmg.scrum.model.Role;
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.option.Department;
-import com.vmg.scrum.payload.request.ChangePasswordRequest;
-import com.vmg.scrum.payload.request.LoginRequest;
-import com.vmg.scrum.payload.request.SignupRequest;
-import com.vmg.scrum.payload.request.UpdateUserRequest;
+import com.vmg.scrum.payload.request.*;
 import com.vmg.scrum.payload.response.JwtResponse;
 import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.repository.DepartmentRepository;
 import com.vmg.scrum.repository.RoleRepository;
 import com.vmg.scrum.repository.UserRepository;
 import com.vmg.scrum.security.UserDetailsImpl;
+import com.vmg.scrum.security.jwt.HashOneWay;
 import com.vmg.scrum.security.jwt.JwtUtils;
 import com.vmg.scrum.service.MailService;
 import com.vmg.scrum.service.UserService;
@@ -24,8 +22,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -41,7 +37,8 @@ public class UserServiceImpl implements UserService {
 
     private final RoleRepository roleRepository;
 
-    private final PasswordEncoder encoder;
+    @Autowired
+    HashOneWay encoder;
 
     private final JwtUtils jwtUtils;
 
@@ -53,7 +50,7 @@ public class UserServiceImpl implements UserService {
     FileManagerService fileManagerService;
 
 
-    public UserServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
+    public UserServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, HashOneWay encoder, JwtUtils jwtUtils) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -99,7 +96,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Email đã tồn tại!");
         }
         if (userRepository.existsByCode(signUpRequest.getCode())) {
-            throw  new RuntimeException("Mã nhân viên đã tồn tại!");
+            throw new RuntimeException("Mã nhân viên đã tồn tại!");
         }
         String genarate = alphaNumericString(8);
         Department department = departmentRepository.findByName(signUpRequest.getDepartment());
@@ -149,13 +146,14 @@ public class UserServiceImpl implements UserService {
         mailService.sendEmailAccountInfo(signUpRequest.getUsername(), genarate);
         return new MessageResponse("Tạo tài khoản thành công!");
     }
+
     @Override
-    public MessageResponse registerUserPasswordDefault(SignupRequest signUpRequest)  {
+    public MessageResponse registerUserPasswordDefault(SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             throw new RuntimeException("Email đã tồn tại!");
         }
         if (userRepository.existsByCode(signUpRequest.getCode())) {
-            throw  new RuntimeException("Mã nhân viên đã tồn tại!");
+            throw new RuntimeException("Mã nhân viên đã tồn tại!");
         }
         String genarate = alphaNumericString(8);
         Department department = departmentRepository.findByName(signUpRequest.getDepartment());
@@ -210,7 +208,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public MessageResponse updatePassword(ChangePasswordRequest changePasswordRequest) {
 
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         Long id = changePasswordRequest.getId();
         String newPassword = changePasswordRequest.getNewPassword();
         Optional<User> users = userRepository.findById(id);
@@ -218,38 +215,38 @@ public class UserServiceImpl implements UserService {
         boolean check = user.getCheckRootDisable();
         if (user.getPassword() == null || user.getPassword() == "") {
 
-            if (passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getRootPassword())) {
-                if (passwordEncoder.matches(newPassword, user.getRootPassword())) {
+            if (encoder.matches(changePasswordRequest.getOldPassword(), user.getRootPassword())) {
+                if (encoder.matches(newPassword, user.getRootPassword())) {
                     throw new RuntimeException("Mật khẩu mới phải khác mật khẩu hiện tại");
                 }
                 if (!check) {
-                    String encodedPassword = passwordEncoder.encode(newPassword);
+                    String encodedPassword = encoder.encode(newPassword);
                     user.setPassword(encodedPassword);
-                    user.setRootPassword(passwordEncoder.encode(""));
+                    user.setRootPassword(encoder.encode(""));
                     user.setCheckRootDisable(true);
                     userRepository.save(user);
                 }
                 if (check) {
-                    String encodedPassword = passwordEncoder.encode(newPassword);
+                    String encodedPassword = encoder.encode(newPassword);
                     user.setPassword(encodedPassword);
                     userRepository.save(user);
                 }
             } else throw new RuntimeException("Mật khẩu hiện tại không chính xác");
         } else {
 
-            if (passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
-                if (passwordEncoder.matches(newPassword, user.getPassword())) {
+            if (encoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
+                if (encoder.matches(newPassword, user.getPassword())) {
                     throw new RuntimeException("Mật khẩu mới phải khác mật khẩu hiện tại");
                 }
                 if (!check) {
-                    String encodedPassword = passwordEncoder.encode(newPassword);
+                    String encodedPassword = encoder.encode(newPassword);
                     user.setPassword(encodedPassword);
-                    user.setRootPassword(passwordEncoder.encode(""));
+                    user.setRootPassword(encoder.encode(""));
                     user.setCheckRootDisable(true);
                     userRepository.save(user);
                 }
                 if (check) {
-                    String encodedPassword = passwordEncoder.encode(newPassword);
+                    String encodedPassword = encoder.encode(newPassword);
                     user.setPassword(encodedPassword);
                     userRepository.save(user);
                 }
@@ -263,13 +260,13 @@ public class UserServiceImpl implements UserService {
     public void updateUser(long id, UpdateUserRequest updateRequest) {
         User user = userRepository.findById(id).get();
 
-        if(!user.getUsername().equals(updateRequest.getUsername())){
-            if(userRepository.findByUsername(updateRequest.getUsername()).isPresent())
+        if (!user.getUsername().equals(updateRequest.getUsername())) {
+            if (userRepository.findByUsername(updateRequest.getUsername()).isPresent())
                 throw new RuntimeException("Email đã tồn tại");
 
         }
-        if(updateRequest.getCode()!=user.getCode()){
-            if(userRepository.findByCode(updateRequest.getCode())!=null)
+        if (updateRequest.getCode() != user.getCode()) {
+            if (userRepository.findByCode(updateRequest.getCode()) != null)
                 throw new RuntimeException("Mã nhân viên đã tồn tại");
         }
 
@@ -329,4 +326,23 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public MessageResponse forgotPasswordChangeRequest(ForgotPasswordChangeRequest forgotPasswordChangeRequest) {
+
+            String token = forgotPasswordChangeRequest.getToken();
+            if (token != null && jwtUtils.validateJwtTokenEmail(token)) {
+                User user = userRepository.findByUsername(jwtUtils.getUserNameFromJwtTokenEmail(token)).get();
+                if(!user.getCheckRootDisable()){
+                    user.setRootPassword(encoder.encode(forgotPasswordChangeRequest.getNewPassword()));
+                }
+                if(!user.getAvalible())
+                    throw  new RuntimeException("Tài khoản người dùng này đang bị khóa");
+                user.setPassword(encoder.encode(forgotPasswordChangeRequest.getNewPassword()));
+                userRepository.save(user);
+            }
+            if(!jwtUtils.validateJwtTokenEmail(token))
+                throw  new RuntimeException("Link đổi mật khẩu của bạn đã hết hạn");
+
+        return new MessageResponse("Đổi mật khẩu thành công");
+    }
 }
