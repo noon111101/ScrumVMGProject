@@ -4,6 +4,7 @@ package com.vmg.scrum.config;
 import com.vmg.scrum.security.UserDetailsServiceImpl;
 import com.vmg.scrum.security.jwt.AuthEntryPointJwt;
 import com.vmg.scrum.security.jwt.AuthTokenFilter;
+import com.vmg.scrum.security.jwt.HashOneWay;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -56,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // default(null) is 10
+        return new HashOneWay(); // default(null) is 10
     }
 
     @Override

@@ -24,7 +24,14 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
-<!--excel-->
+
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.69</version>
+        </dependency>
+
+        <!--excel-->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
