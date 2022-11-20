@@ -314,6 +314,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean checkValidateJWTEmail(String token) {
+      return jwtUtils.validateJwtTokenEmail(token);
+    }
+
+    @Override
     public MessageResponse lockAccount(Long id) {
         User user = userRepository.getById(id);
         user.setAvalible(!user.getAvalible());
@@ -327,9 +332,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public MessageResponse forgotPasswordChangeRequest(ForgotPasswordChangeRequest forgotPasswordChangeRequest) {
-
             String token = forgotPasswordChangeRequest.getToken();
-            if (token != null && jwtUtils.validateJwtTokenEmail(token)) {
+            if (token != null) {
                 User user = userRepository.findByUsername(jwtUtils.getUserNameFromJwtTokenEmail(token)).get();
                 if(!user.getCheckRootDisable()){
                     user.setRootPassword(encoder.encode(forgotPasswordChangeRequest.getNewPassword()));
@@ -339,8 +343,6 @@ public class UserServiceImpl implements UserService {
                 user.setPassword(encoder.encode(forgotPasswordChangeRequest.getNewPassword()));
                 userRepository.save(user);
             }
-            if(!jwtUtils.validateJwtTokenEmail(token))
-                throw  new RuntimeException("Link đổi mật khẩu của bạn đã hết hạn");
 
         return new MessageResponse("Đổi mật khẩu thành công");
     }

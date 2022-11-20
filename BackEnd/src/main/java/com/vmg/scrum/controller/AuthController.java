@@ -49,4 +49,7 @@ public class AuthController {
     public MessageResponse changePassword(@Valid @RequestBody ForgotPasswordChangeRequest forgotPasswordChangeRequest)  {
         return userService.forgotPasswordChangeRequest(forgotPasswordChangeRequest);
     }
-}
+    @GetMapping ("/checkResetPassword")
+    public boolean checkvalidateJwtEmail(@RequestParam String token)  {
+        return userService.checkValidateJWTEmail(token);
+    }}

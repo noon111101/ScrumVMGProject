@@ -22,4 +22,7 @@ public interface UserService   {
     MessageResponse forgotPasswordChangeRequest(ForgotPasswordChangeRequest forgotPasswordChangeRequest);
     void updateUser(long id, UpdateUserRequest updateRequest);
 
+    boolean checkValidateJWTEmail(String token);
+
+
 }
