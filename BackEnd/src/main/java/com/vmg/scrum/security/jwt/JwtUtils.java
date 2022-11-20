@@ -23,8 +23,6 @@ public class JwtUtils {
     @Value("${vmg.scrum.jwtExpirationMs}")
     private int jwtExpirationMs;
 
-
-
     public String generateJwtToken(Authentication authentication) {
 
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
@@ -65,7 +63,7 @@ public class JwtUtils {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + 10 * 60 * 1000))
+                .setExpiration(new Date((new Date()).getTime() + 2 * 60 * 1000))
                 .signWith(SignatureAlgorithm.HS512, jwtSecretEmail)
                 .compact();
     }
