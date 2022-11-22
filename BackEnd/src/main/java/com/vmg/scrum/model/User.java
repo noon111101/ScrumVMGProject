@@ -84,5 +84,4 @@ public class User extends BaseEntity {
         this.avalible=true;
         this.cover=cover;
     }
-
 }

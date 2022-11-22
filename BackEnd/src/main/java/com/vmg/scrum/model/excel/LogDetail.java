@@ -57,5 +57,4 @@ public class LogDetail extends BaseEntity {
 
     private String reason;
 
-
 }

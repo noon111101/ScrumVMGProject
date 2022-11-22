@@ -20,8 +20,8 @@ public class Shift {
     @JsonIgnore
     private Long id;
 
+
     @Column(name = "shift_name")
+
     private String name;
-
-
 }

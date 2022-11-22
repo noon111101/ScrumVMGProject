@@ -331,6 +331,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+
     @Override
     public MessageResponse forgotPasswordChangeRequest(ForgotPasswordChangeRequest forgotPasswordChangeRequest) {
             String token = forgotPasswordChangeRequest.getToken();
@@ -347,4 +348,5 @@ public class UserServiceImpl implements UserService {
 
         return new MessageResponse("Đổi mật khẩu thành công");
     }
+
 }
