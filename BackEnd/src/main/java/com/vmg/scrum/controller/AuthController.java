@@ -20,7 +20,6 @@ public class AuthController {
 
     UserRepository userRepository;
 
-
     public AuthController(UserService userService) {
         this.userService = userService;
     }

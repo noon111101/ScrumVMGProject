@@ -19,8 +19,5 @@ public class Shift {
     @Column(name = "id", nullable = false)
     @JsonIgnore
     private Long id;
-
     private String name;
-
-
 }

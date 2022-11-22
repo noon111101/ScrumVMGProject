@@ -18,7 +18,6 @@ public interface UserService   {
 
     MessageResponse updatePassword(ChangePasswordRequest changePasswordRequest);
 
-
     MessageResponse lockAccount(Long id);
 
 

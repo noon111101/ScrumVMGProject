@@ -58,5 +58,4 @@ public class LogDetail {
 
     private String reason;
 
-
 }
