@@ -5,17 +5,20 @@ import com.vmg.scrum.model.User;
 import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.repository.UserRepository;
 import com.vmg.scrum.security.UserDetailsServiceImpl;
+import com.vmg.scrum.security.jwt.HashOneWay;
 import com.vmg.scrum.security.jwt.JwtUtils;
 import com.vmg.scrum.service.MailService;
 import com.vmg.scrum.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -27,6 +30,8 @@ import java.util.Random;
 @Service
 @Slf4j
 public class MailServiceImpl implements MailService {
+    @Value("${application.domain.cors}")
+    private String domain ;
     @Autowired
     private JavaMailSender mailSender;
 
@@ -39,7 +44,7 @@ public class MailServiceImpl implements MailService {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
     @Autowired
-    PasswordEncoder passwordEncoder;
+    HashOneWay passwordEncoder;
 
     public MailServiceImpl(JavaMailSender mailSender, UserRepository userRepository, AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
         this.mailSender = mailSender;
@@ -58,31 +63,28 @@ public class MailServiceImpl implements MailService {
         return sb.toString();
     }
 @Override
-    public MessageResponse sendEmail(String recipientEmail)
-          throws MessagingException, UnsupportedEncodingException {
+    public Boolean sendEmail(String recipientEmail) {
     try {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        helper.setFrom("contact@shopme.com", "Shopme Support");
+        helper.setFrom("VMG@contact.com", "VMG");
         helper.setTo(recipientEmail);
         String subject = "Here's the link to reset your password";
-        String resetPasswordLink = "http://localhost:3000" + "/reset_password?token=";
+        String emailToken = jwtUtils.generateJwtTokenEmail(recipientEmail);
+        String resetPasswordLink = domain + "/reset_password-tokenLink?token=" +emailToken;
         String content = "<p>Hello,</p>"
                 + "<p>You have requested to reset your password.</p>"
                 + "<p>Click the link below to change your password:</p>"
-                + "<p><a href=\"" + resetPasswordLink + "\">Change my password</a></p>"
+                + "<p><a href=\"" + resetPasswordLink + "\">Click here to direct change your password</a></p>"
                 + "<br>"
                 + "<p>Ignore this email if you do remember your password, "
                 + "or you have not made the request.</p>";
-
         helper.setSubject(subject);
-
         helper.setText(content, true);
-
         mailSender.send(message);
-        return new MessageResponse("ok");
+        return true;
     } catch (Exception e){
-        return new MessageResponse(e.getMessage());
+        return false;
     }
     }
     @Override

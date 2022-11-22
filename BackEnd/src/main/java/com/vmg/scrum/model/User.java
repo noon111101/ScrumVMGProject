@@ -22,13 +22,16 @@ import java.util.Set;
 
 })
 public class User extends BaseEntity {
+    @Id
+    @Column(name = "user_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     @Column(length = 200, unique = true, nullable = false)
     private String username;
 
     @Column(length = 130,nullable = true)
     @JsonIgnore
     private String password;
-
     @Column(length = 130,nullable = false)
     @JsonIgnore
     private String rootPassword;

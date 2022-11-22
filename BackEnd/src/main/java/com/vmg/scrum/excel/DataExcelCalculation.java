@@ -1,7 +1,6 @@
 package com.vmg.scrum.excel;
 
 import com.vmg.scrum.model.ESign;
-import com.vmg.scrum.model.Sign;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.repository.LogDetailRepository;
 import com.vmg.scrum.repository.SignRepository;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DataExcelCalculation {
@@ -20,7 +18,7 @@ public class DataExcelCalculation {
     LogDetailRepository logDetailRepository;
     public List<LogDetail> convertSign(List<LogDetail> logDetails) {
         for (LogDetail logDetail : logDetails) {
-                DayOfWeek dayOfWeek = logDetail.getDate_log().getDayOfWeek();
+                DayOfWeek dayOfWeek = logDetail.getDateLog().getDayOfWeek();
                 Integer hourIn =null;
                 Integer hourOut=null;
                 Integer minuteIn =null;
@@ -46,12 +44,11 @@ public class DataExcelCalculation {
                     System.out.println("Second out : " + secondOut);
 
                 }
-                System.out.println(logDetail.getDate_log() +"-"+ dayOfWeek);
+                System.out.println(logDetail.getDateLog() +"-"+ dayOfWeek);
 
                 if(hourOut==null && hourIn==null){
                     if(dayOfWeek.toString().equals("SUNDAY") || dayOfWeek.toString().equals("SATURDAY")){
                         logDetail.setSigns(signRepository.findByName(ESign.NT));
-
                     }
                     if(!dayOfWeek.toString().equals("SUNDAY") && !dayOfWeek.toString().equals("SATURDAY")){
                         logDetail.setSigns(signRepository.findByName(ESign.KL));

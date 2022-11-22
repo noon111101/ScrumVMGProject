@@ -1,16 +1,10 @@
 package com.vmg.scrum.excel;
 
 
-import com.vmg.scrum.model.ERole;
-import com.vmg.scrum.model.Role;
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
-import com.vmg.scrum.model.excel.LogDetailTotal;
-import com.vmg.scrum.model.option.Department;
-import com.vmg.scrum.model.option.Shift;
 import com.vmg.scrum.payload.request.SignupRequest;
 import com.vmg.scrum.repository.DepartmentRepository;
-import com.vmg.scrum.repository.RoleRepository;
 import com.vmg.scrum.repository.ShiftRepository;
 import com.vmg.scrum.repository.UserRepository;
 import com.vmg.scrum.service.impl.UserServiceImpl;
@@ -23,12 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.mail.MessagingException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 
 @Service
@@ -60,6 +51,8 @@ public class ExcelImporter {
 
             XSSFSheet sheet = workbook.getSheet("Sheet1");
 
+            if(sheet==null)
+                throw new RuntimeException("File không chứa sheet theo quy định (sheet 1 trống )");
             Iterator<Row> rows = sheet.iterator();
 
             logDetails = new ArrayList<LogDetail>();
@@ -118,13 +111,13 @@ public class ExcelImporter {
                             break;
                         case 6:
                             LocalDate localDate = currentCell.getLocalDateTimeCellValue().toLocalDate();
-                            logDetail.setDate_log(localDate);
+                            logDetail.setDateLog(localDate);
                             break;
                         case 7:
                             logDetail.setShift(shiftRepository.findByName(currentCell.getStringCellValue()));
                             break;
                         case 8:
-                            logDetail.setLeave_status(currentCell.getStringCellValue());
+                            logDetail.setLeaveStatus(currentCell.getStringCellValue());
                             break;
                         case 9:
                             if(currentCell.getCellType()==CellType.STRING){
@@ -150,6 +143,8 @@ public class ExcelImporter {
 
                 }
                 if(user.getFullName()!=null){
+                    if(userRepository.findByCode(user.getCode())==null)
+                        throw new RuntimeException("Danh sách chấm công chứa người dùng không tồn tại , bạn cần thêm người dùng trước");
                     logDetail.setUser(userRepository.findByCode(user.getCode()));
                     logDetails.add(logDetail);
                 }
@@ -157,20 +152,20 @@ public class ExcelImporter {
             }
             workbook.close();
         } catch (IOException e) {
-            throw new RuntimeException("fail to parse Excel file: " + e.getMessage());
+            throw new RuntimeException("File không đúng quy tắc" );
         }
         return logDetails;
     }
-    public List<User> readUser(InputStream inputStream) throws IOException {
-        List<User> users;
+    public List<SignupRequest> readUser(InputStream inputStream) throws IOException {
+        List<SignupRequest> list = new ArrayList<>();
         try {
             XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
 
             XSSFSheet sheet = workbook.getSheet("Sheet2");
-
+            if(sheet==null)
+                throw new RuntimeException("File không chứa sheet theo quy định (sheet 2 trống )");
             Iterator<Row> rows = sheet.iterator();
 
-            users = new ArrayList<User>();
 
             int rowNumber = 0;
             while (rows.hasNext()) {
@@ -192,7 +187,10 @@ public class ExcelImporter {
                             signupRequest.setCode(currentCell.getNumericCellValue());
                             break;
                         case 2:
+                            if(departmentRepository.findByName(currentCell.getStringCellValue())==null)
+                                throw new RuntimeException("Thông tin phòng ban không đúng");
                             signupRequest.setDepartment(currentCell.getStringCellValue());
+
                             break;
                         case 3:
                             signupRequest.setUsername(currentCell.getStringCellValue());
@@ -211,15 +209,13 @@ public class ExcelImporter {
                     }
                     cellIdx++;
                 }
-                userService.registerUser(signupRequest);
+                list.add(signupRequest);
             }
             workbook.close();
         } catch (IOException e) {
-            throw new RuntimeException("fail to parse Excel file: " + e.getMessage());
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("File không đúng quy tắc" );
         }
-        return users;
+        return list;
     }
 }
 

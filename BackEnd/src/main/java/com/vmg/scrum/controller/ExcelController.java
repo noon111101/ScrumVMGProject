@@ -2,11 +2,11 @@ package com.vmg.scrum.controller;
 
 
 import com.vmg.scrum.excel.DataExcelCalculation;
-import com.vmg.scrum.excel.ExcelExporter;
+import com.vmg.scrum.excel.ExcelExportPhep;
+import com.vmg.scrum.excel.ExcelExporterReport;
 import com.vmg.scrum.excel.ExcelImporter;
-import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
-import com.vmg.scrum.payload.response.MessageResponse;
+import com.vmg.scrum.payload.request.SignupRequest;
 import com.vmg.scrum.repository.DepartmentRepository;
 import com.vmg.scrum.repository.LogDetailRepository;
 import com.vmg.scrum.repository.UserRepository;
@@ -14,7 +14,6 @@ import com.vmg.scrum.service.impl.ExcelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/excel")
@@ -47,25 +45,49 @@ public class ExcelController {
     DepartmentRepository departmentRepository;
 
 
-    @GetMapping("/export")
+    @GetMapping("/export_report")
     public ResponseEntity exportToExcel(@RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam int month, HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
         String currentDateTime = dateFormatter.format(new Date());
 
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=Bang_Cham_Cong_" + currentDateTime + ".xlsx";
+        String headerValue = "attachment; filename=Bang Cham Cong " + currentDateTime + ".xlsx";
 
         response.setHeader(headerKey, headerValue);
         List<LogDetail> listLogs = new ArrayList<>();
         if(id==0){
             listLogs = logDetailRepository.findByMonthSortDate(month);
-            ExcelExporter excelExporter = new ExcelExporter(listLogs,month,departmentRepository,userRepository,logDetailRepository);
+            ExcelExporterReport excelExporter = new ExcelExporterReport(listLogs,month,departmentRepository,userRepository,logDetailRepository);
             excelExporter.export(response);
         }
         else {
             listLogs = logDetailRepository.findByMonthAndDepartmentSortDate(id, month);
-            ExcelExporter excelExporter = new ExcelExporter(listLogs, id,month,departmentRepository,userRepository,logDetailRepository);
+            ExcelExporterReport excelExporter = new ExcelExporterReport(listLogs, id,month,departmentRepository,userRepository,logDetailRepository);
+            excelExporter.export(response);
+        }
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/export_phep")
+    public ResponseEntity exportPhep(@RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam int year, HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=Bang Ngay Phep " + currentDateTime + ".xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        if(id==0){
+//            listLogs = logDetailRepository.findByMonthSortDate(month);
+            ExcelExportPhep excelExporter = new ExcelExportPhep(year, departmentRepository, userRepository);
+            excelExporter.export(response);
+        }
+        else {
+//            listLogs = logDetailRepository.findByMonthAndDepartmentSortDate(id, month);
+            ExcelExportPhep excelExporter = new ExcelExportPhep(year, departmentRepository,userRepository);
             excelExporter.export(response);
         }
 
@@ -73,30 +95,29 @@ public class ExcelController {
     }
 
     @PostMapping("/import")
-    public ResponseEntity<MessageResponse> uploadFile(@ModelAttribute("file") MultipartFile file) {
-        String message = "";
-
-        if (excelImporter.hasExcelFormat(file)) {
-            try {
-                fileService.save(file);
-                message = "Uploaded the file successfully: " + file.getOriginalFilename();
-                return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse(message));
-            } catch (Exception e) {
-                message = "Could not upload the file: " + file.getOriginalFilename() + "!";
-                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new MessageResponse(message));
+    public List<LogDetail> uploadFileLog(@ModelAttribute("file") MultipartFile file) throws IOException {
+        try{
+            if (excelImporter.hasExcelFormat(file)) {
+                return  fileService.listLog(file);
             }
-        }
+            else throw new RuntimeException("File không đúng định dạng (phải có đuôi .xlsx)");
 
-        message = "Please upload an excel file!";
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse(message));
+        } catch (IOException e) {
+            throw new RuntimeException("Upload file không thành công ");
+        }
     }
     @PostMapping("/import/user")
-    public void importUser(@ModelAttribute("file") MultipartFile file) throws IOException {
-        fileService.saveUser(file);
-    }
-    @GetMapping("/test")
-    public void test(){
-        dataExcelCalculation.convertSign(logDetailRepository.findAll());
+    public List<SignupRequest> uploadFileUser(@ModelAttribute("file") MultipartFile file) throws IOException {
+        try{
+            if (excelImporter.hasExcelFormat(file)) {
+                return  fileService.listUser(file);
+            }
+            else throw new RuntimeException("File không đúng định dạng (phải có đuôi .xlsx)");
+
+        } catch (IOException e) {
+            throw new RuntimeException("Upload file không thành công ");
+        }
+
     }
 
 }

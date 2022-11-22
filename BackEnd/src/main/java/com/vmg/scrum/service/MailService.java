@@ -10,7 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 
 public interface MailService {
-    MessageResponse sendEmail(String recipientEmail) throws MessagingException, UnsupportedEncodingException;
+    Boolean sendEmail(String recipientEmail) throws MessagingException, UnsupportedEncodingException;
 
     UserDetails resetPasswordToken(String token);
 

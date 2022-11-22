@@ -1,6 +1,7 @@
 package com.vmg.scrum.model.option;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vmg.scrum.model.BaseEntity;
 import com.vmg.scrum.model.User;
 import lombok.*;
 
@@ -14,12 +15,12 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-public class Department {
+public class Department extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @Column(name = "department_id", nullable = false)
     private Long id;
-
+    @Column(name = "department_name")
     private String name;
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "departments")

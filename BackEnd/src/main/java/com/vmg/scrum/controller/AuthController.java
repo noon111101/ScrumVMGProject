@@ -1,6 +1,7 @@
 package com.vmg.scrum.controller;
 
 import com.vmg.scrum.payload.request.ChangePasswordRequest;
+import com.vmg.scrum.payload.request.ForgotPasswordChangeRequest;
 import com.vmg.scrum.payload.request.LoginRequest;
 import com.vmg.scrum.payload.request.SignupRequest;
 import com.vmg.scrum.payload.response.MessageResponse;
@@ -42,4 +43,12 @@ public class AuthController {
     public MessageResponse lockAccount(@PathVariable Long id){
         return  userService.lockAccount(id);
     }
-}
+
+    @PostMapping("/reset_password-tokenLink")
+    public MessageResponse changePassword(@Valid @RequestBody ForgotPasswordChangeRequest forgotPasswordChangeRequest)  {
+        return userService.forgotPasswordChangeRequest(forgotPasswordChangeRequest);
+    }
+    @GetMapping ("/checkResetPassword")
+    public boolean checkvalidateJwtEmail(@RequestParam String token)  {
+        return userService.checkValidateJWTEmail(token);
+    }}

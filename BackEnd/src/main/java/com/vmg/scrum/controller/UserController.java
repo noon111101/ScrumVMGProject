@@ -5,7 +5,9 @@ import com.vmg.scrum.model.User;
 
 import com.vmg.scrum.model.excel.LogDetail;
 
+import com.vmg.scrum.payload.request.SignupRequest;
 import com.vmg.scrum.payload.request.UpdateUserRequest;
+import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.repository.UserRepository;
 import com.vmg.scrum.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
 
@@ -108,4 +112,16 @@ public class UserController {
     public ResponseEntity<List<User>> getUser(){
         return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
     }
+    @PostMapping("create")
+    public MessageResponse registerUserExcel(@RequestBody SignupRequest[] signupRequests){
+        try {
+            for(SignupRequest s : signupRequests){
+                userService.registerUserPasswordDefault(s);
+            }
+            return new MessageResponse("Thêm người dùng thành công");
+        } catch (Exception e) {
+            throw new RuntimeException("Đăng kí lỗi trường thông tin chưa đúng quy định");
+        }
+    }
+
 }

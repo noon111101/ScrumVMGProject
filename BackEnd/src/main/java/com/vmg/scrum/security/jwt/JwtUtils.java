@@ -57,14 +57,13 @@ public class JwtUtils {
 
         return false;
     }
-    public String generateJwtTokenEmail(Authentication authentication) {
+    public String generateJwtTokenEmail(String email) {
 
-        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
         return Jwts.builder()
-                .setSubject((userPrincipal.getUsername()))
+                .setSubject(email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .setExpiration(new Date((new Date()).getTime() + 2 * 60 * 1000))
                 .signWith(SignatureAlgorithm.HS512, jwtSecretEmail)
                 .compact();
     }

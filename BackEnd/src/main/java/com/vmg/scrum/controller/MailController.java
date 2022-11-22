@@ -14,18 +14,13 @@ import java.io.UnsupportedEncodingException;
 public class MailController {
     @Autowired
     MailService mailService;
-    @GetMapping("send")
-    public MessageResponse sendmail() throws MessagingException, UnsupportedEncodingException {
-
-         return  mailService.sendEmail("trieu11sdsadadadas112001@gmail.com");
-    }
     @PostMapping("reset_password-tokenLink")
     public UserDetails resetpasswordtoken(@RequestParam(name ="token") String token){
         return mailService.resetPasswordToken(token);
     }
     @PostMapping("reset_password")
     public Boolean resetpassword(@RequestParam(name ="email") String email) throws MessagingException, UnsupportedEncodingException {
-        return mailService.resetPassword(email);
+        return mailService.sendEmail(email);
     }
 
 }

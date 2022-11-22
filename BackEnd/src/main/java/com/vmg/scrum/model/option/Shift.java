@@ -16,8 +16,12 @@ import java.util.Set;
 public class Shift {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "shift_id", nullable = false)
     @JsonIgnore
     private Long id;
+
+
+    @Column(name = "shift_name")
+
     private String name;
 }

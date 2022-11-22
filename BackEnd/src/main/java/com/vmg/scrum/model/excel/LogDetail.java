@@ -2,6 +2,7 @@ package com.vmg.scrum.model.excel;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vmg.scrum.model.BaseEntity;
 import com.vmg.scrum.model.Sign;
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.option.Shift;
@@ -9,9 +10,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 
 @Builder
 @AllArgsConstructor
@@ -19,10 +18,10 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-public class LogDetail {
+public class LogDetail extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @Column(name = "log_id", nullable = false)
     private Long id;
 
     @ManyToOne
@@ -31,7 +30,7 @@ public class LogDetail {
     @ToString.Exclude
     private User user;
 
-    private LocalDate date_log;
+    private LocalDate dateLog;
 
     private LocalTime timeIn;
 
@@ -50,11 +49,11 @@ public class LogDetail {
     private Sign signs ;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shift_id", referencedColumnName = "id")
+    @JoinColumn(name = "shift_id", referencedColumnName = "shift_id")
     @JsonIgnore
     private Shift shift;
 
-    private String leave_status;
+    private String leaveStatus;
 
     private String reason;
 
