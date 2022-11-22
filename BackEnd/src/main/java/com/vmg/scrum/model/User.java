@@ -4,6 +4,7 @@ package com.vmg.scrum.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.model.option.Department;
+import com.vmg.scrum.model.option.Request;
 import lombok.*;
 
 import javax.persistence.*;
@@ -51,6 +52,14 @@ public class User extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
     private Department departments;
+
+    @ManyToOne
+    @JoinColumn(name = "request_id", nullable = false)
+    private Request request;
+
+    private float currentOff;
+
+    private float previousOff;
 
     @Column(columnDefinition = "boolean default true")
     private Boolean avalible;
