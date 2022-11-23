@@ -1,6 +1,7 @@
 package com.vmg.scrum.service.impl;
 
 import com.vmg.scrum.exception.custom.FileNullException;
+import com.vmg.scrum.payload.request.ImageLogRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,6 +62,25 @@ public class FileManagerService {
             } catch (Exception e) {
                 e.printStackTrace();
                 return "default.png";
+            }
+
+
+    }
+    public String saveLog(ImageLogRequest imageLogRequest) {
+        try {
+            String filePath = "C:\\Users\\ADMIN\\log\\"+ imageLogRequest.getCode() +"_" + imageLogRequest.getFullName() + "_" + LocalDate.now().toString();
+            File dir = Paths.get(filePath).toFile();
+            if(!dir.exists()) {
+                dir.mkdirs();
+            }
+            String name = System.currentTimeMillis() + imageLogRequest.getFile().getOriginalFilename();
+            String filename = Integer.toHexString(name.hashCode()) + name.substring(name.lastIndexOf("."));
+            Path path = Paths.get(dir.getAbsolutePath(), filename);
+                imageLogRequest.getFile().transferTo(path);
+                return  filename;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "fail";
             }
 
 

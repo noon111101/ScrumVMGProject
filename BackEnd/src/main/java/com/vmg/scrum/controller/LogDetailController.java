@@ -3,6 +3,7 @@ package com.vmg.scrum.controller;
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.payload.request.EditLogRequest;
+import com.vmg.scrum.payload.request.ImageLogRequest;
 import com.vmg.scrum.payload.request.SignupRequest;
 import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.payload.response.UserLogDetail;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
@@ -217,4 +219,9 @@ public class LogDetailController {
             throw new RuntimeException("Đăng kí lỗi trường thông tin chưa đúng quy định");
         }
     }
+    @PostMapping("/testSendImg")
+    public ResponseEntity<?> sendImg(@Valid @ModelAttribute ImageLogRequest imageLogRequest) {
+        return ResponseEntity.ok(logDetailService.sendImg(imageLogRequest));
+    }
+
 }

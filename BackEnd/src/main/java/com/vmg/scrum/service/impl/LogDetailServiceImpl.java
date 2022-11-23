@@ -4,6 +4,7 @@ import com.vmg.scrum.exception.custom.UpdateNullException;
 import com.vmg.scrum.model.ESign;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.payload.request.EditLogRequest;
+import com.vmg.scrum.payload.request.ImageLogRequest;
 import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.repository.LogDetailRepository;
 import com.vmg.scrum.repository.SignRepository;
@@ -11,8 +12,11 @@ import com.vmg.scrum.repository.UserRepository;
 import com.vmg.scrum.service.LogDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Random;
 
 
 @Service
@@ -24,6 +28,8 @@ public class LogDetailServiceImpl  implements LogDetailService{
     SignRepository signRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    FileManagerService fileManagerService;
     @Override
     public MessageResponse updateLogDetails(EditLogRequest[] editLogRequest) {
 
@@ -57,6 +63,11 @@ public class LogDetailServiceImpl  implements LogDetailService{
                 logDetailRepository.save(logDetail);
             }
             return new MessageResponse("Sign updated successfully!");
+    }
+
+    @Override
+    public String sendImg(ImageLogRequest imageLogRequest) {
+        return fileManagerService.saveLog(imageLogRequest);
     }
 
 }
