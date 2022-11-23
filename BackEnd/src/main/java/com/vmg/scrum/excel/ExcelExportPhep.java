@@ -6,6 +6,8 @@ import com.vmg.scrum.model.option.Department;
 import com.vmg.scrum.repository.DepartmentRepository;
 import com.vmg.scrum.repository.LogDetailRepository;
 import com.vmg.scrum.repository.UserRepository;
+import org.apache.poi.hssf.record.PaletteRecord;
+import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
@@ -150,7 +152,7 @@ public class ExcelExportPhep {
         styleTitleBoldBackground1.setWrapText(true);
         styleTitleBoldBackground1.setFont(fontHeaderBold);
 
-        // style Titles Bold Background PALE BLUE
+        // style Titles Bold Background
         CellStyle styleTitleBoldBackground2 = workbook.createCellStyle();
         styleTitleBoldBackground2.setBorderBottom(BorderStyle.THIN);
         styleTitleBoldBackground2.setBorderTop(BorderStyle.THIN);
