@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -157,4 +158,7 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
             "where u.code = ?1 " +
             "and l.date_log = ?2 ", nativeQuery = true)
     LogDetail findByUserCodeAndDate(Double code, LocalDate date);
+
+
+
 }
