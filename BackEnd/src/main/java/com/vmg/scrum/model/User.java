@@ -3,10 +3,13 @@ package com.vmg.scrum.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vmg.scrum.model.excel.LogDetail;
+import com.vmg.scrum.model.off.OffHistory;
 import com.vmg.scrum.model.option.Department;
+import com.vmg.scrum.model.request.Request;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +22,7 @@ import java.util.Set;
 @Table(name="user", uniqueConstraints = {
         @UniqueConstraint(columnNames = "username"),
         @UniqueConstraint(columnNames = "code"),
+
 })
 public class User extends BaseEntity {
     @Id
@@ -51,6 +55,16 @@ public class User extends BaseEntity {
     @JoinColumn(name = "department_id", nullable = false)
     private Department departments;
 
+    @ManyToOne
+    @JoinColumn(name = "request_id", nullable = false)
+    private Request request;
+
+    private float currentOff;
+
+    private float previousOff;
+
+    private LocalDate startWork;
+
     @Column(columnDefinition = "boolean default true")
     private Boolean avalible;
 
@@ -61,6 +75,11 @@ public class User extends BaseEntity {
     @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
             @JoinColumn(name = "role_id") })
     private Set<Role> roles = new HashSet<>();
+
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
+    @JsonIgnore
+    private Set<OffHistory> offHistories =new HashSet<>();
 
     public User(String username, String rootPassword, String fullName,String gender,String cover,String code,Department department) {
         this.username = username;
@@ -83,4 +102,5 @@ public class User extends BaseEntity {
         this.avalible=true;
         this.cover=cover;
     }
+
 }
