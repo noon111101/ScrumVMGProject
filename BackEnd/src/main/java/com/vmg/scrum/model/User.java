@@ -19,7 +19,6 @@ import java.util.Set;
 @Table(name="user", uniqueConstraints = {
         @UniqueConstraint(columnNames = "username"),
         @UniqueConstraint(columnNames = "code"),
-
 })
 public class User extends BaseEntity {
     @Id
@@ -39,7 +38,7 @@ public class User extends BaseEntity {
     private String fullName;
 
     @Column(unique = true, nullable = false)
-    private double code;
+    private String code;
 
     @Column(nullable = false)
     private String gender;
@@ -63,7 +62,7 @@ public class User extends BaseEntity {
             @JoinColumn(name = "role_id") })
     private Set<Role> roles = new HashSet<>();
 
-    public User(String username, String rootPassword, String fullName,String gender,String cover,Double code,Department department) {
+    public User(String username, String rootPassword, String fullName,String gender,String cover,String code,Department department) {
         this.username = username;
         this.rootPassword = rootPassword;
         this.fullName = fullName;
@@ -74,7 +73,7 @@ public class User extends BaseEntity {
         this.checkRootDisable=false;
         this.avalible=true;
     }
-    public User(String username, String fullName,String gender,Double code,Department department,String cover) {
+    public User(String username, String fullName,String gender,String code,Department department,String cover) {
         this.username = username;
         this.fullName = fullName;
         this.code=code;

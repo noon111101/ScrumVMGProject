@@ -24,13 +24,13 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
             " join l.user u " +
             " where u.code = ?1" +
             " order by l.dateLog desc ")
-    Page<LogDetail> findByUserCode( Double code, Pageable pageable);
+    Page<LogDetail> findByUserCode( String code, Pageable pageable);
 
     @Query(value = "select l from LogDetail l\n" +
             " join l.user u " +
             "where u.code = ?1 and l.dateLog between ?2 and ?3" +
             " order by l.dateLog desc ")
-    Page<LogDetail> findByDate_UserCode(Double code, LocalDate from, LocalDate to, Pageable pageable);
+    Page<LogDetail> findByDate_UserCode(String code, LocalDate from, LocalDate to, Pageable pageable);
 
 
     // Log List (Lọc, tìm kiếm) ============
@@ -125,7 +125,7 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
 
     List<LogDetail> findByUserDepartmentsId(Long id);
 
-    List<LogDetail> findByUserCode(Double code);
+    List<LogDetail> findByUserCode(String code);
 
     @Query(value = "select * from log_detail l \n" +
             "join user u on l.user_id = u.user_id \n " +
@@ -156,5 +156,5 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
             "join user u on l.user_id = u.user_id \n " +
             "where u.code = ?1 " +
             "and l.date_log = ?2 ", nativeQuery = true)
-    LogDetail findByUserCodeAndDate(Double code, LocalDate date);
+    LogDetail findByUserCodeAndDate(String code, LocalDate date);
 }
