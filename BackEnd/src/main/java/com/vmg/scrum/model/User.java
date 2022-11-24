@@ -3,11 +3,13 @@ package com.vmg.scrum.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vmg.scrum.model.excel.LogDetail;
+import com.vmg.scrum.model.off.OffHistory;
 import com.vmg.scrum.model.option.Department;
-import com.vmg.scrum.model.option.Request;
+import com.vmg.scrum.model.request.Request;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -61,6 +63,8 @@ public class User extends BaseEntity {
 
     private float previousOff;
 
+    private LocalDate startWork;
+
     @Column(columnDefinition = "boolean default true")
     private Boolean avalible;
 
@@ -71,6 +75,11 @@ public class User extends BaseEntity {
     @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
             @JoinColumn(name = "role_id") })
     private Set<Role> roles = new HashSet<>();
+
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
+    @JsonIgnore
+    private Set<OffHistory> offHistories =new HashSet<>();
 
     public User(String username, String rootPassword, String fullName,String gender,String cover,Double code,Department department) {
         this.username = username;
