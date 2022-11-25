@@ -74,7 +74,6 @@ public class ExcelExporterReport {
     }
 
 
-
     // Create Header
     private void writeHeader() {
         //style
@@ -110,10 +109,9 @@ public class ExcelExporterReport {
 
         row = sheet.createRow(3);
         cell = row.createCell(1);
-        if(id==0){
+        if (id == 0) {
             cell.setCellValue("Tất cả các bộ phận");
-        }
-        else {
+        } else {
             cell.setCellValue("Bộ phận: " + departmentRepository.getById(id).getName());
         }
 //        cell.setCellValue("Bộ phận: " + departmentRepository.getById(id).getName());
@@ -172,12 +170,12 @@ public class ExcelExporterReport {
         sheet.setColumnWidth(34, 2000);
 
         cell = row.createCell(35);
-        cell.setCellValue("Nghỉ phép" );
+        cell.setCellValue("Nghỉ phép");
         cell.setCellStyle(styleTitle);
         sheet.setColumnWidth(35, 2000);
 
         cell = row.createCell(36);
-        cell.setCellValue("Phép tồn" );
+        cell.setCellValue("Phép tồn");
         cell.setCellStyle(styleTitle);
         sheet.setColumnWidth(36, 4000);
 
@@ -273,17 +271,27 @@ public class ExcelExporterReport {
         styleBodyColor.setFont(fontBody);
 
 
-
-
         // Edit Body Table
         int rowCount = 6;
         int tt = 1;
-        List<User> listUsers =new ArrayList<>();
+        String tinhNgayLamViec = "COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"H\")" +
+                "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*/H*\")/2" +
+                "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*H/*\")/2" +
+                "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*CT*\")" +
+                "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*LB*\")";
+
+        String tinhNgayHuongLuong = "AH" + rowCount + "" +
+                "+COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*Ô*\")" +
+                "+COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"L\")" +
+                "+COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*TC*\")" +
+                "+(COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*P*\")" +
+                "+(COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*P/*\")/2)" +
+                "+(COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*/P*\")/2))";
+        List<User> listUsers = new ArrayList<>();
 //        int count = departmentRepository.findById(id).get().getUsers().size();
-        if(id==0){
+        if (id == 0) {
             listUsers = userRepository.findAll();
-        }
-        else {
+        } else {
             listUsers = userRepository.findAllByDepartments_Id(id);
         }
 //        List<User> listUsers = userRepository.findAllByDepartments_Id(id);
@@ -333,20 +341,28 @@ public class ExcelExporterReport {
                         cell = row.createCell(k);
                         cell.setCellStyle(styleBody);
                         if (k == 33) {
-                            cell.setCellFormula("COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*H*\")" +
+                            cell.setCellFormula("COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"H\")" +
                                     "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*/H*\")/2" +
                                     "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*H/*\")/2" +
                                     "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*CT*\")" +
                                     "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*LB*\")"); // Tổng ngày làm việc
                             cell.setCellStyle(styleBodyCenter);
-                            cell.setCellStyle(styleBodyCenter);
                         }
                         if (k == 34) {
-                            cell.setCellFormula("AH" + rowCount + ""); // Tổng ngày hưởng lương
+                            // Tổng ngày hưởng lương
+                            cell.setCellFormula("AH" + rowCount + "" +
+                                    "+COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*Ô*\")" +
+                                    "+COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"L\")" +
+                                    "+COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*TC*\")" +
+                                    "+(COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*P*\")" +
+                                    "+(COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*P/*\")/2)" +
+                                    "+(COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*/P*\")/2))"); // Tổng ngày hưởng lương
                             cell.setCellStyle(styleBodyCenter);
                         }
                         if (k == 35) {
-                            cell.setCellValue(1); // Tổng ngày hưởng lương
+                            cell.setCellFormula("(COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"P\")" +
+                                    "+(COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"P/*\")/2)" +
+                                    "+(COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*/P\")/2))"); // Tổng ngày hưởng lương
                             cell.setCellStyle(styleBodyCenter);
                         }
                     }
@@ -367,13 +383,13 @@ public class ExcelExporterReport {
                             cell.setCellValue("H/KL");
                             cell.setCellStyle(styleBodyCenter);
                             //Comment
-                            if(logDetail.getReason() != null){
+                            if (logDetail.getReason() != null) {
 //                                ClientAnchor clientAnchor = drawing.createAnchor(0, 0, 0, 0, 0, 2, 7, 7);
                                 ClientAnchor clientAnchor = creationHelper.createClientAnchor();
                                 clientAnchor.setCol1(cell.getColumnIndex());
-                                clientAnchor.setCol2(cell.getColumnIndex()+5);
+                                clientAnchor.setCol2(cell.getColumnIndex() + 5);
                                 clientAnchor.setRow1(row.getRowNum());
-                                clientAnchor.setRow2(row.getRowNum()+2);
+                                clientAnchor.setRow2(row.getRowNum() + 2);
 
                                 Comment comment = (Comment) drawing.createCellComment(clientAnchor);
                                 RichTextString richTextString = creationHelper.createRichTextString(logDetail.getReason());
@@ -385,13 +401,13 @@ public class ExcelExporterReport {
                             cell.setCellValue("KL/H");
                             cell.setCellStyle(styleBodyCenter);
                             //Comment
-                            if(logDetail.getReason() != null){
+                            if (logDetail.getReason() != null) {
 //                                ClientAnchor clientAnchor = drawing.createAnchor(0, 0, 0, 0, 0, 2, 7, 7);
                                 ClientAnchor clientAnchor = creationHelper.createClientAnchor();
                                 clientAnchor.setCol1(cell.getColumnIndex());
-                                clientAnchor.setCol2(cell.getColumnIndex()+5);
+                                clientAnchor.setCol2(cell.getColumnIndex() + 5);
                                 clientAnchor.setRow1(row.getRowNum());
-                                clientAnchor.setRow2(row.getRowNum()+2);
+                                clientAnchor.setRow2(row.getRowNum() + 2);
 
                                 Comment comment = (Comment) drawing.createCellComment(clientAnchor);
                                 RichTextString richTextString = creationHelper.createRichTextString(logDetail.getReason());
@@ -399,17 +415,16 @@ public class ExcelExporterReport {
                                 comment.setAuthor("Apache POI");
                                 cell.setCellComment(comment);
                             }
-                        }
-                        else {
+                        } else {
                             cell.setCellValue(logDetail.getSigns().getName().toString());
                             cell.setCellStyle(styleBodyCenter);
                             //Comment
-                            if(logDetail.getReason() != null){
+                            if (logDetail.getReason() != null) {
                                 ClientAnchor clientAnchor = creationHelper.createClientAnchor();
                                 clientAnchor.setCol1(cell.getColumnIndex());
-                                clientAnchor.setCol2(cell.getColumnIndex()+5);
+                                clientAnchor.setCol2(cell.getColumnIndex() + 5);
                                 clientAnchor.setRow1(row.getRowNum());
-                                clientAnchor.setRow2(row.getRowNum()+2);
+                                clientAnchor.setRow2(row.getRowNum() + 2);
 
 
                                 Comment comment = (Comment) drawing.createCellComment(clientAnchor);
@@ -421,21 +436,18 @@ public class ExcelExporterReport {
                         }
 
 
-                        if(logDetail.getDateLog().getDayOfWeek().toString() == "SATURDAY" ||
-                                logDetail.getDateLog().getDayOfWeek().toString() == "SUNDAY"){
+                        if (logDetail.getDateLog().getDayOfWeek().toString() == "SATURDAY" ||
+                                logDetail.getDateLog().getDayOfWeek().toString() == "SUNDAY") {
                             if (logDetail.getSigns() == null) {
                                 cell.setCellValue("-");
                                 cell.setCellStyle(styleBodyColor);
-                            }
-                            else if (logDetail.getSigns().getName().toString().equals("H_KL")) {
+                            } else if (logDetail.getSigns().getName().toString().equals("H_KL")) {
                                 cell.setCellValue("H/KL");
                                 cell.setCellStyle(styleBodyColor);
-                            }
-                            else if (logDetail.getSigns().getName().toString().equals("KL_H")) {
+                            } else if (logDetail.getSigns().getName().toString().equals("KL_H")) {
                                 cell.setCellValue("KL/H");
                                 cell.setCellStyle(styleBodyColor);
-                            }
-                            else {
+                            } else {
                                 cell.setCellValue(logDetail.getSigns().getName().toString());
                                 cell.setCellStyle(styleBodyColor);
                             }
@@ -449,20 +461,28 @@ public class ExcelExporterReport {
                         cell = row.createCell(k);
                         cell.setCellStyle(styleBody);
                         if (k == 33) {
-                            cell.setCellFormula("COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*H*\")" +
+                            cell.setCellFormula("COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"H\")" +
                                     "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*/H*\")/2" +
                                     "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*H/*\")/2" +
                                     "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*CT*\")" +
                                     "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*LB*\")"); // Tổng ngày làm việc
                             cell.setCellStyle(styleBodyCenter);
-                            cell.setCellStyle(styleBodyCenter);
                         }
                         if (k == 34) {
-                            cell.setCellFormula("AH" + rowCount + ""); // Tổng ngày hưởng lương
+                            // Tổng ngày hưởng lương
+                            cell.setCellFormula("AH" + rowCount + "" +
+                                    "+COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*Ô*\")" +
+                                    "+COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"L\")" +
+                                    "+COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*TC*\")" +
+                                    "+(COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*P*\")" +
+                                    "+(COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*P/*\")/2)" +
+                                    "+(COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*/P*\")/2))"); // Tổng ngày hưởng lương
                             cell.setCellStyle(styleBodyCenter);
                         }
                         if (k == 35) {
-                            cell.setCellValue(1); // Tổng ngày hưởng lương
+                            cell.setCellFormula("(COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"P\")" +
+                                    "+(COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"P/*\")/2)" +
+                                    "+(COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*/P\")/2))");
                             cell.setCellStyle(styleBodyCenter);
                         }
                     }
@@ -471,7 +491,7 @@ public class ExcelExporterReport {
             }
 
         }
-        
+
         row = sheet.createRow(rowCount++);
         for (int i = 0; i <= 32; i++) {
             cell = row.createCell(i);
@@ -499,7 +519,7 @@ public class ExcelExporterReport {
         rowIndex = sheet.getLastRowNum();
 
         System.out.println(rowIndex);
-        for(int i=6; i<sheet.getLastRowNum(); i++){
+        for (int i = 6; i < sheet.getLastRowNum(); i++) {
             sheet.getRow(i).setHeight((short) 500);
         }
         sheet.getRow(sheet.getLastRowNum()).setHeight((short) 600);
@@ -605,7 +625,7 @@ public class ExcelExporterReport {
 
         //Freeze Pane
 //        sheet.createFreezePane(0, 6, 0, 6);
-        sheet.createFreezePane(2,6);
+        sheet.createFreezePane(2, 6);
 
 
         // merge in header (row 1-4)

@@ -56,7 +56,7 @@ public class User extends BaseEntity {
     private Department departments;
 
     @ManyToOne
-    @JoinColumn(name = "request_id", nullable = false)
+    @JoinColumn(name = "request_id")
     private Request request;
 
     private float currentOff;
