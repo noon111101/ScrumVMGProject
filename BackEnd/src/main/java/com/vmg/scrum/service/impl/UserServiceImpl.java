@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
                 signUpRequest.getFullName(),
                 signUpRequest.getGender(),
                 filename,
-                signUpRequest.getCode(),
+                "VMG_"+signUpRequest.getCode(),
                 department
         );
         Set<String> strRoles = signUpRequest.getRole();
@@ -253,7 +253,6 @@ public class UserServiceImpl implements UserService {
             } else throw new RuntimeException("Mật khẩu hiện tại không chính xác");
         }
         return new MessageResponse("Thay đổi mật khẩu thành công!");
-
     }
 
     @Override
@@ -265,7 +264,7 @@ public class UserServiceImpl implements UserService {
                 throw new RuntimeException("Email đã tồn tại");
 
         }
-        if (updateRequest.getCode() != user.getCode()) {
+        if (!user.getCode().equals(updateRequest.getCode())) {
             if (userRepository.findByCode(updateRequest.getCode()) != null)
                 throw new RuntimeException("Mã nhân viên đã tồn tại");
         }

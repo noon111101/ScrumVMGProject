@@ -49,7 +49,7 @@ public class LogDetailController {
     }
     @GetMapping("byUser")
     public ResponseEntity<Page<LogDetail>> getByUser(@RequestParam(defaultValue = "0") int page,
-                                                  @RequestParam(defaultValue = "5") int size,@RequestParam Double code)
+                                                  @RequestParam(defaultValue = "5") int size,@RequestParam String code)
     {
         Pageable pageable = PageRequest.of(page, size);
         return new ResponseEntity<>(logDetailRepository.findByUserCode(code, pageable), HttpStatus.OK);
@@ -59,7 +59,7 @@ public class LogDetailController {
     @GetMapping("byDate_Usercode")
     public ResponseEntity<Page<LogDetail>> getLogsByDateUserCode(@RequestParam(name = "page", defaultValue = "0") int page,
                                                      @RequestParam(name = "size", defaultValue = "30") int size,
-                                                     @RequestParam Double code,
+                                                     @RequestParam String code,
                                                      @RequestParam(name = "from", required = false) String from,
                                                      @RequestParam(name = "to", required = false) String to) throws ParseException {
         DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -191,7 +191,7 @@ public class LogDetailController {
     }
 
     @GetMapping("allByUser")
-    public ResponseEntity<List<LogDetail>> getByUser(@RequestParam Double code)
+    public ResponseEntity<List<LogDetail>> getByUser(@RequestParam String code)
     {
         return new ResponseEntity<>(logDetailRepository.findByUserCode(code), HttpStatus.OK);
     }

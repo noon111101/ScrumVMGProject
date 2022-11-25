@@ -20,13 +20,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Boolean existsByUsername(String username);
 
-    Boolean existsByCode(Double code);
+    Boolean existsByCode(String code);
 
     List<User> findAllByDepartments_Id(long id);
 
     List<User> findAll();
 
-    User findByCode(Double code);
+    User findByCode(String code);
 
     // MANAGE USER
     @Query(value = "select u from User u " +

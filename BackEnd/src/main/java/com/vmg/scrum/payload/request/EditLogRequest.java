@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 
 public class EditLogRequest {
     @NotNull
-    private double code;
+    private String code;
 
     public String getReason() {
         return reason;
@@ -30,11 +30,11 @@ public class EditLogRequest {
         this.sign = sign;
     }
 
-    public double getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(double code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
