@@ -270,7 +270,7 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setUsername(updateRequest.getUsername());
-        user.setCode(updateRequest.getCode());
+        user.setCode("VMG_"+updateRequest.getCode());
         user.setFullName(updateRequest.getFullName());
         user.setGender(updateRequest.getGender());
         Department department = departmentRepository.findByName(updateRequest.getDepartment());
