@@ -188,7 +188,7 @@ public class ExcelExportPhep {
         cell = row.createCell(2);
         cell.setCellValue("Mã nhân sự");
         cell.setCellStyle(styleTitleThin);
-        sheet.setColumnWidth(2, 3000);
+        sheet.setColumnWidth(2, 3500);
 
         cell = row.createCell(3);
         cell.setCellValue("Thời gian tính phép");
