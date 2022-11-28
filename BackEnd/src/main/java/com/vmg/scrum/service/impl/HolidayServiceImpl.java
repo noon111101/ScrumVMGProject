@@ -28,7 +28,7 @@ public class HolidayServiceImpl implements HolidayService {
         if(holidayRequest.getDateFrom().isAfter(holidayRequest.getDateTo())){
             throw new RuntimeException("Ngày bắt đầu phải sớm hơn ngày kết thúc!");
         }
-        Holiday holiday = new Holiday(holidayRequest.getName(), holidayRequest.getDateFrom(), holidayRequest.getDateTo(),holidayRequest.getIsLoop());
+        Holiday holiday = new Holiday(holidayRequest.getName(), holidayRequest.getDateFrom(), holidayRequest.getDateTo());
           holidayRepository.save(holiday);
         return new MessageResponse("Thêm ngày nghỉ thành công!");
     }
@@ -46,7 +46,6 @@ public class HolidayServiceImpl implements HolidayService {
            holiday.setHolidayName(holidayRequest.getName());
            holiday.setDateFrom(holidayRequest.getDateFrom());
            holiday.setDateTo(holidayRequest.getDateTo());
-           holiday.setIsLoop(holidayRequest.getIsLoop());
            holidayRepository.save(holiday);
            
            }
