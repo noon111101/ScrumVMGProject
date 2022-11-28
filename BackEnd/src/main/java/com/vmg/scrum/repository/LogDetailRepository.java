@@ -163,9 +163,5 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
 
     LogDetail findByUserCodeAndDate(String code, LocalDate date);
 
-    LogDetail findByUserCodeAndDate(Double code, LocalDate date);
-
-
-
 
 }

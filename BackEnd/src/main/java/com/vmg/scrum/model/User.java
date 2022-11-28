@@ -3,9 +3,7 @@ package com.vmg.scrum.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vmg.scrum.model.excel.LogDetail;
-import com.vmg.scrum.model.off.OffHistory;
 import com.vmg.scrum.model.option.Department;
-import com.vmg.scrum.model.request.Request;
 import lombok.*;
 
 import javax.persistence.*;
@@ -55,10 +53,6 @@ public class User extends BaseEntity {
     @JoinColumn(name = "department_id", nullable = false)
     private Department departments;
 
-    @ManyToOne
-    @JoinColumn(name = "request_id")
-    private Request request;
-
     private float currentOff;
 
     private float previousOff;
@@ -76,10 +70,6 @@ public class User extends BaseEntity {
             @JoinColumn(name = "role_id") })
     private Set<Role> roles = new HashSet<>();
 
-
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
-    @JsonIgnore
-    private Set<OffHistory> offHistories =new HashSet<>();
 
     public User(String username, String rootPassword, String fullName,String gender,String cover,String code,Department department) {
         this.username = username;
