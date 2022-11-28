@@ -223,5 +223,11 @@ public class LogDetailController {
     public ResponseEntity<?> sendImg(@Valid @ModelAttribute ImageLogRequest imageLogRequest) {
         return ResponseEntity.ok(logDetailService.sendImg(imageLogRequest));
     }
+    @GetMapping("/test")
+    public ResponseEntity<?> getByCurrentDate() {
+        System.out.println(LocalDate.now());
+        return ResponseEntity.ok(logDetailRepository.findByCurrentDay(LocalDate.of(2022,10,3)));
+
+    }
 
 }
