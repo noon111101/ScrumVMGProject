@@ -1,6 +1,7 @@
 package com.vmg.scrum.service.impl;
 
 import com.vmg.scrum.model.Holiday;
+
 import com.vmg.scrum.payload.request.HolidayRequest;
 import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.repository.HolidayRepository;
@@ -46,5 +47,20 @@ public class HolidayServiceImpl implements HolidayService {
            holiday.setDateTo(holidayRequest.getDateTo());
            holiday.setIsLoop(holidayRequest.getIsLoop());
            holidayRepository.save(holiday);
-    }
+           
+           }
+           
+           @Override
+    public MessageResponse deleteHoliday(Long id) {
+        Optional<Holiday> holiday = holidayRepository.findById(id);
+        if(!holiday.isPresent()){
+            throw new RuntimeException("Ngày lễ không tồn tại");
+        }
+        else{
+            holidayRepository.deleteById(id);
+            return new MessageResponse("Xóa Thành Công");
+        }
+}
+
+
 }
