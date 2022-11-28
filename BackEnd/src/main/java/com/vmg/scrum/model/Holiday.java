@@ -33,14 +33,11 @@ public class Holiday extends BaseEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateTo;
 
-    @Column(name = "is_Loop")
-    private Boolean isLoop;
 
-    public Holiday(String holidayName, LocalDate dateFrom, LocalDate dateTo, boolean isLoop) {
+    public Holiday(String holidayName, LocalDate dateFrom, LocalDate dateTo) {
         this.holidayName = holidayName;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
-        this.isLoop = isLoop;
     }
 
 }

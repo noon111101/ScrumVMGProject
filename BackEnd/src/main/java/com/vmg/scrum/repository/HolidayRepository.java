@@ -9,6 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import com.vmg.scrum.payload.response.MessageResponse;
+
+import java.util.Optional;
+
 @Repository
 
 public interface HolidayRepository extends JpaRepository<Holiday, Long> {

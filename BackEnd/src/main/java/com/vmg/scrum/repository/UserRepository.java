@@ -17,7 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUsername(String username);
 
-
     Boolean existsByUsername(String username);
 
     Boolean existsByCode(String code);
@@ -49,8 +48,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             " and u.avalible = ?2 " +
             " order by u.id desc")
     Page<User> findAll_Search_Status(String search,boolean status, Pageable pageable);
-
-
 
     @Query(value = "select u from User u " +
             " where u.departments.id = ?1 " +
