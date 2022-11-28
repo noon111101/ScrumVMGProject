@@ -3,10 +3,13 @@ package com.vmg.scrum.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vmg.scrum.model.excel.LogDetail;
+import com.vmg.scrum.model.off.OffHistory;
 import com.vmg.scrum.model.option.Department;
+import com.vmg.scrum.model.request.Request;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,7 +42,7 @@ public class User extends BaseEntity {
     private String fullName;
 
     @Column(unique = true, nullable = false)
-    private double code;
+    private String code;
 
     @Column(nullable = false)
     private String gender;
@@ -52,6 +55,16 @@ public class User extends BaseEntity {
     @JoinColumn(name = "department_id", nullable = false)
     private Department departments;
 
+    @ManyToOne
+    @JoinColumn(name = "request_id")
+    private Request request;
+
+    private float currentOff;
+
+    private float previousOff;
+
+    private LocalDate startWork;
+
     @Column(columnDefinition = "boolean default true")
     private Boolean avalible;
 
@@ -63,7 +76,12 @@ public class User extends BaseEntity {
             @JoinColumn(name = "role_id") })
     private Set<Role> roles = new HashSet<>();
 
-    public User(String username, String rootPassword, String fullName,String gender,String cover,Double code,Department department) {
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
+    @JsonIgnore
+    private Set<OffHistory> offHistories =new HashSet<>();
+
+    public User(String username, String rootPassword, String fullName,String gender,String cover,String code,Department department) {
         this.username = username;
         this.rootPassword = rootPassword;
         this.fullName = fullName;
@@ -74,7 +92,7 @@ public class User extends BaseEntity {
         this.checkRootDisable=false;
         this.avalible=true;
     }
-    public User(String username, String fullName,String gender,Double code,Department department,String cover) {
+    public User(String username, String fullName,String gender,String code,Department department,String cover) {
         this.username = username;
         this.fullName = fullName;
         this.code=code;
@@ -84,4 +102,5 @@ public class User extends BaseEntity {
         this.avalible=true;
         this.cover=cover;
     }
+
 }

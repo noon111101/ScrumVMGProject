@@ -41,7 +41,6 @@ public class ExcelImporter {
         if (!TYPE.equals(file.getContentType())) {
             return false;
         }
-
         return true;
     }
     public List<LogDetail> read(InputStream inputStream) throws IOException {
@@ -86,8 +85,8 @@ public class ExcelImporter {
                             if(check){
                                 break;
                             }
-                            user.setCode(currentCell.getNumericCellValue());
-                            System.out.println(currentCell.getNumericCellValue());
+                            user.setCode(currentCell.getStringCellValue());
+                            System.out.println(currentCell.getStringCellValue());
                             break;
                         case 2:
                             break;
@@ -140,7 +139,6 @@ public class ExcelImporter {
                             break;
                     }
                     cellIdx++;
-
                 }
                 if(user.getFullName()!=null){
                     if(userRepository.findByCode(user.getCode())==null)
@@ -184,7 +182,7 @@ public class ExcelImporter {
                             signupRequest.setFullName(currentCell.getStringCellValue());
                             break;
                         case 1:
-                            signupRequest.setCode(currentCell.getNumericCellValue());
+                            signupRequest.setCode(currentCell.getStringCellValue());
                             break;
                         case 2:
                             if(departmentRepository.findByName(currentCell.getStringCellValue())==null)

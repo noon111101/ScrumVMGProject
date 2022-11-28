@@ -5,11 +5,11 @@ import com.vmg.scrum.model.excel.LogDetail;
 import java.util.List;
 
 public class UserLogDetail {
-    public Double getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(Double code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
@@ -35,6 +35,6 @@ public class UserLogDetail {
 
     private List<LogDetail> logDetail;
 
-    private Double code;
+    private String code;
     private String name;
 }
