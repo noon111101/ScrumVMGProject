@@ -262,7 +262,6 @@ public class UserServiceImpl implements UserService {
         if (!user.getUsername().equals(updateRequest.getUsername())) {
             if (userRepository.findByUsername(updateRequest.getUsername()).isPresent())
                 throw new RuntimeException("Email đã tồn tại");
-
         }
         if (!user.getCode().equals(updateRequest.getCode())) {
             if (userRepository.findByCode(updateRequest.getCode()) != null)
