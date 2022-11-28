@@ -5,6 +5,7 @@ public enum ESign {
     KL,
     NT,
     KL_H,
-    H_KL
+    H_KL,
+    L
 
 }
