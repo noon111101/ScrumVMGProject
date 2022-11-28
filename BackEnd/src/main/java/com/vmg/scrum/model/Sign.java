@@ -2,7 +2,6 @@ package com.vmg.scrum.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vmg.scrum.model.excel.LogDetail;
-import com.vmg.scrum.model.request.Request;
 import lombok.*;
 
 import javax.persistence.*;
@@ -28,10 +27,6 @@ public class Sign {
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "signs")
     @JsonIgnore
     private Set<LogDetail> logDetails = new HashSet<>();
-
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "lastSign")
-    @JsonIgnore
-    private Set<Request> requests = new HashSet<>();
 
 
     public Sign(ESign nt) {
