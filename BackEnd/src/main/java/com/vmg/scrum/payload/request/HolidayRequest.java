@@ -18,7 +18,7 @@ public class HolidayRequest {
     private LocalDate dateFrom;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateTo;
-    private Boolean isLoop;
+
 
     public String getName() {
         return name;
@@ -44,11 +44,4 @@ public class HolidayRequest {
         this.dateTo = dateTo;
     }
 
-    public Boolean getLoop() {
-        return isLoop;
-    }
-
-    public void setLoop(Boolean loop) {
-        isLoop = loop;
-    }
 }
