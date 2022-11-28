@@ -1,18 +1,21 @@
 package com.vmg.scrum.model;
 
+
 import com.vmg.scrum.model.option.Department;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
+@Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@Entity
+
 public class Holiday extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -39,4 +42,5 @@ public class Holiday extends BaseEntity {
         this.dateTo = dateTo;
         this.isLoop = isLoop;
     }
+
 }
