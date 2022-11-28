@@ -21,9 +21,9 @@ public class FileController {
     @Autowired
     UserRepository userRepository;
     @GetMapping("info")
-    public Map<String,Double> download () {
+    public Map<String,String> download () {
         List<User> user = userRepository.findAll();
-        Map<String,Double> listInfo = new HashMap<>();
+        Map<String,String> listInfo = new HashMap<>();
         for(User u : user){
         String pathFile = "http://localhost:8080/"+u.getCover();
         listInfo.put(pathFile,u.getCode());

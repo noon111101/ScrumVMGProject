@@ -61,8 +61,6 @@ public class UserController {
                     pageUsers = userRepository.getUsersByDepartments_Id(departid, pageable);
                 }
             }
-
-
         }
         else{
             if(status!=null ){
@@ -88,8 +86,6 @@ public class UserController {
         return new ResponseEntity<>(pageUsers, HttpStatus.OK);
     }
 
-
-
     @GetMapping("users/{id}")
     public Optional<User> getUsers(@PathVariable Long id){
         return userRepository.findById(id);
@@ -112,6 +108,7 @@ public class UserController {
     public ResponseEntity<List<User>> getUser(){
         return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
     }
+
     @PostMapping("create")
     public MessageResponse registerUserExcel(@RequestBody SignupRequest[] signupRequests){
         try {
@@ -123,5 +120,4 @@ public class UserController {
             throw new RuntimeException("Đăng kí lỗi trường thông tin chưa đúng quy định");
         }
     }
-
 }

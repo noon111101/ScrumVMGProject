@@ -19,7 +19,7 @@ public class UpdateUserRequest {
     @Size(min = 6, max = 50)
     private String fullName;
 
-    private Double code;
+    private String code;
 
     public String getDepartment() {
         return department;
@@ -59,11 +59,11 @@ public class UpdateUserRequest {
         this.fullName = fullName;
     }
 
-    public Double getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(Double code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
