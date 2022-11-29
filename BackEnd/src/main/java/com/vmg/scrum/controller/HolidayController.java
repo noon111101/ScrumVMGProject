@@ -42,6 +42,11 @@ public class HolidayController {
         holidayService.updateHoliday(id, holidayRequest);
         return new ResponseEntity<>(holidayRepository.findById(id).get(), HttpStatus.OK);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Holiday> getHoliday(@PathVariable("id") long id) {
+        return new ResponseEntity<>(holidayRepository.findById(id).get(), HttpStatus.OK);
+    }
     
     @GetMapping("")
     public ResponseEntity<Page<Holiday>> getAllHolidays(@RequestParam(name="page", defaultValue = "0") int page,
