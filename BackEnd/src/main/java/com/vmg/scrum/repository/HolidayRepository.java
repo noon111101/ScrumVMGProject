@@ -19,9 +19,22 @@ public interface HolidayRepository extends JpaRepository<Holiday, Long> {
     Page<Holiday> findAll(Pageable pageable);
 
     @Query(value = "select h from Holiday h\n" +
-            " where (h.holidayName LIKE %?1%) " +
-            " order by h.id desc ")
+            " order by h.id desc")
+    Page<Holiday> findAllHolidays(Pageable pageable);
+
+    @Query(value = "select h from Holiday h\n" +
+            " where YEAR(h.dateFrom) = ?1 " +
+            " order by h.id desc")
+    Page<Holiday> findAllHolidaysByYear(int year, Pageable pageable);
+    @Query(value = "select h from Holiday h\n" +
+            " where h.holidayName LIKE %?1% " +
+            " order by h.id desc")
     Page<Holiday> findAllSearch(String key, Pageable pageable);
+    @Query(value = "select h from Holiday h\n" +
+            " where h.holidayName LIKE %?1% " +
+            " and YEAR(h.dateFrom) = ?2 " +
+            " order by h.id desc")
+    Page<Holiday> findAllSearchAndYear(String key,int year, Pageable pageable);
     
     Optional<Holiday> findByHolidayName(String name);
 

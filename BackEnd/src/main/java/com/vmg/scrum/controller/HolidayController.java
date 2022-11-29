@@ -46,14 +46,25 @@ public class HolidayController {
     @GetMapping("")
     public ResponseEntity<Page<Holiday>> getAllHolidays(@RequestParam(name="page", defaultValue = "0") int page,
                                                         @RequestParam(name="size",defaultValue = "12") int size,
-                                                        @RequestParam(name="search", required = false) String search){
+                                                        @RequestParam(name="search", required = false) String search,
+                                                        @RequestParam(name = "year", defaultValue = "0") int year){
         Pageable pageable = PageRequest.of(page, size);
         Page<Holiday> pageHolidays = null;
         if(search!= null && search!= ""){
-            pageHolidays = holidayRepository.findAllSearch(search, pageable);
+            if(year!=0){
+                pageHolidays = holidayRepository.findAllSearchAndYear(search,year, pageable);
+            }else{
+                pageHolidays = holidayRepository.findAllSearch(search, pageable);
+            }
+
         }
         else {
-            pageHolidays = holidayRepository.findAll(pageable);
+            if(year!=0){
+                pageHolidays = holidayRepository.findAllHolidaysByYear(year, pageable);
+            }else{
+                pageHolidays = holidayRepository.findAllHolidays(pageable);
+            }
+
         }
         return new ResponseEntity<>(pageHolidays, HttpStatus.OK);
     }
