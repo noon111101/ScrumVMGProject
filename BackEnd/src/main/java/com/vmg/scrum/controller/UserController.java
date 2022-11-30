@@ -90,6 +90,10 @@ public class UserController {
     public Optional<User> getUsers(@PathVariable Long id){
         return userRepository.findById(id);
     }
+    @GetMapping("user/id_staff")
+    public User getUser(@RequestParam String code){
+        return userRepository.findByCode(code);
+    }
     @GetMapping("users/page")
     public ResponseEntity<Page<User>> getAll(@RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "2") int size)

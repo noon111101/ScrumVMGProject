@@ -40,5 +40,9 @@ public interface HolidayRepository extends JpaRepository<Holiday, Long> {
 
     Boolean existsByHolidayName(String username);
 
+    @Query(value = "SELECT * FROM holiday h \n" +
+            "where h.date_from <= ?1"+"and h.date_to>= ?1",nativeQuery = true)
+    Holiday findCurrentDate(String date);
+
 
 }
