@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import com.vmg.scrum.payload.response.MessageResponse;
 
+import java.time.LocalDate;
+import java.time.Year;
 import java.util.Optional;
 
 @Repository
@@ -38,7 +40,7 @@ public interface HolidayRepository extends JpaRepository<Holiday, Long> {
     
     Optional<Holiday> findByHolidayName(String name);
 
-    Boolean existsByHolidayName(String username);
+    Boolean existsByDateFromAndDateTo(LocalDate dateFrom, LocalDate dateTo);
 
     @Query(value = "SELECT * FROM holiday h \n" +
             "where h.date_from <= ?1"+"and h.date_to>= ?1",nativeQuery = true)
