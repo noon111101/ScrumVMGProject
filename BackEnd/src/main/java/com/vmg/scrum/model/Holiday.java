@@ -22,7 +22,7 @@ public class Holiday extends BaseEntity {
     @Column(name = "holiday_id", nullable = false)
     private Long id;
 
-    @Column(name = "holiday_name", unique = true, nullable = false)
+    @Column(name = "holiday_name", nullable = false)
     private String holidayName;
 
     @Column(name = "date_from")
