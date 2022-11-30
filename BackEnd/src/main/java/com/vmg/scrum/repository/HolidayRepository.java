@@ -44,7 +44,9 @@ public interface HolidayRepository extends JpaRepository<Holiday, Long> {
 
     Boolean existsByDateFromAndDateTo(LocalDate dateFrom, LocalDate dateTo);
 
-    @Query(value = "select h from Holiday h\n" +
-            " where  h.dateFrom = ?1 ")
-    Optional<Holiday> findbyDateFrom(LocalDate year);
+    @Query(value = "SELECT * FROM holiday h \n" +
+            "where h.date_from <= ?1"+"and h.date_to>= ?1",nativeQuery = true)
+    Holiday findCurrentDate(String date);
+
+
 }

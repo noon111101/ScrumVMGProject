@@ -1,7 +1,9 @@
 package com.vmg.scrum.excel;
 
 import com.vmg.scrum.model.ESign;
+import com.vmg.scrum.model.Holiday;
 import com.vmg.scrum.model.excel.LogDetail;
+import com.vmg.scrum.repository.HolidayRepository;
 import com.vmg.scrum.repository.LogDetailRepository;
 import com.vmg.scrum.repository.SignRepository;
 import org.apache.tomcat.jni.Time;
@@ -20,6 +22,8 @@ public class DataExcelCalculation {
     SignRepository signRepository;
     @Autowired
     LogDetailRepository logDetailRepository;
+    @Autowired
+    HolidayRepository holidayRepository;
     public List<LogDetail> convertSign(List<LogDetail> logDetails) {
         for (LogDetail logDetail : logDetails) {
                 DayOfWeek dayOfWeek = logDetail.getDateLog().getDayOfWeek();
@@ -97,7 +101,13 @@ public class DataExcelCalculation {
     @Scheduled(cron = "0 40 22 * * *")
     public List<LogDetail> convertSignFace(){
          List<LogDetail> logDetails= logDetailRepository.findByCurrentDay(LocalDate.now());
+         Holiday holiday = holidayRepository.findCurrentDate(LocalDate.now().toString());
         for (LogDetail logDetail : logDetails) {
+            if(holiday!=null){
+                logDetail.setSigns(signRepository.findByName(ESign.L));
+                logDetail.setReason(holiday.getHolidayName());
+                continue;
+            }
             DayOfWeek dayOfWeek = logDetail.getDateLog().getDayOfWeek();
             Integer hourIn =null;
             Integer hourOut=null;

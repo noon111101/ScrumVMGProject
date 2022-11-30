@@ -4,6 +4,7 @@ import com.vmg.scrum.exception.custom.UpdateNullException;
 import com.vmg.scrum.model.ESign;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.payload.request.EditLogRequest;
+import com.vmg.scrum.payload.request.FaceKeepRequest;
 import com.vmg.scrum.payload.request.ImageLogRequest;
 import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.repository.LogDetailRepository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
@@ -68,6 +70,30 @@ public class LogDetailServiceImpl  implements LogDetailService{
     @Override
     public String sendImg(ImageLogRequest imageLogRequest) {
         return fileManagerService.saveLog(imageLogRequest);
+    }
+
+    @Override
+    public LogDetail faceTimeKeep(FaceKeepRequest faceKeepRequest) {
+        System.out.println(LocalDate.now());
+        LogDetail logDetail = logDetailRepository.findByUserCodeAndDate(faceKeepRequest.getCode(),LocalDate.now());
+        System.out.println(logDetail);
+        DateTimeFormatter sdf = DateTimeFormatter.ofPattern("HH:mm:ss");
+        DateTimeFormatter sdfdate = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String time = faceKeepRequest.getTime().split(" ")[1];
+        LocalTime timeParse = LocalTime.parse(time,sdf);
+        String date = faceKeepRequest.getTime().split(" ")[0];
+        LocalDate dateParse = LocalDate.parse(date,sdfdate);
+        if(logDetail!=null){
+            logDetail.setTimeOut(timeParse);
+        }
+        else {
+            logDetail = new LogDetail();
+            logDetail.setUser(userRepository.findByCode(faceKeepRequest.getCode()));
+            logDetail.setDateLog(dateParse);
+            logDetail.setTimeIn(timeParse);
+        }
+        logDetailRepository.save(logDetail);
+        return logDetail;
     }
 
 }

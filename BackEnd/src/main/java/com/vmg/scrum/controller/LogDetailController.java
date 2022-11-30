@@ -3,6 +3,7 @@ package com.vmg.scrum.controller;
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.payload.request.EditLogRequest;
+import com.vmg.scrum.payload.request.FaceKeepRequest;
 import com.vmg.scrum.payload.request.ImageLogRequest;
 import com.vmg.scrum.payload.request.SignupRequest;
 import com.vmg.scrum.payload.response.MessageResponse;
@@ -219,7 +220,7 @@ public class LogDetailController {
             throw new RuntimeException("Đăng kí lỗi trường thông tin chưa đúng quy định");
         }
     }
-    @PostMapping("/testSendImg")
+    @PostMapping("/saveImageLog")
     public ResponseEntity<?> sendImg(@Valid @ModelAttribute ImageLogRequest imageLogRequest) {
         return ResponseEntity.ok(logDetailService.sendImg(imageLogRequest));
     }
@@ -228,6 +229,10 @@ public class LogDetailController {
         System.out.println(LocalDate.now());
         return ResponseEntity.ok(logDetailRepository.findByCurrentDay(LocalDate.of(2022,10,3)));
 
+    }
+    @PostMapping ("/timeKeep")
+    public ResponseEntity<?> faceTimeKeep(@Valid @RequestBody FaceKeepRequest faceKeepRequest) {
+        return ResponseEntity.ok(logDetailService.faceTimeKeep(faceKeepRequest));
     }
 
 }

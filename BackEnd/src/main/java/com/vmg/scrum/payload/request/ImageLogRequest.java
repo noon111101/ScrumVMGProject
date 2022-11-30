@@ -13,11 +13,12 @@ public class ImageLogRequest {
         this.file = file;
     }
 
-    public double getCode() {
+
+    public String getCode() {
         return code;
     }
 
-    public void setCode(double code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
@@ -29,7 +30,7 @@ public class ImageLogRequest {
         this.fullName = fullName;
     }
 
-    private double code;
+    private String code;
 
     private String fullName;
 }
