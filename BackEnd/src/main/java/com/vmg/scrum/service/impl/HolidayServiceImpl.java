@@ -7,7 +7,6 @@ import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.repository.HolidayRepository;
 import com.vmg.scrum.service.HolidayService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +24,11 @@ public class HolidayServiceImpl implements HolidayService {
 
     @Override
     public MessageResponse addHoliday(HolidayRequest holidayRequest) throws MessagingException, UnsupportedEncodingException {
-        if (holidayRepository.existsByHolidayName(holidayRequest.getName())) {
-            throw new RuntimeException("Ngày nghỉ lễ đã tồn tại!");
+
+            if (holidayRepository.existsByDateFromAndDateTo(holidayRequest.getDateFrom(), holidayRequest.getDateTo())){
+                throw new RuntimeException("Ngày nghỉ lễ đã tồn tại");
         }
+
         if (holidayRequest.getDateFrom().isAfter(holidayRequest.getDateTo())) {
             throw new RuntimeException("Ngày bắt đầu phải sớm hơn ngày kết thúc!");
         }
@@ -38,11 +39,14 @@ public class HolidayServiceImpl implements HolidayService {
 
     @Override
     public void updateHoliday(long id, HolidayRequest holidayRequest) {
+
         Holiday holiday = holidayRepository.findById(id).get();
-        if (!holiday.getHolidayName().equals(holidayRequest.getName())) {
-            if (holidayRepository.findByHolidayName(holidayRequest.getName()).isPresent())
+
+        if (!holiday.getDateFrom().equals(holidayRequest.getDateFrom()) || !holiday.getDateTo().equals(holidayRequest.getDateTo()) ) {
+            if (holidayRepository.existsByDateFromAndDateTo(holidayRequest.getDateFrom(), holidayRequest.getDateTo()))
                 throw new RuntimeException("Ngày nghỉ lễ đã tồn tại");
         }
+
         if (holidayRequest.getDateFrom().isAfter(holidayRequest.getDateTo())) {
             throw new RuntimeException("Ngày bắt đầu phải sớm hơn ngày kết thúc!");
         }
