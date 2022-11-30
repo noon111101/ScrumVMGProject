@@ -33,11 +33,15 @@ public class Holiday extends BaseEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateTo;
 
+    @Column(name = "total_days")
+    private int totalDays;
+
 
     public Holiday(String holidayName, LocalDate dateFrom, LocalDate dateTo) {
         this.holidayName = holidayName;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
+        totalDays = dateTo.compareTo(dateFrom)+1;
     }
 
 }
