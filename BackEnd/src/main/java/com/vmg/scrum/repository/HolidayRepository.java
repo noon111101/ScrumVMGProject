@@ -20,9 +20,11 @@ public interface HolidayRepository extends JpaRepository<Holiday, Long> {
     @Override
     Page<Holiday> findAll(Pageable pageable);
 
-    @Query(value = "select h from Holiday h\n" +
-            " order by h.id desc")
+    @Query(value = "select h from Holiday h\n " +
+            "order by h.id desc")
     Page<Holiday> findAllHolidays(Pageable pageable);
+
+
 
     @Query(value = "select h from Holiday h\n" +
             " where YEAR(h.dateFrom) = ?1 " +
