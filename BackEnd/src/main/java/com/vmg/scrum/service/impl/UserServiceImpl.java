@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
         Boolean check = userRepository.getById(userDetails.getId()).getCheckRootDisable();
-        Boolean avalible = userRepository.getById(userDetails.getId()).getAvalible();
+        Boolean avalible = userRepository.getById(userDetails.getId()).getAvailable();
         if (avalible == false) throw new LockAccountException("Account have been lock by admin");
         return new JwtResponse(jwt,
                 userDetails.getId(),
@@ -320,9 +320,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public MessageResponse lockAccount(Long id) {
         User user = userRepository.getById(id);
-        user.setAvalible(!user.getAvalible());
+        user.setAvailable(!user.getAvailable());
         userRepository.save(user);
-        if (user.getAvalible()) {
+        if (user.getAvailable()) {
             return new MessageResponse("Mở khóa tài khoản thành công!");
         } else {
             return new MessageResponse("Khóa tài khoản thành công!");
@@ -338,7 +338,7 @@ public class UserServiceImpl implements UserService {
                 if(!user.getCheckRootDisable()){
                     user.setRootPassword(encoder.encode(forgotPasswordChangeRequest.getNewPassword()));
                 }
-                if(!user.getAvalible())
+                if(!user.getAvailable())
                     throw  new RuntimeException("Tài khoản người dùng này đang bị khóa");
                 user.setPassword(encoder.encode(forgotPasswordChangeRequest.getNewPassword()));
                 userRepository.save(user);

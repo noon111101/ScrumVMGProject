@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.model.furlough.Furlough;
 import com.vmg.scrum.model.option.Department;
-import com.vmg.scrum.model.request.CategoryReason;
 import com.vmg.scrum.model.request.Request;
 import lombok.*;
 
@@ -47,7 +46,7 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     private String gender;
-    @Column(length = 500,nullable = false)
+    @Column(length = 500)
     private String cover;
 
     @Column(columnDefinition = "boolean default false")
@@ -56,14 +55,24 @@ public class User extends BaseEntity {
     @JoinColumn(name = "department_id", nullable = false)
     private Department departments;
 
-    @ManyToOne
-    @JoinColumn(name = "request_id", nullable = false)
-    private Request request;
+    @ManyToMany
+    @JoinTable(
+            name = "request_approvers",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "request_id"))
+    private Set<Request> requestApprovers;
+
+    @ManyToMany
+    @JoinTable(
+            name = "request_followers",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "request_id"))
+    private Set<Request> requestFollowers;
 
     private LocalDate startWork;
 
     @Column(columnDefinition = "boolean default true")
-    private Boolean avalible;
+    private Boolean available;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -86,7 +95,7 @@ public class User extends BaseEntity {
         this.code=code;
         this.departments=department;
         this.checkRootDisable=false;
-        this.avalible=true;
+        this.available =true;
     }
     public User(String username, String fullName,String gender,String code,Department department,String cover) {
         this.username = username;
@@ -95,7 +104,7 @@ public class User extends BaseEntity {
         this.gender=gender;
         this.departments=department;
         this.checkRootDisable=false;
-        this.avalible=true;
+        this.available =true;
         this.cover=cover;
     }
 
