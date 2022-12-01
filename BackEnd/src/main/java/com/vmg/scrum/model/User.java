@@ -45,7 +45,7 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     private String gender;
-    @Column(length = 500,nullable = false)
+    @Column(length = 500,nullable = true)
     private String cover;
 
     @Column(columnDefinition = "boolean default false")
@@ -55,12 +55,15 @@ public class User extends BaseEntity {
     private Department departments;
 
     @ManyToOne
-    @JoinColumn(name = "request_id", nullable = false)
+    @JoinColumn(name = "request_id", nullable = true)
     private Request request;
+
 
     private float currentOff;
 
+
     private float previousOff;
+
 
     private LocalDate startWork;
 
