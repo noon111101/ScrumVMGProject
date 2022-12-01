@@ -274,7 +274,7 @@ public class ExcelExporterReport {
         // Edit Body Table
         int rowCount = 6;
         int tt = 1;
-        String tinhNgayLamViec = "COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"H\")" +
+        String tinhNgayLamViec = "COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*H*\")" +
                 "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*/H*\")/2" +
                 "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*H/*\")/2" +
                 "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*CT*\")" +
@@ -341,7 +341,7 @@ public class ExcelExporterReport {
                         cell = row.createCell(k);
                         cell.setCellStyle(styleBody);
                         if (k == 33) {
-                            cell.setCellFormula("COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"H\")" +
+                            cell.setCellFormula("COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*H*\")" +
                                     "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*/H*\")/2" +
                                     "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*H/*\")/2" +
                                     "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*CT*\")" +
@@ -461,7 +461,7 @@ public class ExcelExporterReport {
                         cell = row.createCell(k);
                         cell.setCellStyle(styleBody);
                         if (k == 33) {
-                            cell.setCellFormula("COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"H\")" +
+                            cell.setCellFormula("COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*H*\")" +
                                     "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*/H*\")/2" +
                                     "-COUNTIF(C" + rowCount + ":AG" + rowCount + ",\"*H/*\")/2" +
                                     "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*CT*\")" +
