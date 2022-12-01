@@ -33,7 +33,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Override
     Page<User> findAll(Pageable pageable);
     @Query(value = "select u from User u " +
-            " where u.avalible = ?1 " +
+            " where u.available = ?1 " +
             " order by u.id desc")
     Page<User> findAll_Status(boolean status, Pageable pageable);
     @Query(value = "select u from User u " +
@@ -45,7 +45,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "select u from User u " +
             " where (u.fullName LIKE %?1% " +
             " or u.username LIKE %?1% )" +
-            " and u.avalible = ?2 " +
+            " and u.available = ?2 " +
             " order by u.id desc")
     Page<User> findAll_Search_Status(String search,boolean status, Pageable pageable);
 
@@ -55,7 +55,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> getUsersByDepartments_Id(long id, Pageable pageable);
     @Query(value = "select u from User u " +
             " where u.departments.id = ?1 " +
-            " and u.avalible = ?2 " +
+            " and u.available = ?2 " +
             " order by u.id desc")
     Page<User> getUsersByDepartments_Id_Status(long id, boolean status, Pageable pageable);
 
@@ -68,7 +68,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "select u from User u " +
             " where u.departments.id = ?1 " +
-            " and u.avalible = ?3 " +
+            " and u.available = ?3 " +
             " and (u.fullName LIKE %?2% " +
             " or u.username LIKE %?2% ) " +
             " order by u.id desc ")

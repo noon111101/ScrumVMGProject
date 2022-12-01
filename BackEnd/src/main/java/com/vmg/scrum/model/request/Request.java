@@ -24,14 +24,14 @@ public class Request extends BaseEntity {
 
     private String title;
 
-    @OneToOne
-    @JoinColumn(name = "creator_id", referencedColumnName = "user_id")
+    @ManyToOne
+    @JoinColumn(name = "creator_id")
     private User creator;
 
-    @OneToMany(mappedBy = "request")
+    @ManyToMany(mappedBy = "requestApprovers")
     private Set<User> approvers;
 
-    @OneToMany(mappedBy = "request")
+    @ManyToMany(mappedBy = "requestFollowers")
     private Set<User> followers;
 
     private String content;
