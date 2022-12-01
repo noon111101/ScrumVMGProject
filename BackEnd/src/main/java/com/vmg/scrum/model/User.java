@@ -3,7 +3,9 @@ package com.vmg.scrum.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vmg.scrum.model.excel.LogDetail;
+import com.vmg.scrum.model.furlough.Furlough;
 import com.vmg.scrum.model.option.Department;
+import com.vmg.scrum.model.request.CategoryReason;
 import com.vmg.scrum.model.request.Request;
 import lombok.*;
 
@@ -45,7 +47,7 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     private String gender;
-    @Column(length = 500,nullable = true)
+    @Column(length = 500,nullable = false)
     private String cover;
 
     @Column(columnDefinition = "boolean default false")
@@ -55,15 +57,8 @@ public class User extends BaseEntity {
     private Department departments;
 
     @ManyToOne
-    @JoinColumn(name = "request_id", nullable = true)
+    @JoinColumn(name = "request_id", nullable = false)
     private Request request;
-
-
-    private float currentOff;
-
-
-    private float previousOff;
-
 
     private LocalDate startWork;
 
@@ -78,6 +73,9 @@ public class User extends BaseEntity {
             @JoinColumn(name = "role_id") })
     private Set<Role> roles = new HashSet<>();
 
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
+    @JsonIgnore
+    private Set<Furlough> furloughs;
 
     public User(String username, String rootPassword, String fullName,String gender,String cover,String code,Department department) {
         this.username = username;

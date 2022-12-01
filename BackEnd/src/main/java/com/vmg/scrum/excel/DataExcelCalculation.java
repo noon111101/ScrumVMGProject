@@ -26,6 +26,12 @@ public class DataExcelCalculation {
     HolidayRepository holidayRepository;
     public List<LogDetail> convertSign(List<LogDetail> logDetails) {
         for (LogDetail logDetail : logDetails) {
+           Holiday holiday= holidayRepository.findCurrentDate(logDetail.getDateLog().toString());
+            if(holiday!=null){
+                logDetail.setSigns(signRepository.findByName(ESign.L));
+                logDetail.setReason(holiday.getHolidayName());
+                continue;
+            }
                 DayOfWeek dayOfWeek = logDetail.getDateLog().getDayOfWeek();
                 Integer hourIn =null;
                 Integer hourOut=null;
