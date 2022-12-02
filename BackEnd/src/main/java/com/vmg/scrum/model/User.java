@@ -72,7 +72,7 @@ public class User extends BaseEntity {
     private LocalDate startWork;
 
     @Column(columnDefinition = "boolean default true")
-    private Boolean available;
+    private Boolean avalible;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -95,7 +95,7 @@ public class User extends BaseEntity {
         this.code=code;
         this.departments=department;
         this.checkRootDisable=false;
-        this.available =true;
+        this.avalible =true;
     }
     public User(String username, String fullName,String gender,String code,Department department,String cover) {
         this.username = username;
@@ -104,7 +104,7 @@ public class User extends BaseEntity {
         this.gender=gender;
         this.departments=department;
         this.checkRootDisable=false;
-        this.available =true;
+        this.avalible =true;
         this.cover=cover;
     }
 

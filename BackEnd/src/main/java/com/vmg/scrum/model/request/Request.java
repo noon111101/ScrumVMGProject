@@ -8,6 +8,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Set;
 
 @Builder
@@ -49,10 +50,9 @@ public class Request extends BaseEntity {
 
     private LocalDate dateTo;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "session_id", referencedColumnName = "session_id")
-    @JsonIgnore
-    private Session session;
+    private LocalTime timeStart;
+
+    private LocalTime timeEnd;
 
     @ManyToOne
     @JoinColumn(name = "signs_id")
