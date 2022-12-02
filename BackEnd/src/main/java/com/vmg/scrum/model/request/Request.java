@@ -58,4 +58,18 @@ public class Request extends BaseEntity {
     @JoinColumn(name = "signs_id")
     private Sign lastSign;
 
+    public Request(String title, User creator,String content, CatergoryRequest catergoryRequest ,LocalDate dateFrom, LocalDate dateTo,Session session,Sign lastSign) {
+             this.title = title;
+             this.creator = creator;
+             this.content = content;
+             this.catergoryRequest = catergoryRequest;
+             this.dateFrom = dateFrom;
+             this.dateTo = dateTo;
+             this.session = session;
+             this.lastSign= lastSign;
+    }
+
+
+
+
 }
