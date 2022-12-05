@@ -28,6 +28,7 @@ public class FurloughServiceImpl implements FurloughService {
     DepartmentRepository departmentRepository;
     @Autowired
     FurloughHistoryRepository furloughHistoryRepository;
+
     @Override
     public Map<String, List<FurloughReport>> getAllFurloughByYear(Long year) {
         List<Department> departments = departmentRepository.findAll();
@@ -41,9 +42,9 @@ public class FurloughServiceImpl implements FurloughService {
                 for (User user : users) {
                     List<Furlough> furloughs = furloughRepository.findByYearAndUserId(year, user.getId());
                     List<Furlough> furloughList = new ArrayList<>();
-                    FurloughHistory furloughHistory = furloughHistoryRepository.findByYearAndUserId(year,user.getId());
-                    if(furloughHistory==null){
-                        furloughHistory= new FurloughHistory();
+                    FurloughHistory furloughHistory = furloughHistoryRepository.findByYearAndUserId(year, user.getId());
+                    if (furloughHistory == null) {
+                        furloughHistory = new FurloughHistory();
                         furloughHistory.setAvailibleCurrentYear(12);
                     }
                     for (int i = 1; i <= 12; i++) {
@@ -54,25 +55,62 @@ public class FurloughServiceImpl implements FurloughService {
                         if (furloughs.size() > 0) {
                             boolean check = true;
                             for (Furlough furlough : furloughs) {
-                                if (furlough.getMonthInYear() == i){
+                                if (furlough.getMonthInYear() == i) {
                                     furloughList.add(furlough);
-                                    check=false;
+                                    check = false;
                                     break;
                                 }
                             }
-                            if(check)
+                            if (check)
                                 furloughList.add(furlough1);
-                        }
-                        else furloughList.add(furlough1);
+                        } else furloughList.add(furlough1);
                     }
-                    FurloughReport furloughReport = new FurloughReport(user, furloughList,year,furloughHistory);
+                    FurloughReport furloughReport = new FurloughReport(user, furloughList, year, furloughHistory);
                     furloughReports.add(furloughReport);
                 }
             }
             departmentListMap.put(department.getName(), furloughReports);
         }
         return departmentListMap;
+    }
 
+    @Override
+    public List<FurloughReport> getFurloughsByYear(Long year) {
+
+        List<FurloughReport> furloughReports = new ArrayList<>();
+        List<User> users = userRepository.findAll();
+
+        for (User user : users) {
+            List<Furlough> furloughs = furloughRepository.findByYearAndUserId(year, user.getId());
+            List<Furlough> furloughList = new ArrayList<>();
+            FurloughHistory furloughHistory = furloughHistoryRepository.findByYearAndUserId(year, user.getId());
+            if (furloughHistory == null) {
+                furloughHistory = new FurloughHistory();
+                furloughHistory.setAvailibleCurrentYear(12);
+            }
+            for (int i = 1; i <= 12; i++) {
+                Furlough furlough1 = new Furlough();
+                furlough1.setMonthInYear((long) i);
+                furlough1.setYear(year);
+                furlough1.setUsedInMonth((float) 0);
+                if (furloughs.size() > 0) {
+                    boolean check = true;
+                    for (Furlough furlough : furloughs) {
+                        if (furlough.getMonthInYear() == i) {
+                            furloughList.add(furlough);
+                            check = false;
+                            break;
+                        }
+                    }
+                    if (check)
+                        furloughList.add(furlough1);
+                } else furloughList.add(furlough1);
+            }
+            FurloughReport furloughReport = new FurloughReport(user, furloughList, year, furloughHistory);
+            furloughReports.add(furloughReport);
+        }
+
+        return furloughReports;
     }
 }
 

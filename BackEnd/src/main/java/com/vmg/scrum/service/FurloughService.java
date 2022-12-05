@@ -9,4 +9,6 @@ import java.util.Map;
 public interface FurloughService {
    public Map<String, List<FurloughReport>> getAllFurloughByYear(Long year);
 
+   public List<FurloughReport> getFurloughsByYear(Long year);
+
 }

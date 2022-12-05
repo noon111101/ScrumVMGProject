@@ -1,6 +1,7 @@
 package com.vmg.scrum.model.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vmg.scrum.model.BaseEntity;
 import com.vmg.scrum.model.Sign;
 import com.vmg.scrum.model.User;
@@ -39,6 +40,7 @@ public class Request extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approve_status_id", referencedColumnName = "approve_status_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private ApproveStatus approveStatus;
 
     @OneToOne(fetch = FetchType.LAZY)
