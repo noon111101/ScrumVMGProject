@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="vmg_scrum_pj@localhost" uuid="88a28667-789e-472e-91c7-0670f42f0dbd">
+    <data-source source="LOCAL" name="model@localhost" uuid="9cb475f7-ecde-48c8-b0b3-13313eb2f940">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://localhost:3306/vmg_scrum_pj</jdbc-url>
+      <jdbc-url>jdbc:mysql://localhost:3306/model</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>
