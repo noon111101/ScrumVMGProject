@@ -185,7 +185,7 @@ public class DataExcelCalculation {
             }
             logDetailRepository.save(logDetail);
         }
-        System.out.println("Chay ham tinh toan ki tu cham cong vao" + Time.now());
+        System.out.println("Chay ham tinh toan ki tu cham cong vao" + LocalDate.now());
         return logDetails;
     }
 }

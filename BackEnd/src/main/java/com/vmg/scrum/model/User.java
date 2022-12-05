@@ -4,6 +4,7 @@ package com.vmg.scrum.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.model.furlough.Furlough;
+import com.vmg.scrum.model.furlough.FurloughHistory;
 import com.vmg.scrum.model.option.Department;
 import com.vmg.scrum.model.request.Request;
 import lombok.*;
@@ -85,6 +86,10 @@ public class User extends BaseEntity {
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
     @JsonIgnore
     private Set<Furlough> furloughs;
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
+    @JsonIgnore
+    private Set<FurloughHistory> pastYearFurlough;
 
     public User(String username, String rootPassword, String fullName,String gender,String cover,String code,Department department) {
         this.username = username;
