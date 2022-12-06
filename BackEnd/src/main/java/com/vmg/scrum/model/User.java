@@ -58,10 +58,11 @@ public class User extends BaseEntity {
     private Department departments;
 
     @ManyToMany(mappedBy = "approvers")
+    @JsonIgnore
     private Set<Request> requestApprovers;
 
     @ManyToMany(mappedBy = "followers")
-
+    @JsonIgnore
     private Set<Request> requestFollowers;
 
     private LocalDate startWork;
