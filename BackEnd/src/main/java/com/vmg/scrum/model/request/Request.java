@@ -1,5 +1,6 @@
 package com.vmg.scrum.model.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vmg.scrum.model.BaseEntity;
 import com.vmg.scrum.model.Sign;
 import com.vmg.scrum.model.User;
