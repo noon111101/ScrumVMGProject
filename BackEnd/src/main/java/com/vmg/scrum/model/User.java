@@ -57,20 +57,11 @@ public class User extends BaseEntity {
     @JoinColumn(name = "department_id", nullable = false)
     private Department departments;
 
-    @ManyToMany
-    @JsonIgnore
-    @JoinTable(
-            name = "request_approvers",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "request_id"))
+    @ManyToMany(mappedBy = "approvers")
     private Set<Request> requestApprovers;
 
-    @ManyToMany
-    @JsonIgnore
-    @JoinTable(
-            name = "request_followers",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "request_id"))
+    @ManyToMany(mappedBy = "followers")
+
     private Set<Request> requestFollowers;
 
     private LocalDate startWork;
@@ -82,8 +73,8 @@ public class User extends BaseEntity {
     @JsonIgnore
     private Set<LogDetail> logDetails= new HashSet<>();
     @ManyToMany( fetch = FetchType.LAZY)
-    @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
-            @JoinColumn(name = "role_id") })
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns =
+            @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
@@ -106,6 +97,7 @@ public class User extends BaseEntity {
         this.checkRootDisable=false;
         this.avalible =true;
     }
+
     public User(String username, String fullName,String gender,String code,Department department,String cover) {
         this.username = username;
         this.fullName = fullName;

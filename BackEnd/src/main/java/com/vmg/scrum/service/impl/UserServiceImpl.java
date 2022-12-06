@@ -140,7 +140,6 @@ public class UserServiceImpl implements UserService {
                 }
             });
         }
-
         user.setRoles(roles);
         userRepository.save(user);
         mailService.sendEmailAccountInfo(signUpRequest.getUsername(), genarate);
