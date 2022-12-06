@@ -1,14 +1,15 @@
 package com.vmg.scrum.model.request;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vmg.scrum.model.BaseEntity;
 import com.vmg.scrum.model.Sign;
 import com.vmg.scrum.model.User;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
 import java.util.Set;
 
 @Builder
@@ -29,10 +30,18 @@ public class Request extends BaseEntity {
     @JoinColumn(name = "creator_id")
     private User creator;
 
-    @ManyToMany(mappedBy = "requestApprovers")
+    @ManyToMany()
+    @JoinTable(
+            name = "request_approvers",
+            joinColumns = @JoinColumn(name = "request_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> approvers;
 
-    @ManyToMany(mappedBy = "requestFollowers")
+    @ManyToMany()
+    @JoinTable(
+            name = "request_followers",
+            joinColumns = @JoinColumn(name = "request_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> followers;
 
     private String content;
@@ -43,19 +52,34 @@ public class Request extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "catergory_request_id", referencedColumnName = "catergory_request_id")
-    @JsonIgnore
     private CatergoryRequest catergoryRequest;
-
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateFrom;
-
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateTo;
-
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime timeStart;
-
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime timeEnd;
 
     @ManyToOne
     @JoinColumn(name = "signs_id")
     private Sign lastSign;
+
+    public Request(User creator, String title, String content, ApproveStatus approveStatus, CatergoryRequest catergoryRequest , LocalDate dateFrom, LocalDate dateTo, LocalTime timeStart, LocalTime timeEnd, Sign lastSign) {
+             this.creator = creator;
+             this.title = title;
+             this.content = content;
+             this.approveStatus = approveStatus;
+             this.catergoryRequest = catergoryRequest;
+             this.dateFrom = dateFrom;
+             this.dateTo = dateTo;
+             this.timeStart = timeStart;
+             this.timeEnd = timeEnd;
+             this.lastSign= lastSign;
+    }
+
+
+
 
 }
