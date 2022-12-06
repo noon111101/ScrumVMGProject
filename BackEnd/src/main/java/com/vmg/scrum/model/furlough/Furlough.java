@@ -1,5 +1,6 @@
 package com.vmg.scrum.model.furlough;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vmg.scrum.model.User;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,18 +20,20 @@ public class Furlough {
     @Column(name = "furlough_id", nullable = false)
     private Long id;
 
-    @DateTimeFormat(pattern = "yyyy-MM")
-    private LocalDate monthInYear;
+    //Tháng trong năm
+    private Long monthInYear;
 
-    private float usedInMonth;
+    //năm
+    private Long year;
 
-    private float payFurlough;
+    //Số phép dùng trong tháng
+    @Column(columnDefinition = "float default 0")
+    private Float usedInMonth;
 
-    private float currentYearFurlough;
-
-    private float previousYearFurlough;
-
+    private String reason;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
+
 }
