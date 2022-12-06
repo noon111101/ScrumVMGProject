@@ -5,6 +5,7 @@ import com.vmg.scrum.model.Sign;
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.request.ApproveStatus;
 import com.vmg.scrum.model.request.CatergoryRequest;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,8 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
 public class OfferRequest {
     @Id
     private Long id;
@@ -26,7 +26,7 @@ public class OfferRequest {
     @Size(min = 3, max = 50)
     private String title;
 
-    private User creator;
+    private String creator;
 
     private Set<String> approvers;
 
@@ -36,9 +36,9 @@ public class OfferRequest {
     @Size(min = 3, max = 50)
     private String content;
 
-    private ApproveStatus approveStatus;
+    private String approveStatus;
 
-    private CatergoryRequest catergoryRequest;
+    private String catergoryRequest;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateFrom;
@@ -46,8 +46,10 @@ public class OfferRequest {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateTo;
 
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime timeStart;
 
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime timeEnd;
 
     private Sign lastSign;
@@ -68,11 +70,11 @@ public class OfferRequest {
         this.title = title;
     }
 
-    public User getCreator() {
+    public String getCreator() {
         return creator;
     }
 
-    public void setCreator(User creator) {
+    public void setCreator(String creator) {
         this.creator = creator;
     }
 
@@ -98,22 +100,6 @@ public class OfferRequest {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public ApproveStatus getApproveStatus() {
-        return approveStatus;
-    }
-
-    public void setApproveStatus(ApproveStatus approveStatus) {
-        this.approveStatus = approveStatus;
-    }
-
-    public CatergoryRequest getCatergoryRequest() {
-        return catergoryRequest;
-    }
-
-    public void setCatergoryRequest(CatergoryRequest catergoryRequest) {
-        this.catergoryRequest = catergoryRequest;
     }
 
     public LocalDate getDateFrom() {
@@ -154,5 +140,21 @@ public class OfferRequest {
 
     public void setLastSign(Sign lastSign) {
         this.lastSign = lastSign;
+    }
+
+    public String getApproveStatus() {
+        return approveStatus;
+    }
+
+    public void setApproveStatus(String approveStatus) {
+        this.approveStatus = approveStatus;
+    }
+
+    public String getCatergoryRequest() {
+        return catergoryRequest;
+    }
+
+    public void setCatergoryRequest(String catergoryRequest) {
+        this.catergoryRequest = catergoryRequest;
     }
 }

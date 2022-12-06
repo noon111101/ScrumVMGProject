@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -19,6 +20,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUsername(String username);
 
+  @Query(value = "select u from User u " +
+            " where u.username = ?1 ")
+    User findByUserName(String username);
+
+
+    User getByUsername(String username);
     Boolean existsByUsername(String username);
 
     Boolean existsByCode(String code);
@@ -75,5 +82,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             " or u.username LIKE %?2% ) " +
             " order by u.id desc ")
     Page<User> getUsersByDepartments_Id_Search_Status(long id,String search, boolean status, Pageable pageable);
+
 
 }
