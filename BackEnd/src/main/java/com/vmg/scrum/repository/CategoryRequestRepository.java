@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface CategoryRequestRepository extends JpaRepository<CatergoryRequest,Long> {
-    CatergoryRequest findByName(String name);
+    CatergoryRequest findById(long id);
 }
