@@ -5,7 +5,6 @@ import com.vmg.scrum.model.Sign;
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.request.ApproveStatus;
 import com.vmg.scrum.model.request.CatergoryRequest;
-import com.vmg.scrum.model.request.Session;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -14,6 +13,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Set;
 
 @Getter
@@ -46,7 +46,9 @@ public class OfferRequest {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateTo;
 
-    private Session session;
+    private LocalTime timeStart;
+
+    private LocalTime timeEnd;
 
     private Sign lastSign;
 
@@ -130,12 +132,20 @@ public class OfferRequest {
         this.dateTo = dateTo;
     }
 
-    public Session getSession() {
-        return session;
+    public LocalTime getTimeStart() {
+        return timeStart;
     }
 
-    public void setSession(Session session) {
-        this.session = session;
+    public void setTimeStart(LocalTime timeStart) {
+        this.timeStart = timeStart;
+    }
+
+    public LocalTime getTimeEnd() {
+        return timeEnd;
+    }
+
+    public void setTimeEnd(LocalTime timeEnd) {
+        this.timeEnd = timeEnd;
     }
 
     public Sign getLastSign() {
