@@ -2,6 +2,7 @@ package com.vmg.scrum.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.model.furlough.Furlough;
 import com.vmg.scrum.model.furlough.FurloughHistory;
@@ -60,6 +61,7 @@ public class User extends BaseEntity {
     private Set<Request> requestApprovers;
 
     @ManyToMany(mappedBy = "followers")
+
     private Set<Request> requestFollowers;
 
     private LocalDate startWork;
@@ -81,6 +83,7 @@ public class User extends BaseEntity {
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
     @JsonIgnore
+
     private Set<FurloughHistory> pastYearFurlough;
 
     public User(String username, String rootPassword, String fullName,String gender,String cover,String code,Department department) {
