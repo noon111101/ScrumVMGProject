@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface ApproveSttRepository extends JpaRepository<ApproveStatus,Long> {
-    ApproveStatus findByName(String name);
+    ApproveStatus findById(long id);
 }

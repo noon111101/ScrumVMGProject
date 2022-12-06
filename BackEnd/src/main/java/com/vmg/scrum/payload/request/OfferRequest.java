@@ -36,9 +36,9 @@ public class OfferRequest {
     @Size(min = 3, max = 50)
     private String content;
 
-    private String approveStatus;
+    private long approveStatus;
 
-    private String catergoryRequest;
+    private long catergoryRequest;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateFrom;
@@ -142,19 +142,19 @@ public class OfferRequest {
         this.lastSign = lastSign;
     }
 
-    public String getApproveStatus() {
+    public long getApproveStatus() {
         return approveStatus;
     }
 
-    public void setApproveStatus(String approveStatus) {
+    public void setApproveStatus(long approveStatus) {
         this.approveStatus = approveStatus;
     }
 
-    public String getCatergoryRequest() {
+    public long getCatergoryRequest() {
         return catergoryRequest;
     }
 
-    public void setCatergoryRequest(String catergoryRequest) {
+    public void setCatergoryRequest(long catergoryRequest) {
         this.catergoryRequest = catergoryRequest;
     }
 }

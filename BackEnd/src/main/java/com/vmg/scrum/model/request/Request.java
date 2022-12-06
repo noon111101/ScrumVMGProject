@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
 import java.util.Set;
 
 @Builder
@@ -32,7 +33,6 @@ public class Request extends BaseEntity {
     private User creator;
 
     @ManyToMany()
-//    @JsonIgnore
     @JoinTable(
             name = "request_approvers",
             joinColumns = @JoinColumn(name = "request_id"),
@@ -40,7 +40,7 @@ public class Request extends BaseEntity {
     private Set<User> approvers;
 
     @ManyToMany()
-//    @JsonIgnore
+
     @JoinTable(
             name = "request_followers",
             joinColumns = @JoinColumn(name = "request_id"),

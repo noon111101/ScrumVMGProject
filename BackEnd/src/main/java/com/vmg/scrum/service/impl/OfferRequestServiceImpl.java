@@ -47,8 +47,8 @@ public class OfferRequestServiceImpl implements OfferRequestService {
     @Override
     public MessageResponse addRequest(OfferRequest offerRequest) throws MessagingException, UnsupportedEncodingException {
         User creator = userRepository.findByUserName(offerRequest.getCreator());
-        ApproveStatus approveStatus = approveRepository.findByName(offerRequest.getApproveStatus());
-        CatergoryRequest catergoryRequest = categoryRepository.findByName(offerRequest.getCatergoryRequest());
+        ApproveStatus approveStatus = approveRepository.findById(offerRequest.getApproveStatus());
+        CatergoryRequest catergoryRequest = categoryRepository.findById(offerRequest.getCatergoryRequest());
 
         Request request = new Request(creator, offerRequest.getTitle(), offerRequest.getContent(), approveStatus, catergoryRequest, offerRequest.getDateFrom(), offerRequest.getDateTo(), offerRequest.getTimeStart(), offerRequest.getTimeEnd(), offerRequest.getLastSign());
         Set<User> approves = new HashSet<>();
