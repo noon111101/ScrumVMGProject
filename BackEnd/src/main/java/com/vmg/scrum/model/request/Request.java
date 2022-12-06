@@ -1,5 +1,7 @@
 package com.vmg.scrum.model.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vmg.scrum.model.BaseEntity;
 import com.vmg.scrum.model.Sign;
 import com.vmg.scrum.model.User;
@@ -31,6 +33,7 @@ public class Request extends BaseEntity {
     private User creator;
 
     @ManyToMany()
+    @JsonIgnore
     @JoinTable(
             name = "request_approvers",
             joinColumns = @JoinColumn(name = "request_id"),
@@ -38,12 +41,14 @@ public class Request extends BaseEntity {
     private Set<User> approvers;
 
     @ManyToMany()
+    @JsonIgnore
     @JoinTable(
             name = "request_followers",
             joinColumns = @JoinColumn(name = "request_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> followers;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private String content;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -53,6 +58,7 @@ public class Request extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "catergory_request_id", referencedColumnName = "catergory_request_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private CatergoryRequest catergoryRequest;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateFrom;
