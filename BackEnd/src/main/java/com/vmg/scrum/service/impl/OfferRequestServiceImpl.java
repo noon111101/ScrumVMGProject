@@ -63,7 +63,6 @@ public class OfferRequestServiceImpl implements OfferRequestService {
             User userFolower = userRepository.getByUsername(s);
             followers.add(userFolower);
         }
-
         request.setApprovers(approves);
         request.setFollowers(followers);
         offerRepository.save(request);
