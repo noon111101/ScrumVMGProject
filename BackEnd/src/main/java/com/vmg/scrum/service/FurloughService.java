@@ -14,6 +14,6 @@ public interface FurloughService {
 
    MessageResponse editFurloughReport(EditFurloughRequest editFurloughRequest);
 
-   public List<FurloughReport> getFurloughsByYear(Long year);
+   List<FurloughReport> getFurloughsByYear(Long year);
 
 }
