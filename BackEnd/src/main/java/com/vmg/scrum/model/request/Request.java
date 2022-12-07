@@ -56,9 +56,14 @@ public class Request extends BaseEntity {
     private ApproveStatus approveStatus;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "catergory_request_id", referencedColumnName = "catergory_request_id")
+    @JoinColumn(name = "category_request_id", referencedColumnName = "category_request_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private CatergoryRequest catergoryRequest;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_reason_id", referencedColumnName = "category_reason_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private CategoryReason categoryReason;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateFrom;
     @DateTimeFormat(pattern = "yyyy-MM-dd")

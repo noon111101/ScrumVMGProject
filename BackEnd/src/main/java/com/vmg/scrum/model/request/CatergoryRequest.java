@@ -17,13 +17,11 @@ public class CatergoryRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "catergory_request_id", nullable = false)
+    @Column(name = "category_request_id", nullable = false)
     private Long id;
 
-    @Column(name = "catergory_request_name")
+    @Column(name = "category_request_name")
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "catergoryRequest")
-    @JsonIgnore
-    private Set<CategoryReason> categoryReasons;
+
 }
