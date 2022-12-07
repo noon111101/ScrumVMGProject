@@ -1,5 +1,6 @@
 package com.vmg.scrum.model.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,5 +20,8 @@ public class CategoryReason {
     @Column(name = "category_reason_name")
     private String name;
 
-
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_request_id", referencedColumnName = "category_request_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private CatergoryRequest catergoryRequest;
 }
