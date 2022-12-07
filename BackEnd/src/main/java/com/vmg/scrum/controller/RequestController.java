@@ -3,7 +3,11 @@ package com.vmg.scrum.controller;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.model.request.Request;
 import com.vmg.scrum.payload.request.ManageRequests_Request;
+import com.vmg.scrum.payload.request.OfferRequest;
+import com.vmg.scrum.repository.OfferRequestRepository;
 import com.vmg.scrum.repository.RequestRepository;
+import com.vmg.scrum.repository.UserRepository;
+import com.vmg.scrum.service.OfferRequestService;
 import com.vmg.scrum.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 
 @RestController
@@ -23,6 +30,25 @@ public class RequestController {
     private RequestService requestService;
     @Autowired
     private RequestRepository requestRepository;
+
+    @Autowired
+    OfferRequestRepository offerRepository;
+
+    @Autowired
+    private OfferRequestService offerRequestService;
+
+    @Autowired
+    private UserRepository userRepository;
+    private final OfferRequestService offerService;
+
+    public RequestController(OfferRequestService offerService) {
+        this.offerService = offerService;
+    }
+
+    @PostMapping("")
+    public ResponseEntity<?> addRequest(@Valid @ModelAttribute OfferRequest offerRequest) throws MessagingException, UnsupportedEncodingException {
+        return ResponseEntity.ok(offerService.addRequest(offerRequest));
+    }
 
     @GetMapping("")
     public ResponseEntity<Page<Request>> getRequests(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -37,6 +63,12 @@ public class RequestController {
     public ResponseEntity<Request> getRequestById(@PathVariable("id") long id) throws ParseException {
         return new ResponseEntity<>(requestRepository.findByRequestId(id), HttpStatus.OK);
     }
+
+
+
+
+
+
 
 //
 }
