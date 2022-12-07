@@ -33,54 +33,10 @@ public class RequestController {
         return new ResponseEntity<>(pageRequests, HttpStatus.OK);
     }
 
-//    @GetMapping("")
-//    public ResponseEntity<Page<Request>> getRequests(@RequestParam(name = "page", defaultValue = "0") int page,
-//                                                     @RequestParam(name = "size", defaultValue = "30") int size,
-//                                                     @RequestParam(name = "depart_id", defaultValue = "0") Long departId,
-//                                                     @RequestParam(name = "search", required = false) String search,
-//                                                     @RequestParam(name = "status", defaultValue = "0") Long status) throws ParseException {
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<Request> pageRequests = null;
+    @GetMapping("/{id}")
+    public ResponseEntity<Request> getRequestById(@PathVariable("id") long id) throws ParseException {
+        return new ResponseEntity<>(requestRepository.findByRequestId(id), HttpStatus.OK);
+    }
+
 //
-//        if(departId!=null && departId!=0){
-//            if(status!=null && status !=0 ){
-//                if(search!=null && search!=""){
-//                    pageRequests = requestRepository.findByByDepartmentIdAndSearchAndStatus(departId, search, status,pageable);
-//                }
-//                else{
-//                    pageRequests = requestRepository.findByByDepartmentIdAndStatus(departId, status, pageable);
-//                }
-//            }
-//            else{
-//                if(search!=null && search!=""){
-//                    pageRequests = requestRepository.findByDepartmentIdAndSearch(departId, search, pageable);
-//                }
-//                else{
-//                    pageRequests = requestRepository.findByDepartmentId(departId, pageable);
-//                }
-//            }
-//        }
-//        else{
-//            if(status!=null ){
-////                Boolean available = Boolean.parseBoolean(status);
-//                if(search!=null && search!=""){
-//                    System.out.println("aaaa");
-//                    pageRequests = requestRepository.findBySearchAndStatus(search,status, pageable);
-//                }
-//                else{
-//                    pageRequests = requestRepository.findByStatus(status, pageable);
-//                }
-//            }
-//            else{
-//                if(search!=null && search!=""){
-//                    pageRequests = requestRepository.findBySearch(search, pageable);
-//                }
-//                else{
-//                    pageRequests = requestRepository.findAll(pageable);
-//                }
-//            }
-//
-//        }
-//        return new ResponseEntity<>(pageRequests, HttpStatus.OK);
-//    }
 }
