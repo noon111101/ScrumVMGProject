@@ -38,6 +38,8 @@ public class OfferRequest {
 
     private long approveStatus;
 
+    private long categoryReason;
+
     private long catergoryRequest;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")

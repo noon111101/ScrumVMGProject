@@ -1,6 +1,5 @@
 package com.vmg.scrum.model.request;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vmg.scrum.model.BaseEntity;
 import com.vmg.scrum.model.Sign;
@@ -11,7 +10,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Optional;
 import java.util.Set;
 
 @Builder
@@ -77,11 +75,12 @@ public class Request extends BaseEntity {
     @JoinColumn(name = "signs_id")
     private Sign lastSign;
 
-    public Request(User creator, String title, String content, ApproveStatus approveStatus, CatergoryRequest catergoryRequest , LocalDate dateFrom, LocalDate dateTo, LocalTime timeStart, LocalTime timeEnd, Sign lastSign) {
+    public Request(User creator, String title, String content, ApproveStatus approveStatus, CategoryReason categoryReason, CatergoryRequest catergoryRequest , LocalDate dateFrom, LocalDate dateTo, LocalTime timeStart, LocalTime timeEnd, Sign lastSign) {
              this.creator = creator;
              this.title = title;
              this.content = content;
              this.approveStatus = approveStatus;
+             this.categoryReason = categoryReason;
              this.catergoryRequest = catergoryRequest;
              this.dateFrom = dateFrom;
              this.dateTo = dateTo;
