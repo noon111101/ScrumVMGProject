@@ -19,7 +19,5 @@ public class CategoryReason {
     @Column(name = "category_reason_name")
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "catergory_request_id", nullable = false)
-    private CatergoryRequest catergoryRequest;
+
 }
