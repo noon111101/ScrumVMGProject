@@ -52,4 +52,8 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
             " and (r.title LIKE %?2% or r.creator.fullName LIKE %?2%) " +
             " order by r.id desc ")
     Page<Request> findByByDepartmentIdAndSearchAndStatus(Long departId, String search, Long status, Pageable pageable);
+
+    @Query(value = "select r from Request r " +
+            " where r.id = ?1 ")
+    Request findByRequestId(Long id);
 }

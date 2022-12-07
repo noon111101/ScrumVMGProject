@@ -10,6 +10,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -26,10 +27,12 @@ public abstract class BaseEntity {
     @Column
     @CreatedDate
     @JsonIgnore
+    @DateTimeFormat(pattern = "MM/dd/yyyy HH:mm")
     private Date createDate;
     @Column
     @LastModifiedDate
     @JsonIgnore
+    @DateTimeFormat(pattern = "MM/dd/yyyy HH:mm")
     private Date modifiedDate;
     @Column
     @CreatedBy
