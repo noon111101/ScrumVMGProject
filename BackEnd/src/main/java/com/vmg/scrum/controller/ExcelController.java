@@ -10,6 +10,7 @@ import com.vmg.scrum.payload.request.SignupRequest;
 import com.vmg.scrum.repository.DepartmentRepository;
 import com.vmg.scrum.repository.LogDetailRepository;
 import com.vmg.scrum.repository.UserRepository;
+import com.vmg.scrum.service.FurloughService;
 import com.vmg.scrum.service.impl.ExcelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,8 @@ import java.util.List;
 @RequestMapping("/api/excel")
 public class ExcelController {
 
+    @Autowired
+    FurloughService furloughService;
     @Autowired
     UserRepository userRepository;
 
@@ -71,7 +74,7 @@ public class ExcelController {
     }
 
     @GetMapping("/export_phep")
-    public ResponseEntity exportPhep(@RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam int year, HttpServletResponse response) throws IOException {
+    public ResponseEntity exportPhep(@RequestParam(name = "id", defaultValue = "0") Long id, @RequestParam Long year, HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
         String currentDateTime = dateFormatter.format(new Date());
@@ -82,12 +85,12 @@ public class ExcelController {
 
         if(id==0){
 //            listLogs = logDetailRepository.findByMonthSortDate(month);
-            ExcelExportPhep excelExporter = new ExcelExportPhep(year, departmentRepository, userRepository);
+            ExcelExportPhep excelExporter = new ExcelExportPhep(year, departmentRepository, userRepository, furloughService);
             excelExporter.export(response);
         }
         else {
 //            listLogs = logDetailRepository.findByMonthAndDepartmentSortDate(id, month);
-            ExcelExportPhep excelExporter = new ExcelExportPhep(year, departmentRepository,userRepository);
+            ExcelExportPhep excelExporter = new ExcelExportPhep(year, departmentRepository,userRepository, furloughService);
             excelExporter.export(response);
         }
 

@@ -3,9 +3,11 @@ package com.vmg.scrum.excel;
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.model.option.Department;
+import com.vmg.scrum.payload.response.FurloughReport;
 import com.vmg.scrum.repository.DepartmentRepository;
 import com.vmg.scrum.repository.LogDetailRepository;
 import com.vmg.scrum.repository.UserRepository;
+import com.vmg.scrum.service.FurloughService;
 import org.apache.poi.hssf.record.PaletteRecord;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.ss.usermodel.*;
@@ -19,26 +21,33 @@ import java.awt.Color;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ExcelExportPhep {
     private XSSFWorkbook workbook;
     private XSSFSheet sheet;
-    private int year;
+    private long year;
 
     private DepartmentRepository departmentRepository;
 
     private UserRepository userRepository;
 
+    private FurloughService furloughService;
+
     private List<Department> listDeparts;
 
     private List<User> listUsers;
 
-    public ExcelExportPhep(int year, DepartmentRepository departmentRepository, UserRepository userRepository) {
+    private List<FurloughReport> listFurloughs;
+
+    public ExcelExportPhep(long year, DepartmentRepository departmentRepository, UserRepository userRepository, FurloughService furloughService) {
         workbook = new XSSFWorkbook();
         this.year = year;
         this.departmentRepository= departmentRepository;
         this.userRepository = userRepository;
+        this.furloughService = furloughService;
     }
 
     // Create Header
@@ -346,12 +355,29 @@ public class ExcelExportPhep {
         styleTitleBold.setWrapText(true);
         styleTitleBold.setFont(fontHeaderBold);
 
+        CellStyle styleTitleBoldBackground2 = workbook.createCellStyle();
+        styleTitleBoldBackground2.setBorderBottom(BorderStyle.THIN);
+        styleTitleBoldBackground2.setBorderTop(BorderStyle.THIN);
+        styleTitleBoldBackground2.setBorderLeft(BorderStyle.THIN);
+        styleTitleBoldBackground2.setBorderRight(BorderStyle.THIN);
+        styleTitleBoldBackground2.setAlignment(HorizontalAlignment.CENTER);
+        styleTitleBoldBackground2.setVerticalAlignment(VerticalAlignment.CENTER);
+        styleTitleBoldBackground2.setFillForegroundColor(IndexedColors.AQUA.getIndex());
+        styleTitleBoldBackground2.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        styleTitleBoldBackground2.setWrapText(true);
+        styleTitleBoldBackground2.setFont(fontHeaderBold);
+
 
         listDeparts = departmentRepository.findAll();
         listUsers = userRepository.findAll();
         Row row = null;
         Cell cell;
         int tt = 1;
+
+        listFurloughs = furloughService.getFurloughsByYear(year);
+
+
+
         for(Department department: listDeparts){
             row = sheet.createRow(sheet.getLastRowNum()+1);
             sheet.addMergedRegion(new CellRangeAddress(sheet.getLastRowNum(), sheet.getLastRowNum(), 0, 23));
@@ -360,25 +386,87 @@ public class ExcelExportPhep {
             cell.setCellValue(department.getName());
             cell.setCellStyle(styleTitleThinLeftBGC);
 
-            for(User user: listUsers){
-                if(user.getDepartments().getId() == department.getId()){
+
+            for(FurloughReport fur: listFurloughs){
+                if(fur.getUser().getDepartments().getId() == department.getId()){
                     row = sheet.createRow(sheet.getLastRowNum()+1);
                     cell = row.createCell(0);
                     cell.setCellValue(tt++);
                     cell.setCellStyle(styleTitleThinCenter);
 
                     cell = row.createCell(1);
-                    cell.setCellValue(user.getFullName());
+                    cell.setCellValue(fur.getUser().getFullName());
                     cell.setCellStyle(styleTitleThinLeft);
 
                     cell = row.createCell(2);
-                    NumberFormat numberFormat = NumberFormat.getInstance();
-                    DecimalFormat dcf = new DecimalFormat("####");
-                    cell.setCellValue("VMG_"+dcf.format(user.getCode()));
+                    cell.setCellValue(fur.getUser().getCode());
                     cell.setCellStyle(styleTitleThinLeft);
-                }
 
+                    cell = row.createCell(3);
+                    cell.setCellValue(fur.getUser().getStartWork().toString());
+                    cell.setCellStyle(styleTitleThinCenter);
+
+                    cell = row.createCell(4);
+                    cell.setCellValue(fur.getAvailibleCurrentYear());
+                    cell.setCellStyle(styleTitleThinCenter);
+
+                    cell = row.createCell(5);
+                    cell.setCellValue(fur.getOddCurrentYear());
+                    cell.setCellStyle(styleTitleThinCenter);
+
+                    for(int i=0;i<=11;i++){
+                        cell = row.createCell(i+6);
+                        cell.setCellValue(0.5);
+                        cell.setCellStyle(styleTitleThinCenter);
+                    }
+
+                    int rowCount = sheet.getLastRowNum()+1;
+                    cell = row.createCell(18);
+                    cell.setCellFormula("SUM(G"+rowCount+":I"+rowCount+")");
+                    cell.setCellStyle(styleTitleThinCenter);
+
+                    cell = row.createCell(19);
+                    cell.setCellFormula("SUM(J"+rowCount+":R"+rowCount+")");
+                    cell.setCellStyle(styleTitleThinCenter);
+
+                    cell = row.createCell(20);
+                    cell.setCellFormula("IF(F"+rowCount+"-SUM(G"+rowCount+":I"+rowCount+")" +
+                                            "<=0,0,F"+rowCount+"-SUM(G"+rowCount+":I"+rowCount+"))");
+                    cell.setCellStyle(styleTitleThinCenter);
+
+                    cell = row.createCell(21);
+                    cell.setCellFormula("IF(F"+rowCount+"-SUM(G"+rowCount+":I"+rowCount+")" +
+                                    "<0,E"+rowCount+"+F"+rowCount+"-SUM(G"+rowCount+":I"+rowCount+"),E"+rowCount+")" +
+                                    "-SUM(J"+rowCount+":R"+rowCount+")");
+                    cell.setCellStyle(styleTitleBoldBackground2);
+
+                    cell = row.createCell(22);
+                    cell.setCellValue(fur.getOddCurrentYear());
+                    cell.setCellStyle(styleTitleBoldBackground2);
+
+                    cell = row.createCell(23);
+                    cell.setCellFormula("U"+rowCount+"+V"+rowCount+"-W"+rowCount);
+                    cell.setCellStyle(styleTitleBoldBackground2);
+                }
             }
+//            for(User user: listUsers){
+//                if(user.getDepartments().getId() == department.getId()){
+//                    row = sheet.createRow(sheet.getLastRowNum()+1);
+//                    cell = row.createCell(0);
+//                    cell.setCellValue(tt++);
+//                    cell.setCellStyle(styleTitleThinCenter);
+//
+//                    cell = row.createCell(1);
+//                    cell.setCellValue(user.getFullName());
+//                    cell.setCellStyle(styleTitleThinLeft);
+//
+//                    cell = row.createCell(2);
+//                    NumberFormat numberFormat = NumberFormat.getInstance();
+//                    DecimalFormat dcf = new DecimalFormat("####");
+//                    cell.setCellValue("VMG_"+dcf.format(user.getCode()));
+//                    cell.setCellStyle(styleTitleThinLeft);
+//                }
+//            }
 
         }
 //        sheet.addMergedRegion(new CellRangeAddress(5, 5, 0, 23));

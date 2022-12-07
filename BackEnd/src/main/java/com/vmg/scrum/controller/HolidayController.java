@@ -26,8 +26,7 @@ import java.io.UnsupportedEncodingException;
 @RequestMapping("/api/holiday")
 public class HolidayController {
     @Autowired
-
-    HolidayService holidayService;
+      HolidayService holidayService;
 
     @Autowired
     HolidayRepository holidayRepository;
@@ -61,7 +60,6 @@ public class HolidayController {
             }else{
                 pageHolidays = holidayRepository.findAllSearch(search, pageable);
             }
-
         }
         else {
             if(year!=0){
@@ -78,5 +76,4 @@ public class HolidayController {
     public ResponseEntity<MessageResponse> getAllHolidays(@RequestParam long id){
         return ResponseEntity.ok(holidayService.deleteHoliday(id));
     }
-
 }
