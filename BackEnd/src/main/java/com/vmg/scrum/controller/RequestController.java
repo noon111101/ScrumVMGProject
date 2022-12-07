@@ -1,9 +1,11 @@
 package com.vmg.scrum.controller;
 
 import com.vmg.scrum.model.excel.LogDetail;
+import com.vmg.scrum.model.request.CategoryReason;
 import com.vmg.scrum.model.request.Request;
 import com.vmg.scrum.payload.request.ManageRequests_Request;
 import com.vmg.scrum.payload.request.OfferRequest;
+import com.vmg.scrum.repository.CategoryReasonRepository;
 import com.vmg.scrum.repository.OfferRequestRepository;
 import com.vmg.scrum.repository.RequestRepository;
 import com.vmg.scrum.repository.UserRepository;
@@ -21,6 +23,7 @@ import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/request")
@@ -34,11 +37,9 @@ public class RequestController {
     @Autowired
     OfferRequestRepository offerRepository;
 
-    @Autowired
-    private OfferRequestService offerRequestService;
 
     @Autowired
-    private UserRepository userRepository;
+    private CategoryReasonRepository categoryReasonRepository;
     private final OfferRequestService offerService;
 
     public RequestController(OfferRequestService offerService) {
@@ -64,11 +65,8 @@ public class RequestController {
         return new ResponseEntity<>(requestRepository.findByRequestId(id), HttpStatus.OK);
     }
 
-
-
-
-
-
-
-//
+    @GetMapping("/categoryreason/{id}")
+    public ResponseEntity<List<CategoryReason>> getCategoryReason(@PathVariable("id") long id) throws ParseException {
+        return new ResponseEntity<>(categoryReasonRepository.getCategoryReasonByCatergoryRequest_Id(id), HttpStatus.OK);
+    }
 }
