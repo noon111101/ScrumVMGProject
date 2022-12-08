@@ -1,6 +1,7 @@
 package com.vmg.scrum.excel;
 
 import com.vmg.scrum.model.User;
+import com.vmg.scrum.model.furlough.Furlough;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.model.option.Department;
 import com.vmg.scrum.payload.response.FurloughReport;
@@ -362,7 +363,7 @@ public class ExcelExportPhep {
         styleTitleBoldBackground2.setBorderRight(BorderStyle.THIN);
         styleTitleBoldBackground2.setAlignment(HorizontalAlignment.CENTER);
         styleTitleBoldBackground2.setVerticalAlignment(VerticalAlignment.CENTER);
-        styleTitleBoldBackground2.setFillForegroundColor(IndexedColors.AQUA.getIndex());
+        styleTitleBoldBackground2.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
         styleTitleBoldBackground2.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         styleTitleBoldBackground2.setWrapText(true);
         styleTitleBoldBackground2.setFont(fontHeaderBold);
@@ -414,7 +415,11 @@ public class ExcelExportPhep {
 
                     for(int i=0;i<=11;i++){
                         cell = row.createCell(i+6);
-                        cell.setCellValue(0.5);
+                        for (Furlough fur1: fur.getFurloughs()) {
+                            if(fur1.getMonthInYear()==i+1){
+                                cell.setCellValue(fur1.getUsedInMonth());
+                            }
+                        }
                         cell.setCellStyle(styleTitleThinCenter);
                     }
 
