@@ -53,7 +53,7 @@ public class RequestController {
 
     @GetMapping("")
     public ResponseEntity<Page<Request>> getRequests(@RequestParam(name = "page", defaultValue = "0") int page,
-                                                     @RequestParam(name = "size", defaultValue = "30") int size,
+                                                     @RequestParam(name = "size", defaultValue = "15") int size,
                                                      @ModelAttribute ManageRequests_Request manageRequests_request) throws ParseException {
         Pageable pageable = PageRequest.of(page, size);
         Page<Request> pageRequests = requestService.ManageRequests(manageRequests_request, pageable);

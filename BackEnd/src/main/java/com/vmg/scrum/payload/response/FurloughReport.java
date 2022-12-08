@@ -6,6 +6,7 @@ import com.vmg.scrum.model.furlough.FurloughHistory;
 import com.vmg.scrum.repository.FurloughHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -42,23 +43,38 @@ public class FurloughReport {
 
 
     public FurloughReport(User user, List<Furlough> furloughs,Long year,FurloughHistory furloughHistory) {
+        //Ngày giờ nghỉ làm
+        Date leftTime = user.getModifiedDate();
+        Long leftYear = (long)leftTime.getYear();
+        int leftDate = leftTime.getDate();
+        int leftMonth = leftTime.getMonth();
         this.user = user;
         this.furloughs = furloughs;
-        //tính số ngày được nghỉ trong năm hiện tại
-        float day = user.getStartWork().getDayOfMonth();
-        float month = user.getStartWork().getMonthValue();
-        this.availibleCurrentYear=furloughHistory.getAvailibleCurrentYear();
+        if(!user.getAvalible()){
+            if(leftYear==year){
+                if(leftDate>=15)
+                    this.availibleCurrentYear= leftMonth;
+                else this.availibleCurrentYear=leftMonth-1;
+            } else if(leftYear<year) this.availibleCurrentYear=0;
+            else if(leftYear>year) this.availibleCurrentYear=furloughHistory.getAvailibleCurrentYear();
+        } else
+            this.availibleCurrentYear=furloughHistory.getAvailibleCurrentYear();
         this.oddCurrentYear = furloughHistory.getLeftFurlough();
         this.usedBeforeApril = furloughs.get(0).getUsedInMonth() + furloughs.get(1).getUsedInMonth() + furloughs.get(2).getUsedInMonth();
         for(int i=0;i<=11;i++){
             this.usedInYear=this.usedInYear+furloughs.get(i).getUsedInMonth();
         }
-        this.leftLastYear = this.oddCurrentYear-this.usedInYear;
+        this.leftLastYear = this.oddCurrentYear-this.usedBeforeApril;
         if(this.leftLastYear<0)
             this.leftLastYear=0;
-        this.leftCurentYear=this.availibleCurrentYear-this.usedInYear;
-
-
+        this.leftCurentYear=this.availibleCurrentYear-this.usedInYear+this.usedBeforeApril;
+        if(this.usedBeforeApril>this.oddCurrentYear)
+            this.leftCurentYear=this.leftCurentYear -(this.usedBeforeApril-this.oddCurrentYear);
+        if(user.getAvalible())
+            this.payFurlough=this.leftLastYear;
+        else
+            this.payFurlough=this.leftCurentYear + this.leftLastYear;
+        int currentMonth = new Date().getMonth()+1;
 
     }
 
