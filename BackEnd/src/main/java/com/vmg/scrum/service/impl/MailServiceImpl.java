@@ -2,22 +2,17 @@ package com.vmg.scrum.service.impl;
 
 
 import com.vmg.scrum.model.User;
-import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.repository.UserRepository;
 import com.vmg.scrum.security.UserDetailsServiceImpl;
 import com.vmg.scrum.security.jwt.HashOneWay;
 import com.vmg.scrum.security.jwt.JwtUtils;
 import com.vmg.scrum.service.MailService;
-import com.vmg.scrum.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +21,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -87,6 +83,7 @@ public class MailServiceImpl implements MailService {
         return false;
     }
     }
+    
     @Override
     public void sendEmailAccountInfo(String recipientEmail, String rootPassword)
             throws MessagingException, UnsupportedEncodingException {
@@ -109,6 +106,41 @@ public class MailServiceImpl implements MailService {
 
          mailSender.send(message);
 
+    }
+
+    @Override
+    public void sendEmailFollowers(Set<String> recipientEmail, String title, User fullName) throws MessagingException, UnsupportedEncodingException{
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        String requestLink = domain + "/managerequest";
+        String[] multipleEmailIds = recipientEmail.toArray(new String[0]);
+        helper.setFrom("VMG@mailnotifi", "VMG");
+        helper.setTo(multipleEmailIds);
+        String subject = "YÊU CẦU ĐỀ XUẤT - HỆ THỐNG CHẤM CÔNG TỰ ĐỘNG";
+        String content = "<p> Bạn có một yêu cầu theo dõi đề xuất: "+ title + " từ nhân viên "+ fullName.getFullName() + "</p>"
+                           + "<br>"
+        + "<p> Truy cập link: <a href=\"" + requestLink + "\">để xem chi tiết</a></p>";
+        helper.setSubject(subject);
+        helper.setText(content, true);
+        mailSender.send(message);
+    }
+
+    @Override
+    public void sendEmailApprovers(Set<String> recipientEmail, String title, User fullName) throws MessagingException, UnsupportedEncodingException{
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        String requestLink = domain + "/managerequest";
+        String[] multipleEmailIds = recipientEmail.toArray(new String[0]);
+        helper.setFrom("VMG@mailnotifi", "VMG");
+        helper.setTo(multipleEmailIds);
+        String subject = "YÊU CẦU ĐỀ XUẤT - HỆ THỐNG CHẤM CÔNG TỰ ĐỘNG";
+        String content = "<p> Bạn có một yêu cầu duyệt đề xuất: "+ title + " từ nhân viên "+ fullName.getFullName() + "</p>"
+                + title
+                + "<br>"
+                + "<p> Truy cập link: <a href=\"" + requestLink + "\">để xem chi tiết</a></p>";
+        helper.setSubject(subject);
+        helper.setText(content, true);
+        mailSender.send(message);
     }
 
     @Override
@@ -135,11 +167,8 @@ public class MailServiceImpl implements MailService {
                     + "<p> Email:yourEmail </p>"
                     + "<br>"
                     + "<p> Password:" + rootPassword +"</p>";
-
             helper.setSubject(subject);
-
             helper.setText(content, true);
-
             mailSender.send(message);
             return true;
         }
