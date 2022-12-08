@@ -170,7 +170,7 @@ public class ExcelExportPhep {
         styleTitleBoldBackground2.setBorderRight(BorderStyle.THIN);
         styleTitleBoldBackground2.setAlignment(HorizontalAlignment.CENTER);
         styleTitleBoldBackground2.setVerticalAlignment(VerticalAlignment.CENTER);
-        styleTitleBoldBackground2.setFillForegroundColor(IndexedColors.AQUA.getIndex());
+        styleTitleBoldBackground2.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
         styleTitleBoldBackground2.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         styleTitleBoldBackground2.setWrapText(true);
         styleTitleBoldBackground2.setFont(fontHeaderBold);
