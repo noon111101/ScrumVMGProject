@@ -3,11 +3,14 @@ package com.vmg.scrum.service.impl;
 import com.vmg.scrum.model.Holiday;
 
 import com.vmg.scrum.payload.request.HolidayRequest;
+import com.vmg.scrum.payload.request.ManageHoliday_Request;
 import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.repository.HolidayRepository;
 import com.vmg.scrum.service.HolidayService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -76,6 +79,29 @@ public class HolidayServiceImpl implements HolidayService {
         }
         else {
             pageHolidays = holidayRepository.findAllHolidays(pageable);
+        }
+        return pageHolidays;
+    }
+
+    @Override
+    public Page<Holiday> manageHolidays(ManageHoliday_Request manageHoliday_request, Pageable pageable) {
+        String search = manageHoliday_request.getSearch();
+        int year = manageHoliday_request.getYear();
+        Page<Holiday> pageHolidays = null;
+        if(search!= null && search!= ""){
+            if(year!=0 ){
+                pageHolidays = holidayRepository.findAllSearchAndYear(search,year, pageable);
+            }else{
+                pageHolidays = holidayRepository.findAllSearch(search, pageable);
+            }
+        }
+        else {
+            if(year!=0 ){
+                pageHolidays = holidayRepository.findAllHolidaysByYear(year, pageable);
+            }else{
+                pageHolidays = holidayRepository.findAllHolidays(pageable);
+            }
+
         }
         return pageHolidays;
     }

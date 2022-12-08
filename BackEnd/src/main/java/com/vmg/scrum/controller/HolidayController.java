@@ -3,6 +3,7 @@ package com.vmg.scrum.controller;
 import com.vmg.scrum.model.Holiday;
 
 import com.vmg.scrum.payload.request.HolidayRequest;
+import com.vmg.scrum.payload.request.ManageHoliday_Request;
 import com.vmg.scrum.payload.request.UpdateUserRequest;
 import com.vmg.scrum.repository.HolidayRepository;
 import com.vmg.scrum.repository.UserRepository;
@@ -50,25 +51,9 @@ public class HolidayController {
     @GetMapping("")
     public ResponseEntity<Page<Holiday>> getAllHolidays(@RequestParam(name="page", defaultValue = "0") int page,
                                                         @RequestParam(name="size",defaultValue = "12") int size,
-                                                        @RequestParam(name="search", required = false) String search,
-                                                        @RequestParam(name = "year", defaultValue = "0") int year){
+                                                        @ModelAttribute ManageHoliday_Request manageHoliday_request){
         Pageable pageable = PageRequest.of(page, size);
-        Page<Holiday> pageHolidays = null;
-        if(search!= null && search!= ""){
-            if(year!=0){
-                pageHolidays = holidayRepository.findAllSearchAndYear(search,year, pageable);
-            }else{
-                pageHolidays = holidayRepository.findAllSearch(search, pageable);
-            }
-        }
-        else {
-            if(year!=0){
-                pageHolidays = holidayRepository.findAllHolidaysByYear(year, pageable);
-            }else{
-                pageHolidays = holidayRepository.findAllHolidays(pageable);
-            }
-
-        }
+        Page<Holiday> pageHolidays = holidayService.manageHolidays(manageHoliday_request, pageable);
         return new ResponseEntity<>(pageHolidays, HttpStatus.OK);
     }
 

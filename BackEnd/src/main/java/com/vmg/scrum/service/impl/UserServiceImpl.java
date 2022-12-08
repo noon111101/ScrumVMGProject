@@ -18,6 +18,10 @@ import com.vmg.scrum.security.jwt.JwtUtils;
 import com.vmg.scrum.service.MailService;
 import com.vmg.scrum.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -314,6 +318,56 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean checkValidateJWTEmail(String token) {
       return jwtUtils.validateJwtTokenEmail(token);
+    }
+
+    @Override
+    public Page<User> manageUsers(ManageUser_Request manageUser_request, Pageable pageable) {
+        Long departid = manageUser_request.getDepartid();
+        Boolean status = manageUser_request.getStatus();
+        String search = manageUser_request.getSearch();
+        Page<User> pageUsers = null;
+
+        if(departid!=null && departid!=0){
+            if(status!=null ){
+//                Boolean available = Boolean.parseBoolean(status);
+                if(search!=null && search!=""){
+                    pageUsers = userRepository.getUsersByDepartments_Id_Search_Status(departid, search, status,pageable);
+                }
+                else{
+                    pageUsers = userRepository.getUsersByDepartments_Id_Status(departid, status, pageable);
+                }
+            }
+            else{
+                if(search!=null && search!=""){
+                    pageUsers = userRepository.getUsersByDepartments_Id_Search(departid, search, pageable);
+                }
+                else{
+                    pageUsers = userRepository.getUsersByDepartments_Id(departid, pageable);
+                }
+            }
+        }
+        else{
+            if(status!=null ){
+//                Boolean available = Boolean.parseBoolean(status);
+                if(search!=null && search!=""){
+                    System.out.println("aaaa");
+                    pageUsers = userRepository.findAll_Search_Status(search,status, pageable);
+                }
+                else{
+                    pageUsers = userRepository.findAll_Status(status, pageable);
+                }
+            }
+            else{
+                if(search!=null && search!=""){
+                    pageUsers = userRepository.findAll_Search(search, pageable);
+                }
+                else{
+                    pageUsers = userRepository.findAll(pageable);
+                }
+            }
+
+        }
+        return pageUsers;
     }
 
     @Override

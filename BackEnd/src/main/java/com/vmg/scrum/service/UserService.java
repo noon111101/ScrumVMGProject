@@ -4,6 +4,8 @@ import com.vmg.scrum.model.User;
 import com.vmg.scrum.payload.request.*;
 import com.vmg.scrum.payload.response.JwtResponse;
 import com.vmg.scrum.payload.response.MessageResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
@@ -22,6 +24,8 @@ public interface UserService   {
     void updateUser(long id, UpdateUserRequest updateRequest);
 
     boolean checkValidateJWTEmail(String token);
+
+    Page<User> manageUsers(ManageUser_Request manageUser_request, Pageable pageable);
 
 
 }
