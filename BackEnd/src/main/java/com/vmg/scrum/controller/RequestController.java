@@ -5,6 +5,7 @@ import com.vmg.scrum.model.request.CategoryReason;
 import com.vmg.scrum.model.request.Request;
 import com.vmg.scrum.payload.request.ManageRequests_Request;
 import com.vmg.scrum.payload.request.OfferRequest;
+import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.repository.CategoryReasonRepository;
 import com.vmg.scrum.repository.OfferRequestRepository;
 import com.vmg.scrum.repository.RequestRepository;
@@ -68,5 +69,11 @@ public class RequestController {
     @GetMapping("/categoryreason/{id}")
     public ResponseEntity<List<CategoryReason>> getCategoryReason(@PathVariable("id") long id) throws ParseException {
         return new ResponseEntity<>(categoryReasonRepository.getCategoryReasonByCatergoryRequest_Id(id), HttpStatus.OK);
+    }
+
+    @PutMapping("")
+    public ResponseEntity<MessageResponse> changeStatus(@RequestParam(name = "requestId")long requestId,
+                                                        @RequestParam(name = "statusId")long statusId) throws MessagingException, UnsupportedEncodingException {
+        return ResponseEntity.ok(requestService.changeApproveStatus(requestId,statusId));
     }
 }

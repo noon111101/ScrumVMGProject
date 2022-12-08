@@ -1,16 +1,17 @@
 package com.vmg.scrum.service.impl;
 
 import com.vmg.scrum.model.request.Request;
+import com.vmg.scrum.model.request.ApproveStatus;
 import com.vmg.scrum.payload.request.ManageRequests_Request;
-import com.vmg.scrum.repository.RequestRepository;
+import com.vmg.scrum.payload.response.MessageResponse;
+import com.vmg.scrum.repository.RequestRepository;import com.vmg.scrum.repository.ApproveSttRepository;
 import com.vmg.scrum.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class RequestServiceImpl implements RequestService {
@@ -18,8 +19,12 @@ public class RequestServiceImpl implements RequestService {
     @Autowired
     private RequestRepository requestRepository;
 
+    @Autowired
+    private ApproveSttRepository approveSttRepository;
+
     @Override
     public Page<Request> ManageRequests(ManageRequests_Request manageRequests_request, Pageable pageable) {
+        long userId = manageRequests_request.getUser_id();
         long departId = manageRequests_request.getDepart_id();
         long status = manageRequests_request.getStatus();
         String search = manageRequests_request.getSearch();
@@ -28,7 +33,7 @@ public class RequestServiceImpl implements RequestService {
         if( departId!=0){
             if( status !=0 ){
                 if(search!=null && search!=""){
-                    pageRequests = requestRepository.findByByDepartmentIdAndSearchAndStatus(departId, search, status,pageable);
+                    pageRequests = requestRepository.findByByDepartmentIdAndSearchAndStatus(departId, search, status,userId, pageable);
                 }
                 else{
                     pageRequests = requestRepository.findByByDepartmentIdAndStatus(departId, status, pageable);
@@ -65,5 +70,27 @@ public class RequestServiceImpl implements RequestService {
 
         }
         return pageRequests;
+    }
+
+    @Override
+    public MessageResponse changeApproveStatus(long id, long status) {
+        Request request = requestRepository.findByRequestId(id);
+        ApproveStatus approveStatus = approveSttRepository.findById(status);
+        request.setApproveStatus(approveStatus);
+        requestRepository.save(request);
+        if(request.getApproveStatus().getId()==1){
+            return  new MessageResponse("Đã hoàn tác");
+        }
+        if(request.getApproveStatus().getId()==2){
+            return  new MessageResponse("Đã chấp thuận");
+        }
+        if(request.getApproveStatus().getId()==3){
+            return  new MessageResponse("Đã từ chối");
+        }
+        if(request.getApproveStatus().getId()==4){
+            return  new MessageResponse("Đã quá hạn");
+        }
+
+        return null;
     }
 }
