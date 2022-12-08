@@ -5,6 +5,7 @@ import com.vmg.scrum.model.User;
 
 import com.vmg.scrum.model.excel.LogDetail;
 
+import com.vmg.scrum.payload.request.ManageUser_Request;
 import com.vmg.scrum.payload.request.SignupRequest;
 import com.vmg.scrum.payload.request.UpdateUserRequest;
 import com.vmg.scrum.payload.response.MessageResponse;
@@ -37,52 +38,10 @@ public class UserController {
     @GetMapping("users")
     public ResponseEntity<Page<User>> getUsers(@RequestParam(defaultValue = "0") int page,
                                                @RequestParam(defaultValue = "10") int size,
-                                               @RequestParam(name = "departid", required = false) Long departid,
-                                               @RequestParam(name = "search", required = false) String search,
-                                               @RequestParam(name = "status", required = false) Boolean status){
+                                               @ModelAttribute ManageUser_Request manageUser_request){
         Pageable pageable = PageRequest.of(page,size);
-        Page<User> pageUsers = null;
+        Page<User> pageUsers = userService.manageUsers(manageUser_request, pageable);
 
-        if(departid!=null && departid!=0){
-            if(status!=null ){
-//                Boolean available = Boolean.parseBoolean(status);
-                if(search!=null && search!=""){
-                    pageUsers = userRepository.getUsersByDepartments_Id_Search_Status(departid, search, status,pageable);
-                }
-                else{
-                    pageUsers = userRepository.getUsersByDepartments_Id_Status(departid, status, pageable);
-                }
-            }
-            else{
-                if(search!=null && search!=""){
-                    pageUsers = userRepository.getUsersByDepartments_Id_Search(departid, search, pageable);
-                }
-                else{
-                    pageUsers = userRepository.getUsersByDepartments_Id(departid, pageable);
-                }
-            }
-        }
-        else{
-            if(status!=null ){
-//                Boolean available = Boolean.parseBoolean(status);
-                if(search!=null && search!=""){
-                    System.out.println("aaaa");
-                    pageUsers = userRepository.findAll_Search_Status(search,status, pageable);
-                }
-                else{
-                    pageUsers = userRepository.findAll_Status(status, pageable);
-                }
-            }
-            else{
-                if(search!=null && search!=""){
-                    pageUsers = userRepository.findAll_Search(search, pageable);
-                }
-                else{
-                    pageUsers = userRepository.findAll(pageable);
-                }
-            }
-
-        }
         return new ResponseEntity<>(pageUsers, HttpStatus.OK);
     }
 
