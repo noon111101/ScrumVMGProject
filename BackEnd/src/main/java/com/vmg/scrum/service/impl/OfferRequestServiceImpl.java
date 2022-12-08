@@ -8,6 +8,7 @@ import com.vmg.scrum.model.request.Request;
 import com.vmg.scrum.payload.request.OfferRequest;
 import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.repository.*;
+import com.vmg.scrum.service.MailService;
 import com.vmg.scrum.service.OfferRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,18 +38,21 @@ public class OfferRequestServiceImpl implements OfferRequestService {
     @Autowired
     private final CategoryReasonRepository categoryReasonRepository;
 
+    @Autowired
+    MailService mailService;
 
-
+  
     @Override
     public MessageResponse addRequest(OfferRequest offerRequest) throws MessagingException, UnsupportedEncodingException {
         User creator = userRepository.findByUserName(offerRequest.getCreator());
         ApproveStatus approveStatus = approveRepository.findById(offerRequest.getApproveStatus());
         CatergoryRequest catergoryRequest = categoryRequestRepository.findById(offerRequest.getCatergoryRequest());
         CategoryReason categoryReason = categoryReasonRepository.findById(offerRequest.getCategoryReason());
-
         Request request = new Request(creator, offerRequest.getTitle(), offerRequest.getContent(), approveStatus, categoryReason, catergoryRequest, offerRequest.getDateFrom(), offerRequest.getDateTo(), offerRequest.getTimeStart(), offerRequest.getTimeEnd(), offerRequest.getLastSign());
         Set<User> approves = new HashSet<>();
         Set<User> followers = new HashSet<>();
+
+        User fullName = userRepository.findByfullName(offerRequest.getCreator());
 
         for (String s : offerRequest.getApprovers()) {
            User userApprove = userRepository.getByUsername(s);
@@ -62,6 +66,8 @@ public class OfferRequestServiceImpl implements OfferRequestService {
         request.setApprovers(approves);
         request.setFollowers(followers);
         offerRepository.save(request);
+        mailService.sendEmailFollowers(offerRequest.getFollowers(), offerRequest.getTitle(), fullName);
+        mailService.sendEmailApprovers(offerRequest.getApprovers(), offerRequest.getTitle(), fullName);
         return new MessageResponse("Tạo request thành công!");
     }
 }
