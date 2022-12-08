@@ -1,13 +1,7 @@
 package com.vmg.scrum.payload.request;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vmg.scrum.model.Sign;
-import com.vmg.scrum.model.User;
-import com.vmg.scrum.model.request.ApproveStatus;
-import com.vmg.scrum.model.request.CatergoryRequest;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -30,7 +24,7 @@ public class OfferRequest {
 
     private Set<String> approvers;
 
-    private Set<String> followers;
+    private Set<String > followers;
 
     @NotBlank(message = "Chưa nhập tên ngày nghỉ")
     @Size(min = 3, max = 50)
@@ -158,5 +152,13 @@ public class OfferRequest {
 
     public void setCatergoryRequest(long catergoryRequest) {
         this.catergoryRequest = catergoryRequest;
+    }
+
+    public long getCategoryReason() {
+        return categoryReason;
+    }
+
+    public void setCategoryReason(long categoryReason) {
+        this.categoryReason = categoryReason;
     }
 }
