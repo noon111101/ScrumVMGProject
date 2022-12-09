@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface RequestService {
 
-    Page<Request> ManageRequests(ManageRequests_Request manageRequests_request, Pageable pageable);
+    List<Request> ManageRequests(ManageRequests_Request manageRequests_request);
 
     List<Request> MyRequests(Long id, Long status);
     MessageResponse changeApproveStatus(long id, long status);
