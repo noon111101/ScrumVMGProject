@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -73,6 +74,18 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    public List<Request> MyRequests(Long id, Long status) {
+        List<Request> requests = null;
+        if(status!=null && status!=0){
+            requests = requestRepository.findByRequestCreatorIdAndStatus(id, status);
+        }
+        else{
+            requests = requestRepository.findByRequestCreatorId(id);
+        }
+        return requests;
+    }
+
+    @Override
     public MessageResponse changeApproveStatus(long id, long status) {
         Request request = requestRepository.findByRequestId(id);
         ApproveStatus approveStatus = approveSttRepository.findById(status);
@@ -89,6 +102,12 @@ public class RequestServiceImpl implements RequestService {
         }
         if(request.getApproveStatus().getId()==4){
             return  new MessageResponse("Đã quá hạn");
+        }
+        if(request.getApproveStatus().getId()==5){
+            return  new MessageResponse("Đã hủy");
+        }
+        if(request.getApproveStatus().getId()==6){
+            return  new MessageResponse("Đã hoàn thành");
         }
 
         return null;

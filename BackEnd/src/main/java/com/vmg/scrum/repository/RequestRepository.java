@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Long> {
 
@@ -59,4 +61,17 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     @Query(value = "select r from Request r " +
             " where r.id = ?1 ")
     Request findByRequestId(Long id);
+
+    @Query(value = "select r from Request r " +
+            " where r.creator.id = ?1 " +
+            " order by r.id desc ")
+    List<Request> findByRequestCreatorId(long id);
+
+    @Query(value = "select r from Request r " +
+            " where r.approveStatus.id = ?2 " +
+            " and r.creator.id = ?1 " +
+            " order by r.id desc ")
+    List<Request> findByRequestCreatorIdAndStatus(long id, long status);
+
+
 }

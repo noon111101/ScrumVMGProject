@@ -66,6 +66,12 @@ public class RequestController {
         return new ResponseEntity<>(requestRepository.findByRequestId(id), HttpStatus.OK);
     }
 
+    @GetMapping("/creator")
+    public ResponseEntity<List<Request>> getRequestByCreatorId(@RequestParam(name = "id") long id,
+                                                               @RequestParam(name = "statusId", defaultValue = "0")long statusId) throws ParseException {
+        return new ResponseEntity<>(requestService.MyRequests(id,statusId), HttpStatus.OK);
+    }
+
     @GetMapping("/categoryreason/{id}")
     public ResponseEntity<List<CategoryReason>> getCategoryReason(@PathVariable("id") long id) throws ParseException {
         return new ResponseEntity<>(categoryReasonRepository.getCategoryReasonByCatergoryRequest_Id(id), HttpStatus.OK);
