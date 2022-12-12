@@ -12,7 +12,10 @@ import java.util.List;
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Long> {
 
-    @Query(value = "select r from Request r order by r.id desc ")
+//    @Query(value = "SELECT * from request",nativeQuery = true)
+//    Page<Request> findAll(Pageable pageable);
+    @Query(value = "select r from Request r" +
+            " order by r.id desc ")
     Page<Request> findAll(Pageable pageable);
 
     @Query(value = "select r from Request r " +
@@ -58,9 +61,22 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
             " and r.approveStatus.id = ?3 " +
             " and (r.title LIKE %?2% or r.creator.fullName LIKE %?2%) " +
             " order by r.id desc ")
-    Page<Request> findByByDepartmentIdAndSearchAndStatus(Long departId, String search, Long status, Pageable pageable);
+    Page<Request> findByByDepartmentIdAndSearchAndStatus( Long departId, String search, Long status, Long userId, Pageable pageable);
 
     @Query(value = "select r from Request r " +
             " where r.id = ?1 ")
     Request findByRequestId(Long id);
+
+    @Query(value = "select r from Request r " +
+            " where r.creator.id = ?1 " +
+            " order by r.id desc ")
+    List<Request> findByRequestCreatorId(long id);
+
+    @Query(value = "select r from Request r " +
+            " where r.approveStatus.id = ?2 " +
+            " and r.creator.id = ?1 " +
+            " order by r.id desc ")
+    List<Request> findByRequestCreatorIdAndStatus(long id, long status);
+
+
 }

@@ -5,6 +5,7 @@ import com.vmg.scrum.model.request.CategoryReason;
 import com.vmg.scrum.model.request.Request;
 import com.vmg.scrum.payload.request.ManageRequests_Request;
 import com.vmg.scrum.payload.request.OfferRequest;
+import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.repository.CategoryReasonRepository;
 import com.vmg.scrum.repository.OfferRequestRepository;
 import com.vmg.scrum.repository.RequestRepository;
@@ -53,7 +54,7 @@ public class RequestController {
 
     @GetMapping("")
     public ResponseEntity<Page<Request>> getRequests(@RequestParam(name = "page", defaultValue = "0") int page,
-                                                     @RequestParam(name = "size", defaultValue = "30") int size,
+                                                     @RequestParam(name = "size", defaultValue = "15") int size,
                                                      @ModelAttribute ManageRequests_Request manageRequests_request) throws ParseException {
         Pageable pageable = PageRequest.of(page, size);
         Page<Request> pageRequests = requestService.ManageRequests(manageRequests_request, pageable);
@@ -65,8 +66,20 @@ public class RequestController {
         return new ResponseEntity<>(requestRepository.findByRequestId(id), HttpStatus.OK);
     }
 
+    @GetMapping("/creator")
+    public ResponseEntity<List<Request>> getRequestByCreatorId(@RequestParam(name = "id") long id,
+                                                               @RequestParam(name = "statusId", defaultValue = "0")long statusId) throws ParseException {
+        return new ResponseEntity<>(requestService.MyRequests(id,statusId), HttpStatus.OK);
+    }
+
     @GetMapping("/categoryreason/{id}")
     public ResponseEntity<List<CategoryReason>> getCategoryReason(@PathVariable("id") long id) throws ParseException {
         return new ResponseEntity<>(categoryReasonRepository.getCategoryReasonByCatergoryRequest_Id(id), HttpStatus.OK);
+    }
+
+    @PutMapping("")
+    public ResponseEntity<MessageResponse> changeStatus(@RequestParam(name = "requestId")long requestId,
+                                                        @RequestParam(name = "statusId")long statusId) throws MessagingException, UnsupportedEncodingException {
+        return ResponseEntity.ok(requestService.changeApproveStatus(requestId,statusId));
     }
 }
