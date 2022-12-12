@@ -14,15 +14,15 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     @Query(value = "select * from request r \n" +
             "join request_approvers ra on r.request_id=ra.request_id\n" +
-            "join request_followers rf on r.request_id=rf.request_id\n" +
-            "where ra.user_id = ?1 or rf.user_id= ?1\n" +
+            "left join request_followers rf on ra.request_id=rf.request_id\n" +
+            "where (rf.user_id = ?1 or ra.user_id= ?1)\n" +
             "group by r.request_id\n" +
             "order by r.request_id desc;", nativeQuery = true)
     List<Request> findAll(long user_id);
 
     @Query(value = "select * from request r \n" +
             "join request_approvers ra on r.request_id=ra.request_id\n" +
-            "join request_followers rf on r.request_id=rf.request_id\n" +
+            "left join request_followers rf on ra.request_id=rf.request_id\n" +
             "join user u on u.user_id=r.creator_id\n" +
             "where (ra.user_id = ?1 or rf.user_id= ?1)\n" +
             "and (r.title LIKE %?2% or u.full_name LIKE %?2%)\n" +
@@ -32,7 +32,7 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     @Query(value = "select * from request r \n" +
             "join request_approvers ra on r.request_id=ra.request_id\n" +
-            "join request_followers rf on r.request_id=rf.request_id\n" +
+            "left join request_followers rf on ra.request_id=rf.request_id\n" +
             "join user u on u.user_id=r.creator_id\n" +
             "where (ra.user_id = ?1 or rf.user_id= ?1)\n" +
             "and  (r.approve_status_id=?2 )\n" +
@@ -42,7 +42,7 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     @Query(value = "select * from request r \n" +
             "join request_approvers ra on r.request_id=ra.request_id\n" +
-            "join request_followers rf on r.request_id=rf.request_id\n" +
+            "left join request_followers rf on ra.request_id=rf.request_id\n" +
             "join user u on u.user_id=r.creator_id\n" +
             "where (ra.user_id = ?1 or rf.user_id = ?1)\n" +
             "and  (r.approve_status_id=?3 )\n" +
@@ -53,7 +53,7 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     @Query(value = "select * from request r \n" +
             "join request_approvers ra on r.request_id=ra.request_id\n" +
-            "join request_followers rf on r.request_id=rf.request_id\n" +
+            "left join request_followers rf on ra.request_id=rf.request_id\n" +
             "join user u on u.user_id=r.creator_id\n" +
             "where (ra.user_id = ?1 or rf.user_id= ?1)\n" +
             "and  (u.department_id=?2)\n" +
@@ -63,7 +63,7 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     @Query(value = "select * from request r \n" +
             "join request_approvers ra on r.request_id=ra.request_id\n" +
-            "join request_followers rf on r.request_id=rf.request_id\n" +
+            "left join request_followers rf on ra.request_id=rf.request_id\n" +
             "join user u on u.user_id=r.creator_id\n" +
             "where (ra.user_id = ?1 or rf.user_id= ?1)\n" +
             "and  (u.department_id=?2)\n" +
@@ -74,7 +74,7 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     @Query(value = "select * from request r \n" +
             "join request_approvers ra on r.request_id=ra.request_id\n" +
-            "join request_followers rf on r.request_id=rf.request_id\n" +
+            "left join request_followers rf on ra.request_id=rf.request_id\n" +
             "join user u on u.user_id=r.creator_id\n" +
             "where (ra.user_id = ?1 or rf.user_id= ?1)\n" +
             "and  (u.department_id=?2)\n" +
@@ -85,7 +85,7 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     @Query(value = "select * from request r \n" +
             "join request_approvers ra on r.request_id=ra.request_id\n" +
-            "join request_followers rf on r.request_id=rf.request_id\n" +
+            "left join request_followers rf on ra.request_id=rf.request_id\n" +
             "join user u on u.user_id=r.creator_id\n" +
             "where (ra.user_id = ?1 or rf.user_id= ?1)\n" +
             "and  (u.department_id=?2)\n" +
