@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FurloughHistoryRepository extends JpaRepository<FurloughHistory,Long> {
     FurloughHistory findByYearAndUserId(Long year,Long userId);
-
 }

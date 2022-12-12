@@ -29,6 +29,11 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     Page<Request> findByStatus(Long status, Pageable pageable);
 
     @Query(value = "select r from Request r " +
+            " where r.approveStatus.id = ?1 " +
+            " order by r.id desc ")
+    List<Request> findByStatusList(Long status);
+
+    @Query(value = "select r from Request r " +
             " where (r.title LIKE %?1% or r.creator.fullName LIKE %?1%) " +
             " and r.approveStatus.id = ?2" +
             " order by r.id desc ")
