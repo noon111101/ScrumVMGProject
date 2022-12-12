@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Long> {
 
@@ -22,6 +24,11 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
             " where r.approveStatus.id = ?1 " +
             " order by r.id desc ")
     Page<Request> findByStatus(Long status, Pageable pageable);
+
+    @Query(value = "select r from Request r " +
+            " where r.approveStatus.id = ?1 " +
+            " order by r.id desc ")
+    List<Request> findByStatusList(Long status);
 
     @Query(value = "select r from Request r " +
             " where (r.title LIKE %?1% or r.creator.fullName LIKE %?1%) " +

@@ -36,7 +36,7 @@ public class ExcelController {
     UserRepository userRepository;
 
     @Autowired
-    private ExcelImporter excelImporter;
+    ExcelImporter excelImporter;
 
     @Autowired
     ExcelService fileService;

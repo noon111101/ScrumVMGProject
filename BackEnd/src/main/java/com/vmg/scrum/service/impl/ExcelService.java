@@ -2,7 +2,6 @@ package com.vmg.scrum.service.impl;
 
 import com.vmg.scrum.excel.DataExcelCalculation;
 import com.vmg.scrum.excel.ExcelImporter;
-import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.payload.request.SignupRequest;
 import com.vmg.scrum.repository.LogDetailRepository;

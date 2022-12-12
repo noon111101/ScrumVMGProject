@@ -11,6 +11,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Date;
 
 @Builder
 @AllArgsConstructor
@@ -57,4 +58,11 @@ public class LogDetail extends BaseEntity {
 
     private String reason;
 
+    @Column(columnDefinition = "boolean default false")
+    private boolean requestActive;
+
+    public LogDetail(User user, LocalDate dateLog) {
+        this.user = user;
+        this.dateLog = dateLog;
+    }
 }

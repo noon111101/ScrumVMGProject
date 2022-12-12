@@ -1,11 +1,17 @@
 package com.vmg.scrum.model;
 
 public enum ESign {
+    CĐ,
+    L,
+    TC,
+    NT,
     H,
     KL,
-    NT,
-    KL_H,
+    P,
     H_KL,
-    L
-
-}
+    H_P,
+    KL_H,
+    KL_P,
+    P_H,
+    P_KL
+    }

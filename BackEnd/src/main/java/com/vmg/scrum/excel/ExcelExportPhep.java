@@ -375,9 +375,6 @@ public class ExcelExportPhep {
         int tt = 1;
 
         listFurloughs = furloughService.getFurloughsByYear(year);
-
-
-
         for(Department department: listDeparts){
             row = sheet.createRow(sheet.getLastRowNum()+1);
             sheet.addMergedRegion(new CellRangeAddress(sheet.getLastRowNum(), sheet.getLastRowNum(), 0, 23));
