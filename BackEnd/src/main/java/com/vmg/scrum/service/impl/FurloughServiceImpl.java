@@ -157,21 +157,26 @@ public class FurloughServiceImpl implements FurloughService {
                 availableUsedTillMonth= furlough1.getAvailableUsedTillMonth()-furlough1.getUsedInMonth();
                 break;
             case 4:
+                Furlough furlough = furloughRepository.findByYearAndUserIdAndMonthInYear(year,user.getId(),monthInYear-1);
+                availableUsedTillMonth= furlough.getAvailableUsedTillMonth()-furlough.getUsedInMonth() - payFurlough;
+                break;
             case 5:
             case 7:
             case 8:
             case 10:
             case 11:
-                Furlough furlough = furloughRepository.findByYearAndUserIdAndMonthInYear(year,user.getId(),monthInYear-1);
-                availableUsedTillMonth= furlough.getAvailableUsedTillMonth()-furlough.getUsedInMonth()-payFurlough;
+                furlough = furloughRepository.findByYearAndUserIdAndMonthInYear(year,user.getId(),monthInYear-1);
+                availableUsedTillMonth= furlough.getAvailableUsedTillMonth()-furlough.getUsedInMonth() ;
                 break;
             case 6:
             case 9:
                 Furlough furloughLast = furloughRepository.findByYearAndUserIdAndMonthInYear(year,user.getId(),monthInYear-1);
-                availableUsedTillMonth= furloughLast.getAvailableUsedTillMonth()-furloughLast.getUsedInMonth()+3-payFurlough;
-            case 12:
+                availableUsedTillMonth= furloughLast.getAvailableUsedTillMonth()-furloughLast.getUsedInMonth() + 3 ;
+                break;
+             case 12:
                 Furlough furloughLast12 = furloughRepository.findByYearAndUserIdAndMonthInYear(year,user.getId(),monthInYear-1);
-                availableUsedTillMonth= furloughLast12.getAvailableUsedTillMonth()-furloughLast12.getUsedInMonth()-payFurlough;
+                availableUsedTillMonth= furloughLast12.getAvailableUsedTillMonth()-furloughLast12.getUsedInMonth();
+                break;
             default:
                 break;
         }
