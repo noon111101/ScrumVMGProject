@@ -42,6 +42,9 @@ public class OfferRequest {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateTo;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dateForget;
+
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime timeStart;
 
@@ -160,5 +163,13 @@ public class OfferRequest {
 
     public void setCategoryReason(long categoryReason) {
         this.categoryReason = categoryReason;
+    }
+
+    public LocalDate getDateForget() {
+        return dateForget;
+    }
+
+    public void setDateForget(LocalDate dateForget) {
+        this.dateForget = dateForget;
     }
 }
