@@ -37,6 +37,8 @@ public class Holiday extends BaseEntity {
     private int totalDays;
 
 
+
+
     public Holiday(String holidayName, LocalDate dateFrom, LocalDate dateTo) {
         this.holidayName = holidayName;
         this.dateFrom = dateFrom;
