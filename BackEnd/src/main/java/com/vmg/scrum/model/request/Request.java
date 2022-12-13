@@ -73,7 +73,6 @@ public class Request extends BaseEntity {
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime timeEnd;
 
-    private Float countOff;
     @ManyToOne
     @JoinColumn(name = "signs_id")
     private Sign lastSign;
