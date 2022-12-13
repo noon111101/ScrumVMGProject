@@ -66,11 +66,14 @@ public class Request extends BaseEntity {
     private LocalDate dateFrom;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateTo;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dateForget;
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime timeStart;
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime timeEnd;
 
+    private Float countOff;
     @ManyToOne
     @JoinColumn(name = "signs_id")
     private Sign lastSign;

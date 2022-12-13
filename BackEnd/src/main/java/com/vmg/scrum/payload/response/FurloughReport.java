@@ -6,6 +6,7 @@ import com.vmg.scrum.model.furlough.FurloughHistory;
 import com.vmg.scrum.repository.FurloughHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -48,17 +49,28 @@ public class FurloughReport {
         Long leftYear = (long)leftTime.getYear();
         int leftDate = leftTime.getDate();
         int leftMonth = leftTime.getMonth();
+        LocalDate startWork = user.getStartWork();
         this.user = user;
         this.furloughs = furloughs;
         if(!user.getAvalible()){
             if(leftYear==year){
                 if(leftDate>=15)
-                    this.availibleCurrentYear= leftMonth;
-                else this.availibleCurrentYear=leftMonth-1;
+                    this.availibleCurrentYear= 12-leftMonth;
+                else this.availibleCurrentYear=12-leftMonth+1;
             } else if(leftYear<year) this.availibleCurrentYear=0;
             else if(leftYear>year) this.availibleCurrentYear=furloughHistory.getAvailibleCurrentYear();
-        } else
-            this.availibleCurrentYear=furloughHistory.getAvailibleCurrentYear();
+        } else {
+            if(furloughHistory.getAvailibleCurrentYear()!=0)
+                this.availibleCurrentYear = furloughHistory.getAvailibleCurrentYear();
+            else {
+                if (startWork.getYear() == year ) {
+                    if (startWork.getDayOfMonth() >= 15)
+                        this.availibleCurrentYear = 12 - startWork.getMonthValue();
+                    else this.availibleCurrentYear = 12 - startWork.getMonthValue() + 1;
+                }
+                else this.availibleCurrentYear= 12;
+            }
+        }
         this.oddCurrentYear = furloughHistory.getLeftFurlough();
         this.usedBeforeApril = furloughs.get(0).getUsedInMonth() + furloughs.get(1).getUsedInMonth() + furloughs.get(2).getUsedInMonth();
         for(int i=0;i<=11;i++){
@@ -74,8 +86,7 @@ public class FurloughReport {
             this.payFurlough=this.leftLastYear;
         else
             this.payFurlough=this.leftCurentYear + this.leftLastYear;
-        int currentMonth = new Date().getMonth()+1;
-
+        this.availibleUsePresentMonth=furloughs.get(LocalDate.now().getMonthValue()-1).getAvailableUsedTillMonth();
     }
 
     public User getUser() {

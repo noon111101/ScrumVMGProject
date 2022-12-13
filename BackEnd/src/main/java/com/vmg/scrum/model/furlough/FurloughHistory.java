@@ -21,9 +21,6 @@ public class FurloughHistory {
 
     private float leftFurlough;
 
-
-
-    @Column(columnDefinition = "float default 12")
     private float availibleCurrentYear;
 
     private String reason;

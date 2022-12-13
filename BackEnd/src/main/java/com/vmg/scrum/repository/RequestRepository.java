@@ -95,6 +95,7 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
             "order by r.request_id desc;", nativeQuery = true)
     List<Request> findByByDepartmentIdAndSearchAndStatus(long userId, Long departId, String search, Long status);
 
+
     @Query(value = "select r from Request r " +
             " where r.id = ?1 ")
     Request findByRequestId(Long id);
