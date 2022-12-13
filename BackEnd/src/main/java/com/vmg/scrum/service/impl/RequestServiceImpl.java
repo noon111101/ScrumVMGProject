@@ -24,28 +24,28 @@ public class RequestServiceImpl implements RequestService {
     private ApproveSttRepository approveSttRepository;
 
     @Override
-    public Page<Request> ManageRequests(ManageRequests_Request manageRequests_request, Pageable pageable) {
+    public List<Request> ManageRequests(ManageRequests_Request manageRequests_request) {
         long userId = manageRequests_request.getUser_id();
         long departId = manageRequests_request.getDepart_id();
         long status = manageRequests_request.getStatus();
         String search = manageRequests_request.getSearch();
-        Page<Request> pageRequests = null;
+        List<Request> requests = null;
 
         if( departId!=0){
             if( status !=0 ){
                 if(search!=null && search!=""){
-                    pageRequests = requestRepository.findByByDepartmentIdAndSearchAndStatus(departId, search, status,userId, pageable);
+                    requests = requestRepository.findByByDepartmentIdAndSearchAndStatus(userId, departId, search, status);
                 }
                 else{
-                    pageRequests = requestRepository.findByByDepartmentIdAndStatus(departId, status, pageable);
+                    requests = requestRepository.findByByDepartmentIdAndStatus(userId, departId, status);
                 }
             }
             else{
                 if(search!=null && search!=""){
-                    pageRequests = requestRepository.findByDepartmentIdAndSearch(departId, search, pageable);
+                    requests = requestRepository.findByDepartmentIdAndSearch(userId, departId, search);
                 }
                 else{
-                    pageRequests = requestRepository.findByDepartmentId(departId, pageable);
+                    requests = requestRepository.findByDepartmentId(userId, departId);
                 }
             }
         }
@@ -53,24 +53,23 @@ public class RequestServiceImpl implements RequestService {
             if(status!=0 ){
 //                Boolean available = Boolean.parseBoolean(status);
                 if(search!=null && search!=""){
-                    System.out.println("aaaa");
-                    pageRequests = requestRepository.findBySearchAndStatus(search,status, pageable);
+                    requests = requestRepository.findBySearchAndStatus(userId, search,status);
                 }
                 else{
-                    pageRequests = requestRepository.findByStatus(status, pageable);
+                    requests = requestRepository.findByStatus(userId, status);
                 }
             }
             else{
                 if(search!=null && search!=""){
-                    pageRequests = requestRepository.findBySearch(search, pageable);
+                    requests = requestRepository.findBySearch(userId, search);
                 }
                 else{
-                    pageRequests = requestRepository.findAll(pageable);
+                    requests = requestRepository.findAll(userId);
                 }
             }
 
         }
-        return pageRequests;
+        return requests;
     }
 
     @Override
