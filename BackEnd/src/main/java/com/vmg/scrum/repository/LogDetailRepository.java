@@ -172,7 +172,7 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
     @Query(value = "select * from log_detail l \n" +
             "join user u on l.user_id = u.user_id \n " +
             "where u.code = ?1 " +
-            "and l.date_log <= ?2 "+" and h.date_log >= ?3 ", nativeQuery = true)
+            "and l.date_log <= ?2 "+" and l.date_log >= ?3 ", nativeQuery = true)
     List<LogDetail> findByUserCodeAndDateRange(String code, LocalDate dateTo , LocalDate dateFrom );
 
 }
