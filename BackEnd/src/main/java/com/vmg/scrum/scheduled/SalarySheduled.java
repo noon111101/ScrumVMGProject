@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 @Service
@@ -31,86 +32,6 @@ public class SalarySheduled {
         List<Request> requests = requestRepository.findByStatusList(2L);
         List<LogDetail> logDetails= logDetailRepository.findByCurrentDay(LocalDate.now());
         Holiday holiday = holidayRepository.findCurrentDate(LocalDate.now().toString());
-        if(requests.size()>0){
-            for(Request request : requests){
-                List<LogDetail> logDetailList = new ArrayList<>();
-                if(request.getDateFrom()==request.getDateTo())
-                    logDetailList.add(logDetailRepository.findByUserCodeAndDate(request.getCreator().getCode(),request.getDateTo()));
-                if(request.getDateTo()!=request.getDateFrom()){
-                    logDetailList = logDetailRepository.findByUserCodeAndDateRange(request.getCreator().getCode(),request.getDateTo(),request.getDateFrom());
-                }
-                if(request.getDateTo()==null && request.getDateFrom()==null)
-                    logDetailList.add(logDetailRepository.findByUserCodeAndDate(request.getCreator().getCode(),request.getDateForget()));
-                switch (request.getCategoryReason().getId().intValue()){
-                    //Nghỉ phép && nghỉ ốm
-                    case 1:
-                    case 3:
-                        if(request.getTimeStart().getHour()>=12){
-                            if(logDetailList.get(0).getSigns().getName().toString().startsWith("KL"))
-                                logDetailList.get(0).setSigns(signRepository.findByName(ESign.KL_P));
-                            if(logDetailList.get(0).getSigns().getName().toString().startsWith("H"))
-                                logDetailList.get(0).setSigns(signRepository.findByName(ESign.H_P));
-                        }
-                        else
-                            logDetailList.get(0).setSigns(signRepository.findByName(ESign.P));
-                        if(request.getTimeEnd().getHour()>12)
-                            logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.P));
-                        else {
-                            if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("KL"))
-                                logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.P_KL));
-                            if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("H"))
-                                logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.P_H));
-                        }
-                        for(int i =1; i<logDetailList.size()-1;i++)
-                            logDetailList.get(i).setSigns(signRepository.findByName(ESign.P));
-                        break;
-                    //Nghỉ tiêu chuẩn
-                    case 4:
-                        for(int i =0; i<=logDetailList.size()-1;i++)
-                            logDetailList.get(i).setSigns(signRepository.findByName(ESign.TC));
-                        break;
-                    //Nghỉ chế độ thai sản
-                    case 5:
-                        for(int i =0; i<=logDetailList.size()-1;i++)
-                            logDetailList.get(i).setSigns(signRepository.findByName(ESign.CĐ));
-                        break;
-                    //Quên chấm công
-                    case 6:
-                        for(int i =0; i<=logDetailList.size()-1;i++)
-                            logDetailList.get(i).setSigns(signRepository.findByName(ESign.H));
-                        break;
-                    //Work from home && Đi công tác
-                    case 7:
-                    case 8:
-                        if(request.getTimeStart().getHour()>=12){
-                            if(logDetailList.get(0).getSigns().getName().toString().startsWith("KL"))
-                                logDetailList.get(0).setSigns(signRepository.findByName(ESign.KL_H));
-                            if(logDetailList.get(0).getSigns().getName().toString().startsWith("H"))
-                                logDetailList.get(0).setSigns(signRepository.findByName(ESign.H));
-                        }
-                        else
-                            logDetailList.get(0).setSigns(signRepository.findByName(ESign.H));
-                        if(request.getTimeEnd().getHour()>12)
-                            logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.H));
-                        else {
-                            if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("KL"))
-                                logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.H_KL));
-                            if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("H"))
-                                logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.H));
-                        }
-                        for(int i =1; i<logDetailList.size()-1;i++)
-                            logDetailList.get(i).setSigns(signRepository.findByName(ESign.H));
-                        break;
-                    default:
-                        break;
-                }
-                for(LogDetail logDetail : logDetailList){
-                    logDetail.setRequestActive(true);
-                    logDetailRepository.save(logDetail);
-                }
-                request.setApproveStatus(approveSttRepository.findById(6));
-            }
-        }
         for (LogDetail logDetail : logDetails) {
             if(logDetail.isRequestActive())
                 continue;
@@ -190,7 +111,99 @@ public class SalarySheduled {
             }
             logDetailRepository.save(logDetail);
         }
+        if(requests.size()>0){
+            for(Request request : requests){
+                List<LogDetail> logDetailList = new ArrayList<>();
+                if(request.getDateFrom()==request.getDateTo()){
+                    if(logDetailRepository.findByUserCodeAndDate(request.getCreator().getCode(),request.getDateTo())!=null)
+                    logDetailList.add(logDetailRepository.findByUserCodeAndDate(request.getCreator().getCode(),request.getDateTo()));
+                    else logDetailList.add(new LogDetail(request.getCreator(),request.getDateTo()));
 
-        System.out.println("Chay ham tinh toan ki tu cham cong vao" + LocalDate.now());
+                }
+                if(request.getDateTo()!=request.getDateFrom()){
+                    if(logDetailRepository.findByUserCodeAndDateRange(request.getCreator().getCode(),request.getDateTo(),request.getDateFrom()).size()!=0)
+                    logDetailList = logDetailRepository.findByUserCodeAndDateRange(request.getCreator().getCode(),request.getDateTo(),request.getDateFrom());
+                    else {
+                        for(int i=0;i<= Period.between(request.getDateFrom(),request.getDateTo()).getDays();i++)
+                            logDetailList.add(new LogDetail(request.getCreator(),request.getDateFrom().plusDays(i)));
+                    }
+                }
+                if(request.getDateTo()==null && request.getDateFrom()==null){
+                    if(logDetailRepository.findByUserCodeAndDate(request.getCreator().getCode(),request.getDateForget())!=null)
+                        logDetailList.add(logDetailRepository.findByUserCodeAndDate(request.getCreator().getCode(),request.getDateForget()));
+                    else logDetailList.add(new LogDetail(request.getCreator(),request.getDateForget()));
+                }
+                switch (request.getCategoryReason().getId().intValue()){
+                    //Nghỉ phép && nghỉ ốm
+                    case 1:
+                    case 3:
+                        if(request.getTimeStart().getHour()>=12){
+                            if(logDetailList.get(0).getSigns().getName().toString().startsWith("KL") )
+                                logDetailList.get(0).setSigns(signRepository.findByName(ESign.KL_P));
+                            if(logDetailList.get(0).getSigns().getName().toString().startsWith("H"))
+                                logDetailList.get(0).setSigns(signRepository.findByName(ESign.H_P));
+                        }
+                        else
+                            logDetailList.get(0).setSigns(signRepository.findByName(ESign.P));
+                        if(request.getTimeEnd().getHour()>12)
+                            logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.P));
+                        else {
+                            if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("KL") || logDetailList.get(logDetailList.size()-1).getSigns()==null)
+                                logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.P_KL));
+                            if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("H"))
+                                logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.P_H));
+                        }
+                        for(int i =1; i<logDetailList.size()-1;i++)
+                            logDetailList.get(i).setSigns(signRepository.findByName(ESign.P));
+                        break;
+                    //Nghỉ tiêu chuẩn
+                    case 4:
+                        for(int i =0; i<=logDetailList.size()-1;i++)
+                            logDetailList.get(i).setSigns(signRepository.findByName(ESign.TC));
+                        break;
+                    //Nghỉ chế độ thai sản
+                    case 5:
+                        for(int i =0; i<=logDetailList.size()-1;i++)
+                            logDetailList.get(i).setSigns(signRepository.findByName(ESign.CĐ));
+                        break;
+                    //Quên chấm công
+                    case 6:
+                        for(int i =0; i<=logDetailList.size()-1;i++)
+                            logDetailList.get(i).setSigns(signRepository.findByName(ESign.H));
+                        break;
+                    //Work from home && Đi công tác
+                    case 7:
+                    case 8:
+                        if(request.getTimeStart().getHour()>=12){
+                            if(logDetailList.get(0).getSigns().getName().toString().startsWith("KL") || logDetailList.get(0).getSigns()==null)
+                                logDetailList.get(0).setSigns(signRepository.findByName(ESign.KL_H));
+                            if(logDetailList.get(0).getSigns().getName().toString().startsWith("H"))
+                                logDetailList.get(0).setSigns(signRepository.findByName(ESign.H));
+                        }
+                        else
+                            logDetailList.get(0).setSigns(signRepository.findByName(ESign.H));
+                        if(request.getTimeEnd().getHour()>12)
+                            logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.H));
+                        else {
+                            if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("KL") || logDetailList.get(logDetailList.size()-1).getSigns()==null)
+                                logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.H_KL));
+                            if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("H"))
+                                logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.H));
+                        }
+                        for(int i =1; i<logDetailList.size()-1;i++)
+                            logDetailList.get(i).setSigns(signRepository.findByName(ESign.H));
+                        break;
+                    default:
+                        break;
+                }
+                for(LogDetail logDetail : logDetailList){
+                    logDetail.setRequestActive(true);
+                    logDetailRepository.save(logDetail);
+                }
+                request.setApproveStatus(approveSttRepository.findById(6));
+            }
+        }
+
+        System.out.println("Chay ham tinh toan ki tu cham cong vao " + LocalDate.now());
     }
 }
