@@ -66,6 +66,9 @@ public class Request extends BaseEntity {
     private LocalDate dateFrom;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateTo;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dateForget;
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime timeStart;
     @DateTimeFormat(pattern = "HH:mm")
@@ -75,21 +78,55 @@ public class Request extends BaseEntity {
     @JoinColumn(name = "signs_id")
     private Sign lastSign;
 
-    public Request(User creator, String title, String content, ApproveStatus approveStatus, CategoryReason categoryReason, CatergoryRequest catergoryRequest , LocalDate dateFrom, LocalDate dateTo, LocalTime timeStart, LocalTime timeEnd, Sign lastSign) {
-             this.creator = creator;
-             this.title = title;
-             this.content = content;
-             this.approveStatus = approveStatus;
-             this.categoryReason = categoryReason;
-             this.catergoryRequest = catergoryRequest;
-             this.dateFrom = dateFrom;
-             this.dateTo = dateTo;
-             this.timeStart = timeStart;
-             this.timeEnd = timeEnd;
-             this.lastSign= lastSign;
+    @Column(name = "total_days")
+    private double totalDays;
+
+    public Request(User creator, String title, String content, ApproveStatus approveStatus, CategoryReason categoryReason, CatergoryRequest catergoryRequest , LocalDate dateFrom, LocalDate dateTo,LocalDate dateForget, LocalTime timeStart, LocalTime timeEnd, Sign lastSign) {
+        this.creator = creator;
+        this.title = title;
+        this.content = content;
+        this.approveStatus = approveStatus;
+        this.categoryReason = categoryReason;
+        this.catergoryRequest = catergoryRequest;
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
+        this.dateForget = dateForget;
+        this.timeStart = timeStart;
+        this.timeEnd = timeEnd;
+        this.lastSign = lastSign;
+
+        LocalTime s1 = LocalTime.of(7, 59);
+        LocalTime s2 = LocalTime.of(11, 59);
+        LocalTime s3 = LocalTime.of(9, 1);
+        LocalTime c1 = LocalTime.of(12, 59);
+        LocalTime c2 = LocalTime.of(17, 59);
+        LocalTime c3 = LocalTime.of(13, 01);
+
+        if (dateFrom.equals(dateTo)) {
+            if (timeStart.isAfter(s1) && timeEnd.isBefore(c1)) {
+                totalDays = dateTo.compareTo(dateFrom) + 0.5;
+            } else if (timeStart.isAfter(c1) && timeEnd.isBefore(c1)) {
+                totalDays = dateTo.compareTo(dateFrom) + 0.5;
+            } else {
+                totalDays = dateTo.compareTo(dateFrom) + 1;
+            }
+        } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(s1) && timeEnd.isBefore(c1)) {
+            totalDays = dateTo.compareTo(dateFrom);
+        } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(s1) && timeStart.isBefore(s2) && timeEnd.isBefore(c1)) {
+            totalDays = dateTo.compareTo(dateFrom) + 0.5;
+        } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(s2) && timeEnd.isBefore(c2)) {
+            totalDays = dateTo.compareTo(dateFrom);
+        } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(s2) && timeEnd.isAfter(c1) && timeEnd.isBefore(c2)) {
+            totalDays = dateTo.compareTo(dateFrom) + 0.5;
+        } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(s1) && timeStart.isBefore(s2) && timeEnd.isAfter(c3) && timeEnd.isBefore(c2)) {
+            totalDays = dateTo.compareTo(dateFrom) + 1;
+        } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(s1) && timeStart.isBefore(s2) && timeEnd.isAfter(c1) && timeEnd.isBefore(c3)) {
+            totalDays = dateTo.compareTo(dateFrom) + 0.5;
+        } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(c3) && timeStart.isBefore(c2) && timeEnd.isAfter(s1) && timeEnd.isBefore(s3)) {
+            totalDays = dateTo.compareTo(dateFrom) + 0.5;
+//        } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(s1) && timeStart.isBefore(s3) && timeEnd.isAfter(c1) && timeEnd.isBefore(c3)) {
+//            totalDays = dateTo.compareTo(dateFrom) + 1;
+
+        }
     }
-
-
-
-
 }

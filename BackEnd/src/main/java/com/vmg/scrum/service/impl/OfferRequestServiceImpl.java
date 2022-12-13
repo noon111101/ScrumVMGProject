@@ -48,7 +48,7 @@ public class OfferRequestServiceImpl implements OfferRequestService {
         ApproveStatus approveStatus = approveRepository.findById(offerRequest.getApproveStatus());
         CatergoryRequest catergoryRequest = categoryRequestRepository.findById(offerRequest.getCatergoryRequest());
         CategoryReason categoryReason = categoryReasonRepository.findById(offerRequest.getCategoryReason());
-        Request request = new Request(creator, offerRequest.getTitle(), offerRequest.getContent(), approveStatus, categoryReason, catergoryRequest, offerRequest.getDateFrom(), offerRequest.getDateTo(), offerRequest.getTimeStart(), offerRequest.getTimeEnd(), offerRequest.getLastSign());
+        Request request = new Request(creator, offerRequest.getTitle(), offerRequest.getContent(), approveStatus, categoryReason, catergoryRequest, offerRequest.getDateFrom(), offerRequest.getDateTo(), offerRequest.getDateForget() ,offerRequest.getTimeStart(), offerRequest.getTimeEnd(), offerRequest.getLastSign());
         Set<User> approves = new HashSet<>();
         Set<User> followers = new HashSet<>();
 
