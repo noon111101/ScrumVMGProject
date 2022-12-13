@@ -9,6 +9,6 @@ import java.util.List;
 public interface FurloughRepository extends JpaRepository<Furlough,Long> {
     List<Furlough> findByYearAndUserId(Long year , Long userId);
 
-
+    Furlough findByYearAndUserIdAndMonthInYear(Long year , Long userId , Long month  );
 
 }
