@@ -16,7 +16,4 @@ public interface OfferRequestRepository extends JpaRepository<Request, Long> {
     @Override
     Page<Request> findAll(Pageable pageable);
 
-
-
-
 }

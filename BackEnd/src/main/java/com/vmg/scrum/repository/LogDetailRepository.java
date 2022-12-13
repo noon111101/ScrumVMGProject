@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 
 @Repository
 public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
@@ -103,6 +104,7 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
             " join l.user u " +
             "where u.departments.id= ?1 and MONTH (l.dateLog) = ?2 and u.fullName LIKE %?3%  ")
     List<LogDetail> findByMonthAndDepartment(Long id, Integer month,String search);
+
     @Query(value = "select l from LogDetail l\n" +
             "where l.dateLog = ?1 ")
     List<LogDetail> findByCurrentDay(LocalDate date);
@@ -119,6 +121,11 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
             "order by l.dateLog asc ")
     List<LogDetail> findByMonthSortDate(Integer month);
 
+    @Query(value = "select l from LogDetail l\n" +
+            " join l.user u " +
+            "where  MONTH (l.dateLog) = ?1 " + "and u.code = ?2 "+
+            "order by l.dateLog asc ")
+    List<LogDetail> findByMonthAndUserCodeSortDate(Integer month,String code);
 
     @Query(value = "select l from LogDetail l\n" +
             " join l.user u " +
@@ -160,8 +167,12 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
             "join user u on l.user_id = u.user_id \n " +
             "where u.code = ?1 " +
             "and l.date_log = ?2 ", nativeQuery = true)
-
     LogDetail findByUserCodeAndDate(String code, LocalDate date);
 
+    @Query(value = "select * from log_detail l \n" +
+            "join user u on l.user_id = u.user_id \n " +
+            "where u.code = ?1 " +
+            "and l.date_log <= ?2 "+" and h.date_log >= ?3 ", nativeQuery = true)
+    List<LogDetail> findByUserCodeAndDateRange(String code, LocalDate dateTo , LocalDate dateFrom );
 
 }
