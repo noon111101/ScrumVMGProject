@@ -40,16 +40,10 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
             "order by r.request_id desc;", nativeQuery = true)
     List<Request> findByStatus(long user_id,Long status);
 
-    @Query(value = "select * from request r \n" +
-            "join request_approvers ra on r.request_id=ra.request_id\n" +
-            "left join request_followers rf on ra.request_id=rf.request_id\n" +
-            "join user u on u.user_id=r.creator_id\n" +
-            "where (ra.user_id = ?1 or rf.user_id = ?1)\n" +
-            "and  (r.approve_status_id=?3 )\n" +
-            "and (r.title LIKE %?2% or u.full_name LIKE %?2%)\n" +
-            "group by r.request_id\n" +
-            "order by r.request_id desc;", nativeQuery = true)
-    List<Request> findBySearchAndStatus(long user_id, String search, Long status);
+    @Query(value = "select r from Request r " +
+            " where r.approveStatus.id = ?1 " +
+            " order by r.id desc ")
+    List<Request> findByStatusList(Long status);
 
     @Query(value = "select * from request r \n" +
             "join request_approvers ra on r.request_id=ra.request_id\n" +
