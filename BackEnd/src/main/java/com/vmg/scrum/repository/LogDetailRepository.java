@@ -129,6 +129,12 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
 
     @Query(value = "select l from LogDetail l\n" +
             " join l.user u " +
+            "where  MONTH (l.dateLog) = ?1 " + "and YEAR (l.dateLog) = ?2 "+ "and u.code = ?3 "+
+            "order by l.dateLog asc ")
+    List<LogDetail> findByMonthAndYearAndUserCodeSortDate(Integer month,Integer year,String code);
+
+    @Query(value = "select l from LogDetail l\n" +
+            " join l.user u " +
             "where MONTH (l.dateLog) = ?1  and u.fullName LIKE %?2% ")
     List<LogDetail> findByMonth(Integer month,String search);
 

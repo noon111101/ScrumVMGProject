@@ -96,7 +96,7 @@ public class FurloughImporter {
                             furloughHistoryRepository.save(furloughHistory);
                             break;
                         default:
-                            furlough = new Furlough((long) monthIdx,year, (float) currentCell.getNumericCellValue(),user,furloughService.calculateAvailableUsedTillMonth((long) monthIdx,year, (float) currentCell.getNumericCellValue(),user));
+                            furlough = new Furlough((long) monthIdx,year, (float) currentCell.getNumericCellValue(),user,furloughService.calculateAvailableUsedTillMonth((long) monthIdx,year,user));
                             furloughRepository.save(furlough);
                             break;
                     }

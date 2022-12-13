@@ -137,22 +137,31 @@ public class SalarySheduled {
                     //Nghỉ phép && nghỉ ốm
                     case 1:
                     case 3:
-                        if(request.getTimeStart().getHour()>=12){
-                            if(logDetailList.get(0).getSigns().getName().toString().startsWith("KL") )
-                                logDetailList.get(0).setSigns(signRepository.findByName(ESign.KL_P));
-                            if(logDetailList.get(0).getSigns().getName().toString().startsWith("H"))
-                                logDetailList.get(0).setSigns(signRepository.findByName(ESign.H_P));
+                        if(logDetailList.get(0).getSigns()!=null){
+                            if(request.getTimeStart().getHour()>=12){
+                                if(logDetailList.get(0).getSigns().getName().toString().startsWith("KL") )
+                                    logDetailList.get(0).setSigns(signRepository.findByName(ESign.KL_P));
+                                if(logDetailList.get(0).getSigns().getName().toString().startsWith("H"))
+                                    logDetailList.get(0).setSigns(signRepository.findByName(ESign.H_P));
+                            }
+                            else
+                                logDetailList.get(0).setSigns(signRepository.findByName(ESign.P));
                         }
-                        else
-                            logDetailList.get(0).setSigns(signRepository.findByName(ESign.P));
-                        if(request.getTimeEnd().getHour()>12)
-                            logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.P));
-                        else {
-                            if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("KL") || logDetailList.get(logDetailList.size()-1).getSigns()==null)
-                                logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.P_KL));
-                            if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("H"))
-                                logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.P_H));
+                        else logDetailList.get(0).setSigns(signRepository.findByName(ESign.KL_P));
+
+                        if( logDetailList.get(logDetailList.size()-1).getSigns()!=null){
+                            if(request.getTimeEnd().getHour()>12)
+                                logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.P));
+                            else {
+                                if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("KL") || logDetailList.get(logDetailList.size()-1).getSigns()==null)
+                                    logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.P_KL));
+                                if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("H"))
+                                    logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.P_H));
+                            }
                         }
+                        else logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.P_KL));
+
+
                         for(int i =1; i<logDetailList.size()-1;i++)
                             logDetailList.get(i).setSigns(signRepository.findByName(ESign.P));
                         break;
@@ -174,22 +183,30 @@ public class SalarySheduled {
                     //Work from home && Đi công tác
                     case 7:
                     case 8:
-                        if(request.getTimeStart().getHour()>=12){
-                            if(logDetailList.get(0).getSigns().getName().toString().startsWith("KL") || logDetailList.get(0).getSigns()==null)
-                                logDetailList.get(0).setSigns(signRepository.findByName(ESign.KL_H));
-                            if(logDetailList.get(0).getSigns().getName().toString().startsWith("H"))
+                        if(logDetailList.get(0).getSigns()!=null) {
+                            if (request.getTimeStart().getHour() >= 12) {
+                                if (logDetailList.get(0).getSigns().getName().toString().startsWith("KL") || logDetailList.get(0).getSigns() == null)
+                                    logDetailList.get(0).setSigns(signRepository.findByName(ESign.KL_H));
+                                if (logDetailList.get(0).getSigns().getName().toString().startsWith("H"))
+                                    logDetailList.get(0).setSigns(signRepository.findByName(ESign.H));
+                            } else
                                 logDetailList.get(0).setSigns(signRepository.findByName(ESign.H));
                         }
-                        else
-                            logDetailList.get(0).setSigns(signRepository.findByName(ESign.H));
-                        if(request.getTimeEnd().getHour()>12)
-                            logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.H));
-                        else {
-                            if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("KL") || logDetailList.get(logDetailList.size()-1).getSigns()==null)
-                                logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.H_KL));
-                            if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("H"))
+                        else logDetailList.get(0).setSigns(signRepository.findByName(ESign.KL_H));
+
+                        if(logDetailList.get(logDetailList.size()-1).getSigns()!=null){
+                            if(request.getTimeEnd().getHour()>12)
                                 logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.H));
+                            else {
+                                if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("KL") || logDetailList.get(logDetailList.size()-1).getSigns()==null)
+                                    logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.H_KL));
+                                if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("H"))
+                                    logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.H));
+                            }
                         }
+                        else logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.H_KL));
+
+
                         for(int i =1; i<logDetailList.size()-1;i++)
                             logDetailList.get(i).setSigns(signRepository.findByName(ESign.H));
                         break;

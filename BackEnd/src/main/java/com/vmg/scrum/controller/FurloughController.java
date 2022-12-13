@@ -57,7 +57,7 @@ public class FurloughController {
     MessageResponse create(@RequestParam Long month,@RequestParam Long year,@RequestParam Float used) {
         try {
             Furlough furlough = new Furlough(month, year, used,userRepository.findByCode("VMG_1111"),
-                    furloughServiceImpl.calculateAvailableUsedTillMonth(month,year,used,userRepository.findByCode("VMG_1111")));
+                    furloughServiceImpl.calculateAvailableUsedTillMonth(month,year,userRepository.findByCode("VMG_1111")));
             furloughRepository.save(furlough);
         }catch (Exception e){
             return new MessageResponse("That bai");
