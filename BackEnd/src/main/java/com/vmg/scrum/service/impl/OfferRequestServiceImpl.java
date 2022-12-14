@@ -1,6 +1,7 @@
 package com.vmg.scrum.service.impl;
 
 import com.vmg.scrum.model.User;
+import com.vmg.scrum.model.furlough.Furlough;
 import com.vmg.scrum.model.request.ApproveStatus;
 import com.vmg.scrum.model.request.CategoryReason;
 import com.vmg.scrum.model.request.CatergoryRequest;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,23 +41,24 @@ public class OfferRequestServiceImpl implements OfferRequestService {
     private final CategoryReasonRepository categoryReasonRepository;
 
     @Autowired
+    private final FurloughRepository furloughRepository;
+    @Autowired
     MailService mailService;
 
-  
+
     @Override
     public MessageResponse addRequest(OfferRequest offerRequest) throws MessagingException, UnsupportedEncodingException {
         User creator = userRepository.findByUserName(offerRequest.getCreator());
+
         ApproveStatus approveStatus = approveRepository.findById(offerRequest.getApproveStatus());
         CatergoryRequest catergoryRequest = categoryRequestRepository.findById(offerRequest.getCatergoryRequest());
         CategoryReason categoryReason = categoryReasonRepository.findById(offerRequest.getCategoryReason());
-        Request request = new Request(creator, offerRequest.getTitle(), offerRequest.getContent(), approveStatus, categoryReason, catergoryRequest, offerRequest.getDateFrom(), offerRequest.getDateTo(), offerRequest.getDateForget() ,offerRequest.getTimeStart(), offerRequest.getTimeEnd(), offerRequest.getLastSign());
+        Request request = new Request(creator, offerRequest.getTitle(), offerRequest.getContent(), approveStatus, categoryReason, catergoryRequest, offerRequest.getDateFrom(), offerRequest.getDateTo(), offerRequest.getDateForget(), offerRequest.getTimeStart(), offerRequest.getTimeEnd(), offerRequest.getLastSign());
         Set<User> approves = new HashSet<>();
         Set<User> followers = new HashSet<>();
-
         User fullName = userRepository.findByfullName(offerRequest.getCreator());
-
         for (String s : offerRequest.getApprovers()) {
-           User userApprove = userRepository.getByUsername(s);
+            User userApprove = userRepository.getByUsername(s);
             approves.add(userApprove);
         }
 
@@ -63,11 +66,24 @@ public class OfferRequestServiceImpl implements OfferRequestService {
             User userFolower = userRepository.getByUsername(s);
             followers.add(userFolower);
         }
+        Furlough furlough = (Furlough) furloughRepository.findByYearAndUserIdAndMonthInYear((long) request.getDateFrom().getYear(), creator.getId(), (long) request.getDateFrom().getDayOfMonth());
+        if (request.getTotalDays() == 0) {
+            throw new RuntimeException("Thông tin ngày giờ nghỉ không hợp lệ");
+        }
+        if (request.getCategoryReason().getId() == 1) {
+            System.out.println(request.getTotalDays());
+            if (furlough.getAvailableUsedTillMonth() < request.getTotalDays() && (furlough.getAvailableUsedTillMonth() - request.getTotalDays() < 0)) {
+                throw new RuntimeException("Không đủ ngày phép để tạo yêu cầu nghỉ phép");
+            }
+        }
+
         request.setApprovers(approves);
         request.setFollowers(followers);
         offerRepository.save(request);
-        mailService.sendEmailFollowers(offerRequest.getFollowers(), offerRequest.getTitle(), fullName);
-        mailService.sendEmailApprovers(offerRequest.getApprovers(), offerRequest.getTitle(), fullName);
+//        mailService.sendEmailFollowers(offerRequest.getFollowers(), offerRequest.getTitle(), fullName);
+//        mailService.sendEmailApprovers(offerRequest.getApprovers(), offerRequest.getTitle(), fullName);
         return new MessageResponse("Tạo request thành công!");
+
+
     }
 }

@@ -1,20 +1,25 @@
 package com.vmg.scrum.service.impl;
 
+import com.vmg.scrum.model.furlough.Furlough;
 import com.vmg.scrum.model.request.Request;
 import com.vmg.scrum.model.request.ApproveStatus;
 import com.vmg.scrum.payload.request.ManageRequests_Request;
 import com.vmg.scrum.payload.response.MessageResponse;
+import com.vmg.scrum.repository.FurloughRepository;
 import com.vmg.scrum.repository.RequestRepository;import com.vmg.scrum.repository.ApproveSttRepository;
 import com.vmg.scrum.service.RequestService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class RequestServiceImpl implements RequestService {
 
     @Autowired
@@ -22,6 +27,9 @@ public class RequestServiceImpl implements RequestService {
 
     @Autowired
     private ApproveSttRepository approveSttRepository;
+
+    @Autowired
+    private final FurloughRepository furloughRepository;
 
     @Override
     public List<Request> ManageRequests(ManageRequests_Request manageRequests_request) {
@@ -85,30 +93,34 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public MessageResponse changeApproveStatus(long id, long status) {
+    public MessageResponse changeApproveStatus(long id, long newStatus,long oldStatus) {
         Request request = requestRepository.findByRequestId(id);
-        ApproveStatus approveStatus = approveSttRepository.findById(status);
+        ApproveStatus approveStatus = approveSttRepository.findById(newStatus);
         request.setApproveStatus(approveStatus);
         requestRepository.save(request);
         if(request.getApproveStatus().getId()==1){
+            if(oldStatus == 2){
+                Furlough furlough = (Furlough) furloughRepository.findByYearAndUserIdAndMonthInYear((long) request.getDateFrom().getYear(), request.getCreator().getId(), (long) request.getDateFrom().getMonthValue());
+                furlough.setAvailableUsedTillMonth((float) (furlough.getAvailableUsedTillMonth()+request.getTotalDays()));
+                furloughRepository.save(furlough);
+            }
             return  new MessageResponse("Đã hoàn tác");
         }
         if(request.getApproveStatus().getId()==2){
+            Furlough furlough = (Furlough) furloughRepository.findByYearAndUserIdAndMonthInYear((long) request.getDateFrom().getYear(), request.getCreator().getId(), (long) request.getDateFrom().getMonthValue());
+            if(furlough.getAvailableUsedTillMonth()>=request.getTotalDays() && (furlough.getAvailableUsedTillMonth()-request.getTotalDays()>=0)){
+                furlough.setAvailableUsedTillMonth((float) (furlough.getAvailableUsedTillMonth()-request.getTotalDays()));
+                furloughRepository.save(furlough);
+
+            }
             return  new MessageResponse("Đã chấp thuận");
         }
         if(request.getApproveStatus().getId()==3){
             return  new MessageResponse("Đã từ chối");
         }
         if(request.getApproveStatus().getId()==4){
-            return  new MessageResponse("Đã quá hạn");
-        }
-        if(request.getApproveStatus().getId()==5){
             return  new MessageResponse("Đã hủy");
         }
-        if(request.getApproveStatus().getId()==6){
-            return  new MessageResponse("Đã hoàn thành");
-        }
-
         return null;
     }
 }
