@@ -2,6 +2,7 @@ package com.vmg.scrum.model.excel;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vmg.scrum.model.BaseEntity;
 import com.vmg.scrum.model.Sign;
 import com.vmg.scrum.model.User;
@@ -60,8 +61,7 @@ public class LogDetail extends BaseEntity {
 
     private String reason;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @OneToMany(mappedBy = "logDetail",cascade = CascadeType.ALL)
     private Set<NoteLog> noteLogSet;
 
     @Column(columnDefinition = "boolean default false")

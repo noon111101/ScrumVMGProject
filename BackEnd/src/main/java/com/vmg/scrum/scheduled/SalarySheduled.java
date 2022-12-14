@@ -225,7 +225,6 @@ public class SalarySheduled {
                     logDetail.setRequestActive(true);
                     logDetailRepository.save(logDetail);
                 }
-                request.setApproveStatus(approveSttRepository.findById(6));
             }
         }
 
