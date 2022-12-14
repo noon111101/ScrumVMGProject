@@ -44,6 +44,9 @@ public class OfferRequestServiceImpl implements OfferRequestService {
   
     @Override
     public MessageResponse addRequest(OfferRequest offerRequest) throws MessagingException, UnsupportedEncodingException {
+        if (offerRequest.getDateFrom().isAfter(offerRequest.getDateTo())) {
+            throw new RuntimeException("Ngày bắt đầu phải sớm hơn ngày kết thúc!");
+        }
         User creator = userRepository.findByUserName(offerRequest.getCreator());
         ApproveStatus approveStatus = approveRepository.findById(offerRequest.getApproveStatus());
         CatergoryRequest catergoryRequest = categoryRequestRepository.findById(offerRequest.getCatergoryRequest());
@@ -66,8 +69,8 @@ public class OfferRequestServiceImpl implements OfferRequestService {
         request.setApprovers(approves);
         request.setFollowers(followers);
         offerRepository.save(request);
-        mailService.sendEmailFollowers(offerRequest.getFollowers(), offerRequest.getTitle(), fullName);
-        mailService.sendEmailApprovers(offerRequest.getApprovers(), offerRequest.getTitle(), fullName);
+//        mailService.sendEmailFollowers(offerRequest.getFollowers(), offerRequest.getTitle(), fullName);
+//        mailService.sendEmailApprovers(offerRequest.getApprovers(), offerRequest.getTitle(), fullName);
         return new MessageResponse("Tạo request thành công!");
     }
 }

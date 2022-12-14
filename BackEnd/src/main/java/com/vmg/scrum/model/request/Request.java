@@ -104,32 +104,32 @@ public class Request extends BaseEntity {
         LocalTime c1 = LocalTime.of(12, 59);
         LocalTime c2 = LocalTime.of(17, 59);
         LocalTime c3 = LocalTime.of(13, 01);
- if(dateForget.equals(null)) {
-     if (dateFrom.equals(dateTo)) {
-         if (timeStart.isAfter(s1) && timeEnd.isBefore(c1)) {
-             totalDays = dateTo.compareTo(dateFrom) + 0.5;
-         } else if (timeStart.isAfter(c1) && timeEnd.isBefore(c1)) {
-             totalDays = dateTo.compareTo(dateFrom) + 0.5;
-         } else {
-             totalDays = dateTo.compareTo(dateFrom) + 1;
-         }
-     } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(s1) && timeEnd.isBefore(c1)) {
-         totalDays = dateTo.compareTo(dateFrom);
-     } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(s1) && timeStart.isBefore(s2) && timeEnd.isBefore(c1)) {
-         totalDays = dateTo.compareTo(dateFrom) + 0.5;
-     } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(s2) && timeEnd.isBefore(c2)) {
-         totalDays = dateTo.compareTo(dateFrom);
-     } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(s2) && timeEnd.isAfter(c1) && timeEnd.isBefore(c2)) {
-         totalDays = dateTo.compareTo(dateFrom) + 0.5;
-     } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(s1) && timeStart.isBefore(s2) && timeEnd.isAfter(c3) && timeEnd.isBefore(c2)) {
-         totalDays = dateTo.compareTo(dateFrom) + 1;
-     } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(s1) && timeStart.isBefore(s2) && timeEnd.isAfter(c1) && timeEnd.isBefore(c3)) {
-         totalDays = dateTo.compareTo(dateFrom) + 0.5;
-     } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(c3) && timeStart.isBefore(c2) && timeEnd.isAfter(s1) && timeEnd.isBefore(s3)) {
-         totalDays = dateTo.compareTo(dateFrom) + 0.5;
-//        } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(s1) && timeStart.isBefore(s3) && timeEnd.isAfter(c1) && timeEnd.isBefore(c3)) {
-//            totalDays = dateTo.compareTo(dateFrom) + 1;
-     }
- }
+// if(dateForget.equals(null)) {
+//     if (dateFrom.equals(dateTo)) {
+//         if (timeStart.isAfter(s1) && timeEnd.isBefore(c1)) {
+//             totalDays = dateTo.compareTo(dateFrom) + 0.5;
+//         } else if (timeStart.isAfter(c1) && timeEnd.isBefore(c1)) {
+//             totalDays = dateTo.compareTo(dateFrom) + 0.5;
+//         } else {
+//             totalDays = dateTo.compareTo(dateFrom) + 1;
+//         }
+//     } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(s1) && timeEnd.isBefore(c1)) {
+//         totalDays = dateTo.compareTo(dateFrom);
+//     } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(s1) && timeStart.isBefore(s2) && timeEnd.isBefore(c1)) {
+//         totalDays = dateTo.compareTo(dateFrom) + 0.5;
+//     } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(s2) && timeEnd.isBefore(c2)) {
+//         totalDays = dateTo.compareTo(dateFrom);
+//     } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(s2) && timeEnd.isAfter(c1) && timeEnd.isBefore(c2)) {
+//         totalDays = dateTo.compareTo(dateFrom) + 0.5;
+//     } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(s1) && timeStart.isBefore(s2) && timeEnd.isAfter(c3) && timeEnd.isBefore(c2)) {
+//         totalDays = dateTo.compareTo(dateFrom) + 1;
+//     } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(s1) && timeStart.isBefore(s2) && timeEnd.isAfter(c1) && timeEnd.isBefore(c3)) {
+//         totalDays = dateTo.compareTo(dateFrom) + 0.5;
+//     } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(c3) && timeStart.isBefore(c2) && timeEnd.isAfter(s1) && timeEnd.isBefore(s3)) {
+//         totalDays = dateTo.compareTo(dateFrom) + 0.5;
+////        } else if (!dateFrom.equals(dateTo) && timeStart.isAfter(s1) && timeStart.isBefore(s3) && timeEnd.isAfter(c1) && timeEnd.isBefore(c3)) {
+////            totalDays = dateTo.compareTo(dateFrom) + 1;
+//     }
+// }
     }
 }
