@@ -48,8 +48,10 @@ public class OfferRequestServiceImpl implements OfferRequestService {
 
     @Override
     public MessageResponse addRequest(OfferRequest offerRequest) throws MessagingException, UnsupportedEncodingException {
+        if (offerRequest.getDateFrom().isAfter(offerRequest.getDateTo())) {
+            throw new RuntimeException("Ngày bắt đầu phải sớm hơn ngày kết thúc!");
+        }
         User creator = userRepository.findByUserName(offerRequest.getCreator());
-
         ApproveStatus approveStatus = approveRepository.findById(offerRequest.getApproveStatus());
         CatergoryRequest catergoryRequest = categoryRequestRepository.findById(offerRequest.getCatergoryRequest());
         CategoryReason categoryReason = categoryReasonRepository.findById(offerRequest.getCategoryReason());
