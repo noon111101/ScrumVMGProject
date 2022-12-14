@@ -70,7 +70,8 @@ public class RequestController {
 
     @PutMapping("")
     public ResponseEntity<MessageResponse> changeStatus(@RequestParam(name = "requestId")long requestId,
-                                                        @RequestParam(name = "statusId")long statusId) throws MessagingException, UnsupportedEncodingException {
-        return ResponseEntity.ok(requestService.changeApproveStatus(requestId,statusId));
+                                                        @RequestParam(name = "newStatusId")long newStatusId,
+                                                        @RequestParam(name = "oldStatusId")long oldStatusId) throws MessagingException, UnsupportedEncodingException {
+        return ResponseEntity.ok(requestService.changeApproveStatus(requestId,newStatusId,oldStatusId));
     }
 }
