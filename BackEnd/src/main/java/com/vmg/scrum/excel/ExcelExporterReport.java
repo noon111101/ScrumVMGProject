@@ -7,6 +7,7 @@ import com.vmg.scrum.payload.response.UserLogDetail;
 import com.vmg.scrum.repository.DepartmentRepository;
 import com.vmg.scrum.repository.LogDetailRepository;
 import com.vmg.scrum.repository.UserRepository;
+import org.apache.poi.sl.usermodel.Notes;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
@@ -383,56 +384,56 @@ public class ExcelExporterReport {
                             cell.setCellValue("H/KL");
                             cell.setCellStyle(styleBodyCenter);
                             //Comment
-                            if (logDetail.getReason() != null) {
-//                                ClientAnchor clientAnchor = drawing.createAnchor(0, 0, 0, 0, 0, 2, 7, 7);
-                                ClientAnchor clientAnchor = creationHelper.createClientAnchor();
-                                clientAnchor.setCol1(cell.getColumnIndex());
-                                clientAnchor.setCol2(cell.getColumnIndex() + 5);
-                                clientAnchor.setRow1(row.getRowNum());
-                                clientAnchor.setRow2(row.getRowNum() + 2);
-
-                                Comment comment = (Comment) drawing.createCellComment(clientAnchor);
-                                RichTextString richTextString = creationHelper.createRichTextString(logDetail.getReason());
-                                comment.setString(richTextString);
-                                comment.setAuthor("Apache POI");
-                                cell.setCellComment(comment);
-                            }
+//                            if (logDetail.getReason() != null) {
+////                                ClientAnchor clientAnchor = drawing.createAnchor(0, 0, 0, 0, 0, 2, 7, 7);
+//                                ClientAnchor clientAnchor = creationHelper.createClientAnchor();
+//                                clientAnchor.setCol1(cell.getColumnIndex());
+//                                clientAnchor.setCol2(cell.getColumnIndex() + 5);
+//                                clientAnchor.setRow1(row.getRowNum());
+//                                clientAnchor.setRow2(row.getRowNum() + 2);
+//
+//                                Comment comment = (Comment) drawing.createCellComment(clientAnchor);
+//                                RichTextString richTextString = creationHelper.createRichTextString(logDetail.getReason());
+//                                comment.setString(richTextString);
+//                                comment.setAuthor("Apache POI");
+//                                cell.setCellComment(comment);
+//                            }
                         } else if (logDetail.getSigns().getName().toString().equals("KL_H")) {
                             cell.setCellValue("KL/H");
                             cell.setCellStyle(styleBodyCenter);
                             //Comment
-                            if (logDetail.getReason() != null) {
-//                                ClientAnchor clientAnchor = drawing.createAnchor(0, 0, 0, 0, 0, 2, 7, 7);
-                                ClientAnchor clientAnchor = creationHelper.createClientAnchor();
-                                clientAnchor.setCol1(cell.getColumnIndex());
-                                clientAnchor.setCol2(cell.getColumnIndex() + 5);
-                                clientAnchor.setRow1(row.getRowNum());
-                                clientAnchor.setRow2(row.getRowNum() + 2);
-
-                                Comment comment = (Comment) drawing.createCellComment(clientAnchor);
-                                RichTextString richTextString = creationHelper.createRichTextString(logDetail.getReason());
-                                comment.setString(richTextString);
-                                comment.setAuthor("Apache POI");
-                                cell.setCellComment(comment);
-                            }
+//                            if (logDetail.getReason() != null) {
+//                                ClientAnchor clientAnchor = creationHelper.createClientAnchor();
+//                                clientAnchor.setCol1(cell.getColumnIndex());
+//                                clientAnchor.setCol2(cell.getColumnIndex() + 5);
+//                                clientAnchor.setRow1(row.getRowNum());
+//                                clientAnchor.setRow2(row.getRowNum() + 2);
+//
+//
+//                                Comment comment = (Comment) drawing.createCellComment(clientAnchor);
+//                                RichTextString richTextString = creationHelper.createRichTextString(logDetail.getReason());
+//                                comment.setString(richTextString);
+//                                comment.setAuthor("Apache POI");
+//                                cell.setCellComment(comment);
+//                            }
                         } else {
                             cell.setCellValue(logDetail.getSigns().getName().toString());
                             cell.setCellStyle(styleBodyCenter);
                             //Comment
-                            if (logDetail.getReason() != null) {
-                                ClientAnchor clientAnchor = creationHelper.createClientAnchor();
-                                clientAnchor.setCol1(cell.getColumnIndex());
-                                clientAnchor.setCol2(cell.getColumnIndex() + 5);
-                                clientAnchor.setRow1(row.getRowNum());
-                                clientAnchor.setRow2(row.getRowNum() + 2);
-
-
-                                Comment comment = (Comment) drawing.createCellComment(clientAnchor);
-                                RichTextString richTextString = creationHelper.createRichTextString(logDetail.getReason());
-                                comment.setString(richTextString);
-                                comment.setAuthor("Apache POI");
-                                cell.setCellComment(comment);
-                            }
+//                            if (logDetail.getReason() != null) {
+//                                ClientAnchor clientAnchor = creationHelper.createClientAnchor();
+//                                clientAnchor.setCol1(cell.getColumnIndex());
+//                                clientAnchor.setCol2(cell.getColumnIndex() + 5);
+//                                clientAnchor.setRow1(row.getRowNum());
+//                                clientAnchor.setRow2(row.getRowNum() + 2);
+//
+//
+//                                Comment comment = (Comment) drawing.createCellComment(clientAnchor);
+//                                RichTextString richTextString = creationHelper.createRichTextString(logDetail.getReason());
+//                                comment.setString(richTextString);
+//                                comment.setAuthor("Apache POI");
+//                                cell.setCellComment(comment);
+//                            }
                         }
 
 
@@ -468,6 +469,7 @@ public class ExcelExporterReport {
                                     "+COUNTIF(C" + rowCount + ":AG" + rowCount + ", \"*LB*\")"); // Tổng ngày làm việc
                             cell.setCellStyle(styleBodyCenter);
                         }
+
                         if (k == 34) {
                             // Tổng ngày hưởng lương
                             cell.setCellFormula("AH" + rowCount + "" +

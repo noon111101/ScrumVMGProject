@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vmg.scrum.model.BaseEntity;
 import com.vmg.scrum.model.Sign;
 import com.vmg.scrum.model.User;
+import com.vmg.scrum.model.option.NoteLog;
 import com.vmg.scrum.model.option.Shift;
 import lombok.*;
 
@@ -12,6 +13,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.Set;
 
 @Builder
 @AllArgsConstructor
@@ -57,6 +59,10 @@ public class LogDetail extends BaseEntity {
     private String leaveStatus;
 
     private String reason;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<NoteLog> noteLogSet;
 
     @Column(columnDefinition = "boolean default false")
     private boolean requestActive;
