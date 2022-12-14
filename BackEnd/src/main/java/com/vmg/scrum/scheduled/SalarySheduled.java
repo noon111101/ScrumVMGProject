@@ -168,7 +168,7 @@ public class SalarySheduled {
                             logDetailList.get(i).setSigns(signRepository.findByName(ESign.P));
                         break;
                         // nghỉ ốm
-                    case 2:
+                    case 3:
                         for(int i =0; i<=logDetailList.size()-1;i++)
                             logDetailList.get(i).setSigns(signRepository.findByName(ESign.Ô));
                         break;
@@ -188,7 +188,6 @@ public class SalarySheduled {
                             logDetailList.get(i).setSigns(signRepository.findByName(ESign.H));
                         break;
                     //Work from home && Đi công tác
-                    case 3:
                     case 7:
                     case 8:
                             if (request.getTimeStart().getHour() >= 13) {
@@ -225,10 +224,8 @@ public class SalarySheduled {
                     logDetail.setRequestActive(true);
                     logDetailRepository.save(logDetail);
                 }
-                request.setApproveStatus(approveSttRepository.findById(6));
             }
         }
-
         System.out.println("Chay ham tinh toan ki tu cham cong vao " + LocalDate.now());
     }
 }
