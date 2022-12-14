@@ -54,7 +54,7 @@ public class FurloughServiceImpl implements FurloughService {
                         FurloughHistory furloughHistory = furloughHistoryRepository.findByYearAndUserId(year, user.getId());
                         if (furloughHistory == null) {
                             furloughHistory = new FurloughHistory();
-                            furloughHistory.setAvailibleCurrentYear(0);
+                            furloughHistory.setAvailibleCurrentYear(12);
                         }
                         for (int i = 1; i <= 12; i++) {
                             Furlough furlough1 = new Furlough();
@@ -84,6 +84,38 @@ public class FurloughServiceImpl implements FurloughService {
 
         return departmentListMap;
 
+    }
+    @Override
+    public FurloughReport getAllFurloughByYearByUser(Long year, String userCode) {
+        User user = userRepository.findByCode(userCode);
+        List<Furlough> furloughs = furloughRepository.findByYearAndUserId(year, user.getId());
+        List<Furlough> furloughList = new ArrayList<>();
+        FurloughHistory furloughHistory = furloughHistoryRepository.findByYearAndUserId(year, user.getId());
+        if (furloughHistory == null) {
+            furloughHistory = new FurloughHistory();
+            furloughHistory.setAvailibleCurrentYear(12);
+        }
+        for (int i = 1; i <= 12; i++) {
+            Furlough furlough1 = new Furlough();
+            furlough1.setMonthInYear((long) i);
+            furlough1.setYear(year);
+            furlough1.setUsedInMonth((float) 0);
+            furlough1.setAvailableUsedTillMonth(0F);
+            if (furloughs.size() > 0) {
+                boolean check = true;
+                for (Furlough furlough : furloughs) {
+                    if (furlough.getMonthInYear() == i) {
+                        furloughList.add(furlough);
+                        check = false;
+                        break;
+                    }
+                }
+                if (check)
+                    furloughList.add(furlough1);
+            } else furloughList.add(furlough1);
+        }
+        FurloughReport furloughReport = new FurloughReport(user, furloughList, year, furloughHistory);
+        return furloughReport;
     }
     @Override
     public List<FurloughReport> getFurloughsByYear(Long year) {
@@ -123,6 +155,7 @@ public class FurloughServiceImpl implements FurloughService {
 
         return furloughReports;
     }
+
     public Float calculateAvailableUsedTillMonth(Long monthInYear, Long year, User user){
         float payFurlough= 0;
 

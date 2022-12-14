@@ -134,10 +134,10 @@ public class SalarySheduled {
                     else logDetailList.add(new LogDetail(request.getCreator(),request.getDateForget()));
                 }
                 switch (request.getCategoryReason().getId().intValue()){
-                    //Nghỉ phép && nghỉ ốm
+                    //Nghỉ phép
                     case 1:
-                    case 3:
-                            if(request.getTimeStart().getHour()>=12){
+
+                            if(request.getTimeStart().getHour()>=13){
                                 if(logDetailList.get(0).getSigns()!=null) {
                                     if (logDetailList.get(0).getSigns().getName().toString().startsWith("KL"))
                                         logDetailList.get(0).setSigns(signRepository.findByName(ESign.KL_P));
@@ -150,7 +150,7 @@ public class SalarySheduled {
                                 logDetailList.get(0).setSigns(signRepository.findByName(ESign.P));
 
 
-                            if(request.getTimeEnd().getHour()>12)
+                            if(request.getTimeEnd().getHour()>13)
                                 logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.P));
                             else {
                                 if( logDetailList.get(logDetailList.size()-1).getSigns()!=null){
@@ -166,6 +166,11 @@ public class SalarySheduled {
 
                         for(int i =1; i<logDetailList.size()-1;i++)
                             logDetailList.get(i).setSigns(signRepository.findByName(ESign.P));
+                        break;
+                        // nghỉ ốm
+                    case 2:
+                        for(int i =0; i<=logDetailList.size()-1;i++)
+                            logDetailList.get(i).setSigns(signRepository.findByName(ESign.Ô));
                         break;
                     //Nghỉ tiêu chuẩn
                     case 4:
@@ -183,9 +188,10 @@ public class SalarySheduled {
                             logDetailList.get(i).setSigns(signRepository.findByName(ESign.H));
                         break;
                     //Work from home && Đi công tác
+                    case 3:
                     case 7:
                     case 8:
-                            if (request.getTimeStart().getHour() >= 12) {
+                            if (request.getTimeStart().getHour() >= 13) {
                                 if(logDetailList.get(0).getSigns()!=null) {
                                     if (logDetailList.get(0).getSigns().getName().toString().startsWith("KL"))
                                         logDetailList.get(0).setSigns(signRepository.findByName(ESign.KL_H));
@@ -198,7 +204,7 @@ public class SalarySheduled {
                                 logDetailList.get(0).setSigns(signRepository.findByName(ESign.H));
 
 
-                            if(request.getTimeEnd().getHour()>12)
+                            if(request.getTimeEnd().getHour()>13)
                                 logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.H));
                             else {
                                 if(logDetailList.get(logDetailList.size()-1).getSigns()!=null) {

@@ -13,5 +13,6 @@ public enum ESign {
     KL_H,
     KL_P,
     P_H,
-    P_KL
+    P_KL,
+    Ô
     }
