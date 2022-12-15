@@ -47,6 +47,14 @@ public class OfferRequestServiceImpl implements OfferRequestService {
         if (offerRequest.getDateFrom().isAfter(offerRequest.getDateTo())) {
             throw new RuntimeException("Ngày bắt đầu phải sớm hơn ngày kết thúc!");
         }
+        if (offerRequest.getDateFrom().equals(offerRequest.getDateTo())) {
+            if(offerRequest.getTimeStart().equals(offerRequest.getTimeEnd())){
+                throw new RuntimeException("Trong một ngày giờ bắt đầu không thể bằng giờ kết thúc");
+            }
+            if(offerRequest.getTimeStart().isAfter(offerRequest.getTimeEnd())){
+                throw new RuntimeException("Trong một ngày giờ bắt đầu không thể lớn hơn giờ kết thúc");
+            }
+        }
         User creator = userRepository.findByUserName(offerRequest.getCreator());
         ApproveStatus approveStatus = approveRepository.findById(offerRequest.getApproveStatus());
         CatergoryRequest catergoryRequest = categoryRequestRepository.findById(offerRequest.getCatergoryRequest());
