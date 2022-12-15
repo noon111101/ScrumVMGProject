@@ -63,9 +63,12 @@ public class Request extends BaseEntity {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private CategoryReason categoryReason;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column( nullable = true)
     private LocalDate dateFrom;
+    @Column( nullable = true)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateTo;
+    @Column( nullable = true)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateForget;
     @DateTimeFormat(pattern = "HH:mm")
@@ -77,7 +80,7 @@ public class Request extends BaseEntity {
     @JoinColumn(name = "signs_id")
     private Sign lastSign;
 
-    @Column(name = "total_days")
+    @Column(name = "total_days",nullable = true)
     private double totalDays;
 
     public Request(User creator, String title, String content, ApproveStatus approveStatus, CategoryReason categoryReason, CatergoryRequest catergoryRequest, LocalDate dateFrom, LocalDate dateTo, LocalDate dateForget, LocalTime timeStart, LocalTime timeEnd, Sign lastSign) {
@@ -93,6 +96,7 @@ public class Request extends BaseEntity {
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
         this.lastSign = lastSign;
+
 
 //        LocalTime s1 = LocalTime.of(7, 59);
 //        LocalTime s2 = LocalTime.of(11, 59);
