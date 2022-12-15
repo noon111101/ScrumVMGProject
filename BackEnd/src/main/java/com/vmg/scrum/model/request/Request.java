@@ -69,8 +69,10 @@ public class Request extends BaseEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateForget;
     @DateTimeFormat(pattern = "HH:mm")
+    @Column(nullable = true)
     private LocalTime timeStart;
     @DateTimeFormat(pattern = "HH:mm")
+    @Column(nullable = true)
     private LocalTime timeEnd;
 
     @ManyToOne
