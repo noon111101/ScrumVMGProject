@@ -226,7 +226,6 @@ public class SalarySheduled {
                 }
             }
         }
-
         System.out.println("Chay ham tinh toan ki tu cham cong vao " + LocalDate.now());
     }
 }
