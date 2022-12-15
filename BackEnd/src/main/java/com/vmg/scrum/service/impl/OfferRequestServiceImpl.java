@@ -67,7 +67,6 @@ public class OfferRequestServiceImpl implements OfferRequestService {
         Request request = new Request(creator, offerRequest.getTitle(), offerRequest.getContent(), approveStatus, categoryReason, catergoryRequest, offerRequest.getDateFrom(), offerRequest.getDateTo(), offerRequest.getDateForget(), offerRequest.getTimeStart(), offerRequest.getTimeEnd(), offerRequest.getLastSign());
         Set<User> approves = new HashSet<>();
         Set<User> followers = new HashSet<>();
-        User fullName = userRepository.findByfullName(offerRequest.getCreator());
         for (String s : offerRequest.getApprovers()) {
             User userApprove = userRepository.getByUsername(s);
             approves.add(userApprove);
@@ -77,13 +76,17 @@ public class OfferRequestServiceImpl implements OfferRequestService {
             User userFolower = userRepository.getByUsername(s);
             followers.add(userFolower);
         }
-        Furlough furlough = (Furlough) furloughRepository.findByYearAndUserIdAndMonthInYear((long) request.getDateFrom().getYear(), creator.getId(), (long) request.getDateFrom().getDayOfMonth());
-        if (request.getTotalDays() == 0) {
-            throw new RuntimeException("Thông tin ngày giờ nghỉ không hợp lệ");
-        }
+
         if (request.getCategoryReason().getId() == 1) {
-            System.out.println(request.getTotalDays());
-            if (furlough.getAvailableUsedTillMonth() < request.getTotalDays() && (furlough.getAvailableUsedTillMonth() - request.getTotalDays() < 0)) {
+            if (request.getTotalDays() == 0) {
+                throw new RuntimeException("Thông tin ngày giờ nghỉ không hợp lệ");
+            }
+            System.out.println(request.getTotalDays()+","+Long.valueOf(request.getDateFrom().getYear())+"*"+Long.valueOf(request.getDateFrom().getDayOfMonth()));
+            Furlough furlough =  furloughRepository.findByYearAndUserIdAndMonthInYear(Long.valueOf(request.getDateFrom().getYear()), request.getCreator().getId(), Long.valueOf(request.getDateFrom().getMonthValue()));
+            if (furlough.getAvailableUsedTillMonth() >= request.getTotalDays() && furlough!= null) {
+                System.out.println("OK");
+            }
+            else {
                 throw new RuntimeException("Không đủ ngày phép để tạo yêu cầu nghỉ phép");
             }
         }

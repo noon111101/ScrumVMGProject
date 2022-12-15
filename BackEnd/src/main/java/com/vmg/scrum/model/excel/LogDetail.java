@@ -60,7 +60,6 @@ public class LogDetail extends BaseEntity {
 
     private String reason;
 
-
     @Column(columnDefinition = "boolean default false")
     private boolean requestActive;
 
