@@ -49,6 +49,10 @@ public class FurloughController {
     Map<String, List<FurloughReport>> getAllFurloughByYear(@RequestParam Long year,@RequestParam String department) {
         return furloughService.getAllFurloughByYear(year,department);
     }
+    @GetMapping("furloughByYearAndUser")
+    FurloughReport getAllFurloughByYearAndUser(@RequestParam Long year,@RequestParam String userCode) {
+        return furloughService.getAllFurloughByYearByUser(year,userCode);
+    }
     @PostMapping("edit")
     MessageResponse editFurloughReport(@RequestBody EditFurloughRequest editFurloughRequest) {
         return furloughService.editFurloughReport(editFurloughRequest);
@@ -57,7 +61,7 @@ public class FurloughController {
     MessageResponse create(@RequestParam Long month,@RequestParam Long year,@RequestParam Float used) {
         try {
             Furlough furlough = new Furlough(month, year, used,userRepository.findByCode("VMG_1111"),
-                    furloughServiceImpl.calculateAvailableUsedTillMonth(month,year,used,userRepository.findByCode("VMG_1111")));
+                    furloughServiceImpl.calculateAvailableUsedTillMonth(month,year,userRepository.findByCode("VMG_1111")));
             furloughRepository.save(furlough);
         }catch (Exception e){
             return new MessageResponse("That bai");

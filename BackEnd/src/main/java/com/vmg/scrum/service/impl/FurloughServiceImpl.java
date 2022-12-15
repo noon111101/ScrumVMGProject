@@ -54,7 +54,7 @@ public class FurloughServiceImpl implements FurloughService {
                         FurloughHistory furloughHistory = furloughHistoryRepository.findByYearAndUserId(year, user.getId());
                         if (furloughHistory == null) {
                             furloughHistory = new FurloughHistory();
-                            furloughHistory.setAvailibleCurrentYear(0);
+                            furloughHistory.setAvailibleCurrentYear(12);
                         }
                         for (int i = 1; i <= 12; i++) {
                             Furlough furlough1 = new Furlough();
@@ -84,6 +84,38 @@ public class FurloughServiceImpl implements FurloughService {
 
         return departmentListMap;
 
+    }
+    @Override
+    public FurloughReport getAllFurloughByYearByUser(Long year, String userCode) {
+        User user = userRepository.findByCode(userCode);
+        List<Furlough> furloughs = furloughRepository.findByYearAndUserId(year, user.getId());
+        List<Furlough> furloughList = new ArrayList<>();
+        FurloughHistory furloughHistory = furloughHistoryRepository.findByYearAndUserId(year, user.getId());
+        if (furloughHistory == null) {
+            furloughHistory = new FurloughHistory();
+            furloughHistory.setAvailibleCurrentYear(12);
+        }
+        for (int i = 1; i <= 12; i++) {
+            Furlough furlough1 = new Furlough();
+            furlough1.setMonthInYear((long) i);
+            furlough1.setYear(year);
+            furlough1.setUsedInMonth((float) 0);
+            furlough1.setAvailableUsedTillMonth(0F);
+            if (furloughs.size() > 0) {
+                boolean check = true;
+                for (Furlough furlough : furloughs) {
+                    if (furlough.getMonthInYear() == i) {
+                        furloughList.add(furlough);
+                        check = false;
+                        break;
+                    }
+                }
+                if (check)
+                    furloughList.add(furlough1);
+            } else furloughList.add(furlough1);
+        }
+        FurloughReport furloughReport = new FurloughReport(user, furloughList, year, furloughHistory);
+        return furloughReport;
     }
     @Override
     public List<FurloughReport> getFurloughsByYear(Long year) {
@@ -123,7 +155,21 @@ public class FurloughServiceImpl implements FurloughService {
 
         return furloughReports;
     }
-    public Float calculateAvailableUsedTillMonth(Long monthInYear, Long year, Float usedInMonth, User user){
+
+    public Float calculateAvailableUsedTillMonth(Long monthInYear, Long year, User user){
+        float payFurlough= 0;
+
+        if(monthInYear>3){
+            List<Furlough> furloughs = furloughRepository.findByYearAndUserId(year, user.getId());
+            FurloughHistory furloughHistory = furloughHistoryRepository.findByYearAndUserId(year, user.getId());
+            float oddCurrentYear = furloughHistory.getLeftFurlough();
+            float usedBeforeApril = furloughs.get(0).getUsedInMonth() + furloughs.get(1).getUsedInMonth() + furloughs.get(2).getUsedInMonth();
+            float leftLastYear = oddCurrentYear-usedBeforeApril;
+            if(leftLastYear<0)
+                leftLastYear=0;
+            payFurlough = leftLastYear;
+        }
+
         float usedLeftLastYear = furloughHistoryRepository.findByYearAndUserId(year,user.getId()).getLeftFurlough();
         float availableCurrentYear = furloughHistoryRepository.findByYearAndUserId(year,user.getId()).getAvailibleCurrentYear();
         float furloughGive =  availableCurrentYear-12;
@@ -140,20 +186,30 @@ public class FurloughServiceImpl implements FurloughService {
                 else availableUsedTillMonth= furlough2.getAvailableUsedTillMonth()-furlough2.getUsedInMonth()+3;
                 break;
             case 2:
+                furlough1 = furloughRepository.findByYearAndUserIdAndMonthInYear(year,user.getId(),monthInYear-1);
+                availableUsedTillMonth= furlough1.getAvailableUsedTillMonth()-furlough1.getUsedInMonth();
+                break;
             case 4:
+                Furlough furlough = furloughRepository.findByYearAndUserIdAndMonthInYear(year,user.getId(),monthInYear-1);
+                availableUsedTillMonth= furlough.getAvailableUsedTillMonth()-furlough.getUsedInMonth() - payFurlough;
+                break;
             case 5:
             case 7:
             case 8:
             case 10:
             case 11:
-                Furlough furlough = furloughRepository.findByYearAndUserIdAndMonthInYear(year,user.getId(),monthInYear-1);
-                availableUsedTillMonth= furlough.getAvailableUsedTillMonth()-furlough.getUsedInMonth();
+                furlough = furloughRepository.findByYearAndUserIdAndMonthInYear(year,user.getId(),monthInYear-1);
+                availableUsedTillMonth= furlough.getAvailableUsedTillMonth()-furlough.getUsedInMonth() ;
                 break;
             case 6:
             case 9:
-            case 12:
                 Furlough furloughLast = furloughRepository.findByYearAndUserIdAndMonthInYear(year,user.getId(),monthInYear-1);
-                availableUsedTillMonth= furloughLast.getAvailableUsedTillMonth()-furloughLast.getUsedInMonth()+3;
+                availableUsedTillMonth= furloughLast.getAvailableUsedTillMonth()-furloughLast.getUsedInMonth() + 3 ;
+                break;
+             case 12:
+                Furlough furloughLast12 = furloughRepository.findByYearAndUserIdAndMonthInYear(year,user.getId(),monthInYear-1);
+                availableUsedTillMonth= furloughLast12.getAvailableUsedTillMonth()-furloughLast12.getUsedInMonth();
+                break;
             default:
                 break;
         }
@@ -176,7 +232,7 @@ public class FurloughServiceImpl implements FurloughService {
                     furloughRepository.save(furloughEdit);
                     List<Furlough> furloughList = furloughRepository.findByYearAndUserId(editFurloughRequest.getYear(), monthFurloughEdit.getId());
                     for (Furlough furlough : furloughList){
-                        furlough.setAvailableUsedTillMonth(calculateAvailableUsedTillMonth(furlough.getMonthInYear(),furlough.getYear(),furlough.getUsedInMonth(),furlough.getUser()));
+                        furlough.setAvailableUsedTillMonth(calculateAvailableUsedTillMonth(furlough.getMonthInYear(),furlough.getYear(),furlough.getUser()));
                         furloughRepository.save(furlough);
                     }
                 }
@@ -194,7 +250,7 @@ public class FurloughServiceImpl implements FurloughService {
                     furloughHistoryRepository.save(furloughEdit);
                     List<Furlough> furloughList = furloughRepository.findByYearAndUserId(editFurloughRequest.getYear(), furloughCurrentEdit.getId());
                     for (Furlough furlough : furloughList){
-                        furlough.setAvailableUsedTillMonth(calculateAvailableUsedTillMonth(furlough.getMonthInYear(),furlough.getYear(),furlough.getUsedInMonth(),furlough.getUser()));
+                        furlough.setAvailableUsedTillMonth(calculateAvailableUsedTillMonth(furlough.getMonthInYear(),furlough.getYear(),furlough.getUser()));
                         furloughRepository.save(furlough);
                     }
                 }
@@ -212,7 +268,7 @@ public class FurloughServiceImpl implements FurloughService {
                     furloughHistoryRepository.save(furloughEdit);
                     List<Furlough> furloughList = furloughRepository.findByYearAndUserId(editFurloughRequest.getYear(), furloughPreviousEdit.getId());
                     for (Furlough furlough : furloughList){
-                        furlough.setAvailableUsedTillMonth(calculateAvailableUsedTillMonth(furlough.getMonthInYear(),furlough.getYear(),furlough.getUsedInMonth(),furlough.getUser()));
+                        furlough.setAvailableUsedTillMonth(calculateAvailableUsedTillMonth(furlough.getMonthInYear(),furlough.getYear(),furlough.getUser()));
                         furloughRepository.save(furlough);
                     }
 

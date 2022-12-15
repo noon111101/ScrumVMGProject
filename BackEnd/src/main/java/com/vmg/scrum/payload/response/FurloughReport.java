@@ -60,16 +60,12 @@ public class FurloughReport {
             } else if(leftYear<year) this.availibleCurrentYear=0;
             else if(leftYear>year) this.availibleCurrentYear=furloughHistory.getAvailibleCurrentYear();
         } else {
-            if(furloughHistory.getAvailibleCurrentYear()!=0)
-                this.availibleCurrentYear = furloughHistory.getAvailibleCurrentYear();
-            else {
                 if (startWork.getYear() == year ) {
                     if (startWork.getDayOfMonth() >= 15)
                         this.availibleCurrentYear = 12 - startWork.getMonthValue();
                     else this.availibleCurrentYear = 12 - startWork.getMonthValue() + 1;
                 }
                 else this.availibleCurrentYear= 12;
-            }
         }
         this.oddCurrentYear = furloughHistory.getLeftFurlough();
         this.usedBeforeApril = furloughs.get(0).getUsedInMonth() + furloughs.get(1).getUsedInMonth() + furloughs.get(2).getUsedInMonth();

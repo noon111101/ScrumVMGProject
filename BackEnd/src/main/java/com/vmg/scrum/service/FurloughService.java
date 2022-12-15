@@ -16,4 +16,5 @@ public interface FurloughService {
 
    List<FurloughReport> getFurloughsByYear(Long year);
 
+   FurloughReport getAllFurloughByYearByUser(Long year , String userCode);
 }

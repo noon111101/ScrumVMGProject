@@ -134,27 +134,43 @@ public class SalarySheduled {
                     else logDetailList.add(new LogDetail(request.getCreator(),request.getDateForget()));
                 }
                 switch (request.getCategoryReason().getId().intValue()){
-                    //Nghỉ phép && nghỉ ốm
+                    //Nghỉ phép
                     case 1:
-                    case 3:
-                        if(request.getTimeStart().getHour()>=12){
-                            if(logDetailList.get(0).getSigns().getName().toString().startsWith("KL") )
-                                logDetailList.get(0).setSigns(signRepository.findByName(ESign.KL_P));
-                            if(logDetailList.get(0).getSigns().getName().toString().startsWith("H"))
-                                logDetailList.get(0).setSigns(signRepository.findByName(ESign.H_P));
-                        }
-                        else
-                            logDetailList.get(0).setSigns(signRepository.findByName(ESign.P));
-                        if(request.getTimeEnd().getHour()>12)
-                            logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.P));
-                        else {
-                            if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("KL") || logDetailList.get(logDetailList.size()-1).getSigns()==null)
-                                logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.P_KL));
-                            if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("H"))
-                                logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.P_H));
-                        }
+
+                            if(request.getTimeStart().getHour()>=13){
+                                if(logDetailList.get(0).getSigns()!=null) {
+                                    if (logDetailList.get(0).getSigns().getName().toString().startsWith("KL"))
+                                        logDetailList.get(0).setSigns(signRepository.findByName(ESign.KL_P));
+                                    if (logDetailList.get(0).getSigns().getName().toString().startsWith("H"))
+                                        logDetailList.get(0).setSigns(signRepository.findByName(ESign.H_P));
+                                }else logDetailList.get(0).setSigns(signRepository.findByName(ESign.KL_P));
+
+                            }
+                            else
+                                logDetailList.get(0).setSigns(signRepository.findByName(ESign.P));
+
+
+                            if(request.getTimeEnd().getHour()>13)
+                                logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.P));
+                            else {
+                                if( logDetailList.get(logDetailList.size()-1).getSigns()!=null){
+                                    if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("KL"))
+                                        logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.P_KL));
+                                    if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("H"))
+                                        logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.P_H));
+                                }
+                                else logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.P_KL));
+                            }
+
+
+
                         for(int i =1; i<logDetailList.size()-1;i++)
                             logDetailList.get(i).setSigns(signRepository.findByName(ESign.P));
+                        break;
+                        // nghỉ ốm
+                    case 3:
+                        for(int i =0; i<=logDetailList.size()-1;i++)
+                            logDetailList.get(i).setSigns(signRepository.findByName(ESign.Ô));
                         break;
                     //Nghỉ tiêu chuẩn
                     case 4:
@@ -174,22 +190,30 @@ public class SalarySheduled {
                     //Work from home && Đi công tác
                     case 7:
                     case 8:
-                        if(request.getTimeStart().getHour()>=12){
-                            if(logDetailList.get(0).getSigns().getName().toString().startsWith("KL") || logDetailList.get(0).getSigns()==null)
-                                logDetailList.get(0).setSigns(signRepository.findByName(ESign.KL_H));
-                            if(logDetailList.get(0).getSigns().getName().toString().startsWith("H"))
+                            if (request.getTimeStart().getHour() >= 13) {
+                                if(logDetailList.get(0).getSigns()!=null) {
+                                    if (logDetailList.get(0).getSigns().getName().toString().startsWith("KL"))
+                                        logDetailList.get(0).setSigns(signRepository.findByName(ESign.KL_H));
+                                    if (logDetailList.get(0).getSigns().getName().toString().startsWith("H"))
+                                        logDetailList.get(0).setSigns(signRepository.findByName(ESign.H));
+                                }
+                                else logDetailList.get(0).setSigns(signRepository.findByName(ESign.KL_H));
+
+                            } else
                                 logDetailList.get(0).setSigns(signRepository.findByName(ESign.H));
-                        }
-                        else
-                            logDetailList.get(0).setSigns(signRepository.findByName(ESign.H));
-                        if(request.getTimeEnd().getHour()>12)
-                            logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.H));
-                        else {
-                            if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("KL") || logDetailList.get(logDetailList.size()-1).getSigns()==null)
-                                logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.H_KL));
-                            if(logDetailList.get(logDetailList.size()-1).getSigns().getName().toString().endsWith("H"))
+
+
+                            if(request.getTimeEnd().getHour()>13)
                                 logDetailList.get(logDetailList.size()-1).setSigns(signRepository.findByName(ESign.H));
-                        }
+                            else {
+                                if(logDetailList.get(logDetailList.size()-1).getSigns()!=null) {
+                                    if (logDetailList.get(logDetailList.size() - 1).getSigns().getName().toString().endsWith("KL"))
+                                        logDetailList.get(logDetailList.size() - 1).setSigns(signRepository.findByName(ESign.H_KL));
+                                    if (logDetailList.get(logDetailList.size() - 1).getSigns().getName().toString().endsWith("H"))
+                                        logDetailList.get(logDetailList.size() - 1).setSigns(signRepository.findByName(ESign.H));
+                                }
+                                else logDetailList.get(logDetailList.size() - 1).setSigns(signRepository.findByName(ESign.H_KL));
+                            }
                         for(int i =1; i<logDetailList.size()-1;i++)
                             logDetailList.get(i).setSigns(signRepository.findByName(ESign.H));
                         break;
@@ -200,10 +224,8 @@ public class SalarySheduled {
                     logDetail.setRequestActive(true);
                     logDetailRepository.save(logDetail);
                 }
-                request.setApproveStatus(approveSttRepository.findById(6));
             }
         }
-
         System.out.println("Chay ham tinh toan ki tu cham cong vao " + LocalDate.now());
     }
 }

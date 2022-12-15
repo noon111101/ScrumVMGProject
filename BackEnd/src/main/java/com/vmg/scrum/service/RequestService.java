@@ -13,5 +13,5 @@ public interface RequestService {
     List<Request> ManageRequests(ManageRequests_Request manageRequests_request);
 
     List<Request> MyRequests(Long id, Long status);
-    MessageResponse changeApproveStatus(long id, long status);
+    MessageResponse changeApproveStatus(long id, long newStatus, long oldStatus);
 }
