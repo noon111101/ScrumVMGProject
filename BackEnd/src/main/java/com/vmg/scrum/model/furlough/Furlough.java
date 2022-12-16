@@ -35,7 +35,6 @@ public class Furlough {
 
     private Float availableUsedTillMonth;
 
-    private String reason;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore

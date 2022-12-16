@@ -23,8 +23,6 @@ public class FurloughHistory {
 
     private float availibleCurrentYear;
 
-    private String reason;
-
     private Long year;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

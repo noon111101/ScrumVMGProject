@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -55,6 +56,11 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
             " where r.approveStatus.id = ?1 " +
             " order by r.id desc ")
     List<Request> findByStatusList(Long status);
+
+    @Query(value = "select * from request r \n" +
+            "where r.approve_status_id = ?1 " +
+            "and r.date_to >= ?2 "+" and r.date_from <= ?2 "+"or r.date_forget = ?2", nativeQuery = true)
+    List<Request> findByStatusAndDateList(Integer status, LocalDate date);
 
     @Query(value = "select * from request r \n" +
             "join request_approvers ra on r.request_id=ra.request_id\n" +
