@@ -72,6 +72,12 @@ public class UserController {
         return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
     }
 
+    @GetMapping("/getAllUserByDepartmentId/{id}")
+    public ResponseEntity<List<User>> getUserByDepartmentId(@PathVariable("id") long id,@ModelAttribute UpdateUserRequest updateRequest){
+        return new ResponseEntity<>(userRepository.findAllByDepartments_Id(id), HttpStatus.OK);
+    }
+
+
     @PostMapping("create")
     public MessageResponse registerUserExcel(@RequestBody SignupRequest[] signupRequests){
         try {

@@ -1,6 +1,7 @@
 package com.vmg.scrum.service.impl;
 
 import com.vmg.scrum.model.User;
+import com.vmg.scrum.model.furlough.Furlough;
 import com.vmg.scrum.model.request.ApproveStatus;
 import com.vmg.scrum.model.request.CategoryReason;
 import com.vmg.scrum.model.request.CatergoryRequest;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,23 +41,34 @@ public class OfferRequestServiceImpl implements OfferRequestService {
     private final CategoryReasonRepository categoryReasonRepository;
 
     @Autowired
+    private final FurloughRepository furloughRepository;
+    @Autowired
     MailService mailService;
 
-  
+
     @Override
     public MessageResponse addRequest(OfferRequest offerRequest) throws MessagingException, UnsupportedEncodingException {
+        if (offerRequest.getDateFrom().isAfter(offerRequest.getDateTo())) {
+            throw new RuntimeException("Ngày bắt đầu phải sớm hơn ngày kết thúc!");
+        }
+        if (offerRequest.getDateFrom().equals(offerRequest.getDateTo())) {
+            if(offerRequest.getTimeStart().equals(offerRequest.getTimeEnd())){
+                throw new RuntimeException("Trong một ngày giờ bắt đầu không thể bằng giờ kết thúc");
+            }
+            if(offerRequest.getTimeStart().isAfter(offerRequest.getTimeEnd())){
+                throw new RuntimeException("Trong một ngày giờ bắt đầu không thể lớn hơn giờ kết thúc");
+            }
+        }
+
         User creator = userRepository.findByUserName(offerRequest.getCreator());
         ApproveStatus approveStatus = approveRepository.findById(offerRequest.getApproveStatus());
         CatergoryRequest catergoryRequest = categoryRequestRepository.findById(offerRequest.getCatergoryRequest());
         CategoryReason categoryReason = categoryReasonRepository.findById(offerRequest.getCategoryReason());
-        Request request = new Request(creator, offerRequest.getTitle(), offerRequest.getContent(), approveStatus, categoryReason, catergoryRequest, offerRequest.getDateFrom(), offerRequest.getDateTo(), offerRequest.getDateForget() ,offerRequest.getTimeStart(), offerRequest.getTimeEnd(), offerRequest.getLastSign());
+        Request request = new Request(creator, offerRequest.getTitle(), offerRequest.getContent(), approveStatus, categoryReason, catergoryRequest, offerRequest.getDateFrom(), offerRequest.getDateTo(), offerRequest.getDateForget(), offerRequest.getTimeStart(), offerRequest.getTimeEnd(), offerRequest.getLastSign());
         Set<User> approves = new HashSet<>();
         Set<User> followers = new HashSet<>();
-
-        User fullName = userRepository.findByfullName(offerRequest.getCreator());
-
         for (String s : offerRequest.getApprovers()) {
-           User userApprove = userRepository.getByUsername(s);
+            User userApprove = userRepository.getByUsername(s);
             approves.add(userApprove);
         }
 
@@ -63,11 +76,28 @@ public class OfferRequestServiceImpl implements OfferRequestService {
             User userFolower = userRepository.getByUsername(s);
             followers.add(userFolower);
         }
+
+        if (request.getCategoryReason().getId() == 1) {
+            if (request.getTotalDays() == 0) {
+                throw new RuntimeException("Thông tin ngày giờ nghỉ không hợp lệ");
+            }
+            System.out.println(request.getTotalDays()+","+Long.valueOf(request.getDateFrom().getYear())+"*"+Long.valueOf(request.getDateFrom().getDayOfMonth()));
+            Furlough furlough =  furloughRepository.findByYearAndUserIdAndMonthInYear(Long.valueOf(request.getDateFrom().getYear()), request.getCreator().getId(), Long.valueOf(request.getDateFrom().getMonthValue()));
+            if (furlough.getAvailableUsedTillMonth() >= request.getTotalDays() && furlough!= null) {
+                System.out.println("OK");
+            }
+            else {
+                throw new RuntimeException("Không đủ ngày phép để tạo yêu cầu nghỉ phép");
+            }
+        }
+
         request.setApprovers(approves);
         request.setFollowers(followers);
         offerRepository.save(request);
-        mailService.sendEmailFollowers(offerRequest.getFollowers(), offerRequest.getTitle(), fullName);
-        mailService.sendEmailApprovers(offerRequest.getApprovers(), offerRequest.getTitle(), fullName);
+//        mailService.sendEmailFollowers(offerRequest.getFollowers(), offerRequest.getTitle(), fullName);
+//        mailService.sendEmailApprovers(offerRequest.getApprovers(), offerRequest.getTitle(), fullName);
         return new MessageResponse("Tạo request thành công!");
+
+
     }
 }

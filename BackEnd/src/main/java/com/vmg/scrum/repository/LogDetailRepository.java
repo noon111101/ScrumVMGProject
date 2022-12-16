@@ -181,4 +181,7 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
             "and l.date_log <= ?2 "+" and l.date_log >= ?3 ", nativeQuery = true)
     List<LogDetail> findByUserCodeAndDateRange(String code, LocalDate dateTo , LocalDate dateFrom );
 
+    @Query(value = "select l from LogDetail l \n" +
+            "where l.dateLog = ?2 and l.user.id = ?1 ")
+    LogDetail findByDateAndUser(long creatorId, LocalDate date);
 }
