@@ -17,10 +17,21 @@ public class EditLogRequest {
 
     @NotNull
     private String sign;
+
+    public String getCodeAdminEdit() {
+        return codeAdminEdit;
+    }
+
+    public void setCodeAdminEdit(String codeAdminEdit) {
+        this.codeAdminEdit = codeAdminEdit;
+    }
+
     @NotBlank
     private String date;
 
     private String reason;
+
+    private String codeAdminEdit;
 
     public String getSign() {
         return sign;

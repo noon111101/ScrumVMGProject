@@ -158,7 +158,6 @@ public class FurloughServiceImpl implements FurloughService {
 
     public Float calculateAvailableUsedTillMonth(Long monthInYear, Long year, User user){
         float payFurlough= 0;
-
         if(monthInYear>3){
             List<Furlough> furloughs = furloughRepository.findByYearAndUserId(year, user.getId());
             FurloughHistory furloughHistory = furloughHistoryRepository.findByYearAndUserId(year, user.getId());
@@ -217,7 +216,6 @@ public class FurloughServiceImpl implements FurloughService {
     }
     @Override
     public MessageResponse editFurloughReport(EditFurloughRequest editFurloughRequest) {
-        try{
             if (editFurloughRequest.getMonthFurloughEdits().size() != 0) {
                 List<MonthFurloughEdit> monthFurloughEdits = editFurloughRequest.getMonthFurloughEdits();
                 for(MonthFurloughEdit monthFurloughEdit : monthFurloughEdits){
@@ -227,7 +225,10 @@ public class FurloughServiceImpl implements FurloughService {
                         furloughEdit.setYear(editFurloughRequest.getYear());
                         furloughEdit.setUser(userRepository.findById(monthFurloughEdit.getId()).get());
                         furloughEdit.setMonthInYear(monthFurloughEdit.getMonth());
+                        furloughEdit.setAvailableUsedTillMonth(calculateAvailableUsedTillMonth(monthFurloughEdit.getMonth(), editFurloughRequest.getYear(), userRepository.findById(monthFurloughEdit.getId()).get()));
                     }
+                    if(monthFurloughEdit.getUsed()>furloughEdit.getAvailableUsedTillMonth())
+                        throw new RuntimeException("Số phép sử dụng trong tháng vượt quá lượng có thể sử dụng");
                     furloughEdit.setUsedInMonth(monthFurloughEdit.getUsed());
                     furloughRepository.save(furloughEdit);
                     List<Furlough> furloughList = furloughRepository.findByYearAndUserId(editFurloughRequest.getYear(), monthFurloughEdit.getId());
@@ -275,9 +276,7 @@ public class FurloughServiceImpl implements FurloughService {
                 }
             }
             return new MessageResponse("Chỉnh sửa thống kê nghỉ phép thành công");
-        }catch (Exception e){
-            throw  new RuntimeException("Lỗi hệ thống ");
-        }
+
     }
 }
 
