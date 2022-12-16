@@ -59,8 +59,6 @@ public class LogDetail extends BaseEntity {
 
     private String leaveStatus;
 
-    private String reason;
-
     @OneToMany(mappedBy = "logDetail",cascade = CascadeType.ALL)
     private Set<NoteLog> noteLogSet;
 

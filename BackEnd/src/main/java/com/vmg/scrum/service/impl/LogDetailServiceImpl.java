@@ -57,8 +57,11 @@ public class LogDetailServiceImpl  implements LogDetailService{
                         logDetail.setSigns(null);
                     else
                         logDetail.setSigns(signRepository.findByName(ESign.valueOf(editLogRequest1.getSign())));
+                    if(editLogRequest1.getSign() == logDetail.getSigns().getName().toString())
+                        continue;
+                    else {
                         Set<NoteLog> noteCatergorySet = logDetail.getNoteLogSet();
-                        if(noteCatergorySet==null)
+                        if (noteCatergorySet == null)
                             noteCatergorySet = new HashSet<>();
                         NoteLog noteLog = new NoteLog();
                         noteLog.setLogDetail(logDetail);
@@ -70,6 +73,7 @@ public class LogDetailServiceImpl  implements LogDetailService{
                         noteLog.setSignChange(signRepository.findByName(ESign.valueOf(editLogRequest1.getSign())));
                         noteCatergorySet.add(noteLog);
                         logDetail.setNoteLogSet(noteCatergorySet);
+                    }
                 }
                 else {
                     DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -79,6 +83,8 @@ public class LogDetailServiceImpl  implements LogDetailService{
                         logDetail.setSigns(null);
                     else
                     logDetail.setSigns(signRepository.findByName(ESign.valueOf(editLogRequest1.getSign())));
+                    if(editLogRequest1.getSign()==null)
+                        continue;
                     Set<NoteLog> noteCatergorySet = logDetail.getNoteLogSet();
                     if(noteCatergorySet==null)
                         noteCatergorySet = new HashSet<>();
