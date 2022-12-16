@@ -1,5 +1,6 @@
 package com.vmg.scrum.service.impl;
 
+import com.vmg.scrum.model.Holiday;
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.furlough.Furlough;
 import com.vmg.scrum.model.request.ApproveStatus;
@@ -19,6 +20,7 @@ import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -42,23 +44,36 @@ public class OfferRequestServiceImpl implements OfferRequestService {
 
     @Autowired
     private final FurloughRepository furloughRepository;
+
+    @Autowired
+    private final HolidayRepository holidayRepository;
     @Autowired
     MailService mailService;
 
 
     @Override
     public MessageResponse addRequest(OfferRequest offerRequest) throws MessagingException, UnsupportedEncodingException {
-        if (offerRequest.getDateFrom().isAfter(offerRequest.getDateTo())) {
-            throw new RuntimeException("Ngày bắt đầu phải sớm hơn ngày kết thúc!");
-        }
-        if (offerRequest.getDateFrom().equals(offerRequest.getDateTo())) {
-            if(offerRequest.getTimeStart().equals(offerRequest.getTimeEnd())){
-                throw new RuntimeException("Trong một ngày giờ bắt đầu không thể bằng giờ kết thúc");
+        if (offerRequest.getTimeEnd() != null && offerRequest.getTimeStart() != null && offerRequest.getDateForget() == null) {
+            if (offerRequest.getDateFrom().isAfter(offerRequest.getDateTo())) {
+                throw new RuntimeException("Ngày bắt đầu phải sớm hơn ngày kết thúc!");
             }
-            if(offerRequest.getTimeStart().isAfter(offerRequest.getTimeEnd())){
-                throw new RuntimeException("Trong một ngày giờ bắt đầu không thể lớn hơn giờ kết thúc");
+
+            if (offerRequest.getDateFrom().equals(offerRequest.getDateTo())) {
+                if (!offerRequest.getTimeEnd().isAfter(offerRequest.getTimeStart())) {
+                    throw new RuntimeException("Trong một ngày giờ bắt đầu phải lớn giờ kết thúc");
+                }
+            }
+
+            List<Holiday> holidays = holidayRepository.findAll();
+            for (Holiday h : holidays) {
+                if ((!offerRequest.getDateFrom().isBefore(h.getDateFrom()) && !offerRequest.getDateFrom().isAfter(h.getDateTo()) && !offerRequest.getDateTo().isBefore(h.getDateTo()))
+                        || (!offerRequest.getDateFrom().isAfter(h.getDateFrom()) && !offerRequest.getDateTo().isBefore(h.getDateFrom()) && !offerRequest.getDateTo().isAfter(h.getDateTo()))
+                        || (offerRequest.getDateFrom().isBefore(h.getDateFrom()) && offerRequest.getDateTo().isAfter(h.getDateTo()))) {
+                    throw new RuntimeException("Thời gian nghỉ không được trùng ngày nghỉ lễ (" + h.getHolidayName() + ")");
+                }
             }
         }
+
 
         User creator = userRepository.findByUserName(offerRequest.getCreator());
         ApproveStatus approveStatus = approveRepository.findById(offerRequest.getApproveStatus());
@@ -81,12 +96,11 @@ public class OfferRequestServiceImpl implements OfferRequestService {
             if (request.getTotalDays() == 0) {
                 throw new RuntimeException("Thông tin ngày giờ nghỉ không hợp lệ");
             }
-            System.out.println(request.getTotalDays()+","+Long.valueOf(request.getDateFrom().getYear())+"*"+Long.valueOf(request.getDateFrom().getDayOfMonth()));
-            Furlough furlough =  furloughRepository.findByYearAndUserIdAndMonthInYear(Long.valueOf(request.getDateFrom().getYear()), request.getCreator().getId(), Long.valueOf(request.getDateFrom().getMonthValue()));
-            if (furlough.getAvailableUsedTillMonth() >= request.getTotalDays() && furlough!= null) {
+            System.out.println(request.getTotalDays() + "," + Long.valueOf(request.getDateFrom().getYear()) + "*" + Long.valueOf(request.getDateFrom().getDayOfMonth()));
+            Furlough furlough = furloughRepository.findByYearAndUserIdAndMonthInYear(Long.valueOf(request.getDateFrom().getYear()), request.getCreator().getId(), Long.valueOf(request.getDateFrom().getMonthValue()));
+            if (furlough.getAvailableUsedTillMonth() >= request.getTotalDays() && furlough != null) {
                 System.out.println("OK");
-            }
-            else {
+            } else {
                 throw new RuntimeException("Không đủ ngày phép để tạo yêu cầu nghỉ phép");
             }
         }
