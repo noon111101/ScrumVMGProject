@@ -45,7 +45,7 @@ public class DataExcelCalculation {
                 noteLog.setNoteCatergory(noteCatergoryRepository.findByName(ENoteCatergory.E_HOLIDAY));
                 noteLog.setContent(holiday.getHolidayName());
                 noteLog.setLastSign(logDetail.getSigns());
-                noteLog.setCreateDate(new Date());
+                noteLog.setCreateDate(LocalDateTime.now());
                 noteLog.setSignChange(signRepository.findByName(ESign.L));
                 noteCatergorySet.add(noteLog);
                 logDetail.setNoteLogSet(noteCatergorySet);

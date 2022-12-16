@@ -12,6 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Set;
 
@@ -28,8 +29,7 @@ public class NoteLog  {
     private Long note_log_id;
 
     @Column
-    @DateTimeFormat(pattern = "MM/dd/yyyy HH:mm")
-    private Date createDate;
+    private LocalDateTime createDate;
 
     @ManyToOne
     @JoinColumn(name = "admin_edit_id")
