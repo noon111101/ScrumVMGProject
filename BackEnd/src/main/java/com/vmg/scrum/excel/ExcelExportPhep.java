@@ -430,6 +430,9 @@ public class ExcelExportPhep {
 
                     cell = row.createCell(19);
                     cell.setCellFormula("SUM(J"+rowCount+":R"+rowCount+")");
+                    cell.setCellFormula("IF(F"+rowCount+"-SUM(G"+rowCount+":I"+rowCount+")<=0," +
+                            "SUM(G"+rowCount+":I"+rowCount+")-F"+rowCount+"+SUM(J"+rowCount+":R"+rowCount+")," +
+                            "SUM(J"+rowCount+":R"+rowCount+"))");
                     cell.setCellStyle(styleTitleThinCenter);
 
                     cell = row.createCell(20);

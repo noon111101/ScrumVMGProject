@@ -94,6 +94,7 @@ public class RequestServiceImpl implements RequestService {
     public MessageResponse changeApproveStatus(long id, long newStatus, long oldStatus) {
         Request request = requestRepository.findByRequestId(id);
         ApproveStatus approveStatus = approveSttRepository.findById(newStatus);
+        ApproveStatus defaultStatus = approveSttRepository.findById(1);
         request.setApproveStatus(approveStatus);
         requestRepository.save(request);
         if (request.getApproveStatus().getId() == 1) {
@@ -107,8 +108,6 @@ public class RequestServiceImpl implements RequestService {
                 furlough.setUsedInMonth((float) (furlough.getUsedInMonth() - request.getTotalDays()));
                 furloughRepository.save(furlough);
             }
-
-
             return new MessageResponse("Đã hoàn tác");
         }
         if (request.getApproveStatus().getId() == 2) {
@@ -119,6 +118,8 @@ public class RequestServiceImpl implements RequestService {
                     furlough.setUsedInMonth((float) (furlough.getUsedInMonth() + request.getTotalDays()));
                     furloughRepository.save(furlough);
                 } else {
+                    request.setApproveStatus(defaultStatus);
+                    requestRepository.save(request);
                     throw new RuntimeException("Nhân viên không đủ ngày phép!");
                 }
             }
