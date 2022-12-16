@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -69,7 +70,7 @@ public class LogDetailServiceImpl  implements LogDetailService{
                         noteLog.setContent(editLogRequest1.getReason());
                         noteLog.setAdminEdit(userRepository.findByCode(editLogRequest1.getCodeAdminEdit()));
                         noteLog.setLastSign(currentSign);
-                        noteLog.setCreateDate(new Date());
+                        noteLog.setCreateDate(LocalDateTime.now());
                         noteLog.setSignChange(signRepository.findByName(ESign.valueOf(editLogRequest1.getSign())));
                         noteCatergorySet.add(noteLog);
                         logDetail.setNoteLogSet(noteCatergorySet);
@@ -94,7 +95,7 @@ public class LogDetailServiceImpl  implements LogDetailService{
                     noteLog.setContent(editLogRequest1.getReason());
                     noteLog.setAdminEdit(userRepository.findByCode(editLogRequest1.getCodeAdminEdit()));
                     noteLog.setLastSign(null);
-                    noteLog.setCreateDate(new Date());
+                    noteLog.setCreateDate(LocalDateTime.now());
                     noteLog.setSignChange(signRepository.findByName(ESign.valueOf(editLogRequest1.getSign())));
                     noteCatergorySet.add(noteLog);
                     logDetail.setNoteLogSet(noteCatergorySet);

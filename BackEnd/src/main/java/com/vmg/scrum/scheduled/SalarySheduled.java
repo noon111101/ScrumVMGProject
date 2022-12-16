@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.*;
 
@@ -51,7 +52,7 @@ public class SalarySheduled {
                 noteLog.setNoteCatergory(noteCatergoryRepository.findByName(ENoteCatergory.E_HOLIDAY));
                 noteLog.setContent(holiday.getHolidayName());
                 noteLog.setLastSign(logDetail.getSigns());
-                noteLog.setCreateDate(new Date());
+                noteLog.setCreateDate(LocalDateTime.now());
                 noteLog.setSignChange(signRepository.findByName(ESign.L));
                 noteCatergorySet.add(noteLog);
                 logDetail.setNoteLogSet(noteCatergorySet);
@@ -133,7 +134,7 @@ public class SalarySheduled {
             noteLog.setLogDetail(logDetail);
             noteLog.setNoteCatergory(noteCatergoryRepository.findByName(ENoteCatergory.E_FACE));
             noteLog.setLastSign(currentSign);
-            noteLog.setCreateDate(new Date());
+            noteLog.setCreateDate(LocalDateTime.now());
             noteLog.setSignChange(logDetail.getSigns());
             noteCatergorySet.add(noteLog);
             logDetail.setNoteLogSet(noteCatergorySet);
@@ -234,7 +235,7 @@ public class SalarySheduled {
                 noteLog.setApprovers(request.getApprovers());
                 noteLog.setContent(request.getContent());
                 noteLog.setLastSign(currentSign);
-                noteLog.setCreateDate(new Date());
+                noteLog.setCreateDate(LocalDateTime.now());
                 noteLog.setSignChange(logDetail.getSigns());
                 noteCatergorySet.add(noteLog);
                 logDetail.setNoteLogSet(noteCatergorySet);
