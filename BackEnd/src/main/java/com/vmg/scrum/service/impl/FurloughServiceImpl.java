@@ -54,7 +54,7 @@ public class FurloughServiceImpl implements FurloughService {
                         FurloughHistory furloughHistory = furloughHistoryRepository.findByYearAndUserId(year, user.getId());
                         if (furloughHistory == null) {
                             furloughHistory = new FurloughHistory();
-                            furloughHistory.setAvailibleCurrentYear(12);
+                            furloughHistory.setAvailibleCurrentYear(0F);
                         }
                         for (int i = 1; i <= 12; i++) {
                             Furlough furlough1 = new Furlough();
@@ -180,9 +180,7 @@ public class FurloughServiceImpl implements FurloughService {
             case 3:
                 Furlough furlough1 = furloughRepository.findByYearAndUserIdAndMonthInYear(year, user.getId(), (long) 1);
                 Furlough furlough2 = furloughRepository.findByYearAndUserIdAndMonthInYear(year,user.getId(),(long)2);
-                if(furlough1.getUsedInMonth()+furlough2.getUsedInMonth()<usedLeftLastYear)
-                    availableUsedTillMonth= furlough2.getAvailableUsedTillMonth()-furlough1.getUsedInMonth()-furlough2.getUsedInMonth()+3;
-                else availableUsedTillMonth= furlough2.getAvailableUsedTillMonth()-furlough2.getUsedInMonth()+3;
+                availableUsedTillMonth= furlough2.getAvailableUsedTillMonth()-furlough2.getUsedInMonth()+3;
                 break;
             case 2:
                 furlough1 = furloughRepository.findByYearAndUserIdAndMonthInYear(year,user.getId(),monthInYear-1);
