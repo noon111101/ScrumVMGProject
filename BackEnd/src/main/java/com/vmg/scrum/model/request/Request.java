@@ -85,6 +85,10 @@ public class Request extends BaseEntity {
     @Column(name = "total_days",nullable = true)
     private double totalDays;
 
+    @ManyToOne
+    @JoinColumn(name = "approved_id")
+    private User approved;
+
     public Request(User creator, String title, String content, ApproveStatus approveStatus, CategoryReason categoryReason, CatergoryRequest catergoryRequest, LocalDate dateFrom, LocalDate dateTo, LocalDate dateForget, LocalTime timeStart, LocalTime timeEnd, Sign lastSign) {
         this.creator = creator;
         this.title = title;
