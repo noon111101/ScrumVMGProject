@@ -6,10 +6,7 @@ import com.vmg.scrum.model.request.Request;
 import com.vmg.scrum.model.request.ApproveStatus;
 import com.vmg.scrum.payload.request.ManageRequests_Request;
 import com.vmg.scrum.payload.response.MessageResponse;
-import com.vmg.scrum.repository.FurloughRepository;
-import com.vmg.scrum.repository.LogDetailRepository;
-import com.vmg.scrum.repository.RequestRepository;
-import com.vmg.scrum.repository.ApproveSttRepository;
+import com.vmg.scrum.repository.*;
 import com.vmg.scrum.service.RequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +33,9 @@ public class RequestServiceImpl implements RequestService {
 
     @Autowired
     private final LogDetailRepository logDetailRepository;
+
+    @Autowired
+    private final UserRepository userRepository;
 
     @Override
     public List<Request> ManageRequests(ManageRequests_Request manageRequests_request) {
@@ -91,11 +91,12 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public MessageResponse changeApproveStatus(long id, long newStatus, long oldStatus) {
+    public MessageResponse changeApproveStatus(long id, long newStatus, long oldStatus, long approvedId) {
         Request request = requestRepository.findByRequestId(id);
         ApproveStatus approveStatus = approveSttRepository.findById(newStatus);
         ApproveStatus defaultStatus = approveSttRepository.findById(1);
         request.setApproveStatus(approveStatus);
+        request.setApproved(userRepository.getById(approvedId));
         requestRepository.save(request);
         if (request.getApproveStatus().getId() == 1) {
 //            LogDetail logDetail = logDetailRepository.findByDateAndUser(request.getCreator().getId(), request.getDateFrom());
