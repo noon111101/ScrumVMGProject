@@ -114,7 +114,9 @@ public class UserServiceImpl implements UserService {
                 signUpRequest.getGender(),
                 filename,
                 "VMG_"+signUpRequest.getCode(),
-                department
+                department,
+                signUpRequest.getStartWork(),
+                signUpRequest.getEndWork()
         );
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
@@ -170,7 +172,9 @@ public class UserServiceImpl implements UserService {
                 signUpRequest.getGender(),
                 filename,
                 signUpRequest.getCode(),
-                department
+                department,
+                signUpRequest.getStartWork(),
+                signUpRequest.getEndWork()
         );
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
@@ -277,6 +281,8 @@ public class UserServiceImpl implements UserService {
         user.setGender(updateRequest.getGender());
         Department department = departmentRepository.findByName(updateRequest.getDepartment());
         user.setDepartments(department);
+        user.setStartWork(updateRequest.getStartWork());
+        user.setStartWork(updateRequest.getEndWork());
         System.out.println(updateRequest.getCover().getSize());
         if (updateRequest.getCover() != null && updateRequest.getCover().getSize() > 0) {
             if(!user.getCover().equals("default.png"))
