@@ -282,7 +282,7 @@ public class UserServiceImpl implements UserService {
         Department department = departmentRepository.findByName(updateRequest.getDepartment());
         user.setDepartments(department);
         user.setStartWork(updateRequest.getStartWork());
-        user.setStartWork(updateRequest.getEndWork());
+        user.setEndWork(updateRequest.getEndWork());
         System.out.println(updateRequest.getCover().getSize());
         if (updateRequest.getCover() != null && updateRequest.getCover().getSize() > 0) {
             if(!user.getCover().equals("default.png"))
