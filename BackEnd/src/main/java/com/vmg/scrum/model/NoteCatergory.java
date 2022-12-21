@@ -22,5 +22,4 @@ public class NoteCatergory {
     @Column(name = "note_catergory_name",length = 20)
     private ENoteCatergory name;
 
-
 }

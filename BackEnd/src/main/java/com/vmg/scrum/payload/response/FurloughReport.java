@@ -52,21 +52,25 @@ public class FurloughReport {
         LocalDate startWork = user.getStartWork();
         this.user = user;
         this.furloughs = furloughs;
-        if(!user.getAvalible()){
-            if(leftYear==year){
-                if(leftDate>=15)
-                    this.availibleCurrentYear= 12-leftMonth;
-                else this.availibleCurrentYear=12-leftMonth+1;
-            } else if(leftYear<year) this.availibleCurrentYear=0;
-            else if(leftYear>year) this.availibleCurrentYear=furloughHistory.getAvailibleCurrentYear();
-        } else {
+        if(furloughHistory.getAvailibleCurrentYear()==0){
+            if(!user.getAvalible()){
+                if(leftYear==year){
+                    if(leftDate>=15)
+                        this.availibleCurrentYear= 12-leftMonth;
+                    else this.availibleCurrentYear=12-leftMonth+1;
+                } else if(leftYear<year) this.availibleCurrentYear=0;
+                else if(leftYear>year) this.availibleCurrentYear=furloughHistory.getAvailibleCurrentYear();
+            } else {
                 if (startWork.getYear() == year ) {
                     if (startWork.getDayOfMonth() >= 15)
                         this.availibleCurrentYear = 12 - startWork.getMonthValue();
                     else this.availibleCurrentYear = 12 - startWork.getMonthValue() + 1;
                 }
                 else this.availibleCurrentYear= 12;
+            }
         }
+        else this.availibleCurrentYear=furloughHistory.getAvailibleCurrentYear();
+
         this.oddCurrentYear = furloughHistory.getLeftFurlough();
         this.usedBeforeApril = furloughs.get(0).getUsedInMonth() + furloughs.get(1).getUsedInMonth() + furloughs.get(2).getUsedInMonth();
         for(int i=0;i<=11;i++){
