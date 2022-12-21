@@ -8,7 +8,6 @@ import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.model.option.NoteLog;
 import com.vmg.scrum.model.request.Request;
 import com.vmg.scrum.repository.*;
-import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.*;
 
 @Service
@@ -232,7 +230,7 @@ public class SalarySheduled {
                 NoteLog noteLog = new NoteLog();
                 noteLog.setLogDetail(logDetail);
                 noteLog.setNoteCatergory(noteCatergoryRepository.findByName(ENoteCatergory.E_REQUEST));
-                noteLog.setApprovers(request.getApprovers());
+                noteLog.setApproversRequest(request.getApproved());
                 noteLog.setContent(request.getContent());
                 noteLog.setLastSign(currentSign);
                 noteLog.setCreateDate(LocalDateTime.now());
