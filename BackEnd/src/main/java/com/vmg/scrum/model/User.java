@@ -9,6 +9,7 @@ import com.vmg.scrum.model.option.Department;
 import com.vmg.scrum.model.option.NoteLog;
 import com.vmg.scrum.model.request.Request;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -65,8 +66,6 @@ public class User extends BaseEntity {
     @JsonIgnore
     private Set<Request> requestFollowers;
 
-    private LocalDate startWork;
-
     @Column(columnDefinition = "boolean default true")
     private Boolean avalible;
 
@@ -87,7 +86,16 @@ public class User extends BaseEntity {
 
     private Set<FurloughHistory> pastYearFurlough;
 
-    public User(String username, String rootPassword, String fullName,String gender,String cover,String code,Department department) {
+    @Column(name = "date_startwork", nullable = true)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate startWork;
+
+    @Column(name = "date_endwork", nullable = true)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate endWork;
+
+
+    public User(String username, String rootPassword, String fullName,String gender,String cover,String code,Department department,LocalDate startWork, LocalDate endWork) {
         this.username = username;
         this.rootPassword = rootPassword;
         this.fullName = fullName;
@@ -97,9 +105,11 @@ public class User extends BaseEntity {
         this.departments=department;
         this.checkRootDisable=false;
         this.avalible =true;
+        this.startWork = startWork;
+        this.endWork = endWork;
     }
 
-    public User(String username, String fullName,String gender,String code,Department department,String cover) {
+    public User(String username, String fullName,String gender,String code,Department department,String cover, LocalDate startWork, LocalDate endWork ) {
         this.username = username;
         this.fullName = fullName;
         this.code=code;
@@ -108,6 +118,8 @@ public class User extends BaseEntity {
         this.checkRootDisable=false;
         this.avalible =true;
         this.cover=cover;
+        this.startWork = startWork;
+        this.endWork = endWork;
     }
 
 }
