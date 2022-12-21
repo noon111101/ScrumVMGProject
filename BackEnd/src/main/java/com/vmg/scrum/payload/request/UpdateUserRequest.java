@@ -1,10 +1,12 @@
 package com.vmg.scrum.payload.request;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.util.Set;
 
 public class UpdateUserRequest {
@@ -35,6 +37,28 @@ public class UpdateUserRequest {
     private String department;
     @NotBlank(message = "Chưa chọn giới tính")
     private String gender;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    LocalDate startWork;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    LocalDate endWork;
+
+    public LocalDate getStartWork() {
+        return startWork;
+    }
+
+    public void setStartWork(LocalDate startWork) {
+        this.startWork = startWork;
+    }
+
+    public LocalDate getEndWork() {
+        return endWork;
+    }
+
+    public void setEndWork(LocalDate endWork) {
+        this.endWork = endWork;
+    }
 
     public String getUsername() {
         return username;
