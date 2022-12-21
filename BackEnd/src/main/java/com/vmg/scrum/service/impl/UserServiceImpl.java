@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -382,8 +383,12 @@ public class UserServiceImpl implements UserService {
         user.setAvalible(!user.getAvalible());
         userRepository.save(user);
         if (user.getAvalible()) {
+            user.setEndWork(null);
+            userRepository.save(user);
             return new MessageResponse("Mở khóa tài khoản thành công!");
         } else {
+            user.setEndWork(LocalDate.now());
+            userRepository.save(user);
             return new MessageResponse("Khóa tài khoản thành công!");
         }
     }

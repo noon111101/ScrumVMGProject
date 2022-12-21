@@ -10,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Set;
 
 @Builder
@@ -163,28 +164,31 @@ public class Request extends BaseEntity {
                 }
             } else if (dateFrom.isBefore(dateTo)) {
                 if(timeStart.isBefore(h10) && !timeEnd.isBefore(h13)){
-                    totalDays = dateTo.compareTo(dateFrom) + 1;;
+                    totalDays = dateFrom.until(dateTo, ChronoUnit.DAYS) + 1;;
+                }
+                else if(timeStart.isBefore(h10) && timeEnd.isBefore(h8)){
+                    totalDays = dateFrom.until(dateTo, ChronoUnit.DAYS) + 1;;
                 }
                 else if(timeStart.isBefore(h10) && !timeEnd.isBefore(h10) && timeEnd.isBefore(h13)){
-                    totalDays = dateTo.compareTo(dateFrom) + 0.5;
+                    totalDays = dateFrom.until(dateTo, ChronoUnit.DAYS)  + 0.5;
                 }
                 else if(!timeStart.isBefore(h10) && timeStart.isBefore(h13) && timeEnd.isBefore(h8)){
-                    totalDays = dateTo.compareTo(dateFrom) - 0.5;
+                    totalDays = dateFrom.until(dateTo, ChronoUnit.DAYS)  - 0.5;
                 }
                 else if(!timeStart.isBefore(h10) && timeStart.isBefore(h13) && !timeEnd.isBefore(h8) && timeEnd.isBefore(h13)){
-                    totalDays = dateTo.compareTo(dateFrom);
+                    totalDays = dateFrom.until(dateTo, ChronoUnit.DAYS) ;
                 }
                 else if(!timeStart.isBefore(h10) && timeStart.isBefore(h13) && !timeEnd.isBefore(h13)){
-                    totalDays = dateTo.compareTo(dateFrom) + 0.5;
+                    totalDays = dateFrom.until(dateTo, ChronoUnit.DAYS)  + 0.5;
                 }
                 else if(!timeStart.isBefore(h13) && timeEnd.isBefore(h8)){
-                    totalDays = dateTo.compareTo(dateFrom) - 0.5;
+                    totalDays = dateFrom.until(dateTo, ChronoUnit.DAYS) - 0.5;
                 }
                 else if(!timeStart.isBefore(h13) && !timeEnd.isBefore(h10) && timeEnd.isBefore(h13)){
-                    totalDays = dateTo.compareTo(dateFrom);
+                    totalDays = dateFrom.until(dateTo, ChronoUnit.DAYS) ;
                 }
                 else if(!timeStart.isBefore(h13) && !timeEnd.isBefore(h13)){
-                    totalDays = dateTo.compareTo(dateFrom);
+                    totalDays = dateFrom.until(dateTo, ChronoUnit.DAYS) ;
                 }
 
                 else{
