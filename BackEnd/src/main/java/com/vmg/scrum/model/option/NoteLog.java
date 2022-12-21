@@ -1,20 +1,14 @@
 package com.vmg.scrum.model.option;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vmg.scrum.model.BaseEntity;
 import com.vmg.scrum.model.NoteCatergory;
 import com.vmg.scrum.model.Sign;
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.Set;
 
 @Builder
 @AllArgsConstructor
@@ -44,12 +38,11 @@ public class NoteLog  {
     @JsonIgnore
     private LogDetail logDetail;
 
-    @ManyToMany
-    @JoinTable(
-            name = "note_request_approvers",
-            joinColumns = @JoinColumn(name = "note_log_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> approvers;
+    @ManyToOne
+    @JoinColumn(name = "approvers_request_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private User approversRequest;
 
     private String content;
 
