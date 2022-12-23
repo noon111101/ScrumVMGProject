@@ -131,6 +131,7 @@ public class OfferRequestServiceImpl implements OfferRequestService {
             mailService.sendEmailFollowers(offerRequest.getFollowers(), offerRequest.getTitle(), department, creator, request, timeStart, dateFrom, timeEnd, dateTo);
             mailService.sendEmailApprovers(offerRequest.getFollowers(), offerRequest.getTitle(), department, creator, request, timeStart, dateFrom, timeEnd, dateTo);
         }
+
         return new MessageResponse("Tạo request thành công!");
 
 

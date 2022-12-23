@@ -86,6 +86,9 @@ public class FurloughReport {
             this.payFurlough=this.leftLastYear;
         else
             this.payFurlough=this.leftCurentYear + this.leftLastYear;
+        if(furloughs.get(LocalDate.now().getMonthValue()-1).getAvailableUsedTillMonth()==null)
+            this.availibleUsePresentMonth=this.availibleCurrentYear;
+        else
         this.availibleUsePresentMonth=furloughs.get(LocalDate.now().getMonthValue()-1).getAvailableUsedTillMonth();
     }
 

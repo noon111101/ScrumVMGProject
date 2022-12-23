@@ -2,7 +2,6 @@ package com.vmg.scrum.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.model.furlough.Furlough;
 import com.vmg.scrum.model.furlough.FurloughHistory;
@@ -67,10 +66,6 @@ public class User extends BaseEntity {
     @JsonIgnore
     private Set<Request> requestFollowers;
 
-    @ManyToMany(mappedBy = "approvers")
-    @JsonIgnore
-    private Set<NoteLog> noteRequest;
-
     @Column(columnDefinition = "boolean default true")
     private Boolean avalible;
 
@@ -126,4 +121,5 @@ public class User extends BaseEntity {
         this.startWork = startWork;
         this.endWork = endWork;
     }
+
 }

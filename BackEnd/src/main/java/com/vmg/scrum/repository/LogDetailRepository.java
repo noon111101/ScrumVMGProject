@@ -144,6 +144,11 @@ public interface LogDetailRepository extends JpaRepository<LogDetail, Long> {
 
     List<LogDetail> findByUserCode(String code);
 
+    @Query(value = "select l from LogDetail l\n" +
+            " join l.user u " +
+            "where u.code= ?1 and MONTH (l.dateLog) = ?2 and YEAR (l.dateLog) = ?3  ")
+    List<LogDetail> findByUserCodeAndMonthAndYear(String code,Integer month,Integer year);
+
     @Query(value = "select * from log_detail l \n" +
             "join user u on l.user_id = u.user_id \n " +
             "join department d on d.department_id = u.department_id\n " +

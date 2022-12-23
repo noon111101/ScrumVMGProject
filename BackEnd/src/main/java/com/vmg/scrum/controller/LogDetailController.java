@@ -191,10 +191,13 @@ public class LogDetailController {
         return new ResponseEntity<>(pageLogs, HttpStatus.OK);
     }
 
-    @GetMapping("allByUser")
-    public ResponseEntity<List<LogDetail>> getByUser(@RequestParam String code)
+    @GetMapping("allByUserAndTime")
+    public ResponseEntity<List<LogDetail>> getByUserAndMonthAndYear(@RequestParam String code,
+                                                     @RequestParam Integer month,
+                                                     @RequestParam Integer year
+    )
     {
-        return new ResponseEntity<>(logDetailRepository.findByUserCode(code), HttpStatus.OK);
+        return new ResponseEntity<>(logDetailRepository.findByUserCodeAndMonthAndYear(code,month,year), HttpStatus.OK);
     }
     @GetMapping("byDepartment")
     public ResponseEntity<Page<LogDetail>> getByUser(@RequestParam(defaultValue = "0") int page,
