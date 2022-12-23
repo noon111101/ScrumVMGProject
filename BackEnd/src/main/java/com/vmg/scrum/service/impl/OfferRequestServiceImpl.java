@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,6 +48,10 @@ public class OfferRequestServiceImpl implements OfferRequestService {
 
     @Autowired
     private final HolidayRepository holidayRepository;
+
+    @Autowired
+    private final RequestRepository requestRepository;
+
     @Autowired
     MailService mailService;
 
@@ -76,6 +81,14 @@ public class OfferRequestServiceImpl implements OfferRequestService {
 
 
         User creator = userRepository.findByUserName(offerRequest.getCreator());
+        String department = userRepository.findDepartmentByUserID(offerRequest.getCreator());
+        LocalDate dateFrom = offerRequest.getDateFrom();
+        LocalDate dateTo = offerRequest.getDateTo();
+        LocalTime timeStart = offerRequest.getTimeStart();
+        LocalTime timeEnd = offerRequest.getTimeEnd();
+        LocalDate dateForget = offerRequest.getDateForget();
+//        Request totalsday =  requestRepository.findByRequestId(offerRequest.getId());
+
         ApproveStatus approveStatus = approveRepository.findById(offerRequest.getApproveStatus());
         CatergoryRequest catergoryRequest = categoryRequestRepository.findById(offerRequest.getCatergoryRequest());
         CategoryReason categoryReason = categoryReasonRepository.findById(offerRequest.getCategoryReason());
@@ -108,8 +121,17 @@ public class OfferRequestServiceImpl implements OfferRequestService {
         request.setApprovers(approves);
         request.setFollowers(followers);
         offerRepository.save(request);
-        mailService.sendEmailFollowers(offerRequest.getFollowers(), offerRequest.getTitle(), creator);
-        mailService.sendEmailApprovers(offerRequest.getApprovers(), offerRequest.getTitle(), creator);
+        if(offerRequest.getCategoryReason() == 6) {
+            mailService.sendEmailFollowersForget(offerRequest.getFollowers(), offerRequest.getTitle(), department, creator, dateForget);
+            mailService.sendEmailApproversForget(offerRequest.getFollowers(), offerRequest.getTitle(), department, creator, dateForget);
+        } else if (offerRequest.getCategoryReason() == 4 || offerRequest.getCategoryReason() == 5) {
+            mailService.sendEmailFollowersTCS(offerRequest.getFollowers(), offerRequest.getTitle(), department, creator, dateFrom, dateTo);
+            mailService.sendEmailApproversTCS(offerRequest.getFollowers(), offerRequest.getTitle(), department, creator, dateFrom, dateTo);
+    }else {
+            mailService.sendEmailFollowers(offerRequest.getFollowers(), offerRequest.getTitle(), department, creator, request, timeStart, dateFrom, timeEnd, dateTo);
+            mailService.sendEmailApprovers(offerRequest.getFollowers(), offerRequest.getTitle(), department, creator, request, timeStart, dateFrom, timeEnd, dateTo);
+        }
+
         return new MessageResponse("Tạo request thành công!");
 
 

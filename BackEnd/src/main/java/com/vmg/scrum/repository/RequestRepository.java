@@ -122,5 +122,4 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
             " order by r.id desc ")
     List<Request> findByRequestCreatorIdAndStatus(long id, long status);
 
-
 }
