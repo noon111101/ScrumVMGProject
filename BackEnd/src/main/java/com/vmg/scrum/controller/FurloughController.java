@@ -53,6 +53,11 @@ public class FurloughController {
     FurloughReport getAllFurloughByYearAndUser(@RequestParam Long year,@RequestParam String userCode) {
         return furloughService.getAllFurloughByYearByUser(year,userCode);
     }
+    @GetMapping("furloughByMonthAndYearAndUser")
+    Furlough getAllFurloughByMonthAndYearAndUser(@RequestParam Long userId) {
+        return furloughService.getAvailableFurlough(userId);
+    }
+
     @PostMapping("edit")
     MessageResponse editFurloughReport(@RequestBody EditFurloughRequest editFurloughRequest) {
         return furloughService.editFurloughReport(editFurloughRequest);

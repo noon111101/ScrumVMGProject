@@ -17,6 +17,7 @@ import com.vmg.scrum.service.FurloughService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -116,6 +117,15 @@ public class FurloughServiceImpl implements FurloughService {
         FurloughReport furloughReport = new FurloughReport(user, furloughList, year, furloughHistory);
         return furloughReport;
     }
+
+    @Override
+    public Furlough getAvailableFurlough(Long userId) {
+        Long currentYear = Long.valueOf(LocalDate.now().getYear());
+        Long currentMonth = Long.valueOf(LocalDate.now().getMonthValue());
+        Furlough furlough = furloughRepository.findByYearAndUserIdAndMonthInYear(currentYear, userId, currentMonth);
+        return furlough;
+    }
+
     @Override
     public List<FurloughReport> getFurloughsByYear(Long year) {
 
