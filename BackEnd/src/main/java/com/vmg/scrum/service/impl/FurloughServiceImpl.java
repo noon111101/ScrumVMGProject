@@ -9,7 +9,6 @@ import com.vmg.scrum.payload.response.FurloughReport;
 import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.pojo.FurloughCurrentEdit;
 import com.vmg.scrum.pojo.FurloughPreviousEdit;
-import com.vmg.scrum.pojo.MonthFurloughEdit;
 import com.vmg.scrum.repository.DepartmentRepository;
 import com.vmg.scrum.repository.FurloughHistoryRepository;
 import com.vmg.scrum.repository.FurloughRepository;
@@ -214,28 +213,6 @@ public class FurloughServiceImpl implements FurloughService {
     }
     @Override
     public MessageResponse editFurloughReport(EditFurloughRequest editFurloughRequest) {
-            if (editFurloughRequest.getMonthFurloughEdits().size() != 0) {
-                List<MonthFurloughEdit> monthFurloughEdits = editFurloughRequest.getMonthFurloughEdits();
-                for(MonthFurloughEdit monthFurloughEdit : monthFurloughEdits){
-                    Furlough furloughEdit = furloughRepository.findByYearAndUserIdAndMonthInYear(editFurloughRequest.getYear(),monthFurloughEdit.getId(),monthFurloughEdit.getMonth());
-                    if(furloughEdit==null) {
-                        furloughEdit = new Furlough();
-                        furloughEdit.setYear(editFurloughRequest.getYear());
-                        furloughEdit.setUser(userRepository.findById(monthFurloughEdit.getId()).get());
-                        furloughEdit.setMonthInYear(monthFurloughEdit.getMonth());
-                        furloughEdit.setAvailableUsedTillMonth(calculateAvailableUsedTillMonth(monthFurloughEdit.getMonth(), editFurloughRequest.getYear(), userRepository.findById(monthFurloughEdit.getId()).get()));
-                    }
-                    if(monthFurloughEdit.getUsed()>furloughEdit.getAvailableUsedTillMonth())
-                        throw new RuntimeException("Số phép sử dụng trong tháng vượt quá lượng có thể sử dụng");
-                    furloughEdit.setUsedInMonth(monthFurloughEdit.getUsed());
-                    furloughRepository.save(furloughEdit);
-                    List<Furlough> furloughList = furloughRepository.findByYearAndUserId(editFurloughRequest.getYear(), monthFurloughEdit.getId());
-                    for (Furlough furlough : furloughList){
-                        furlough.setAvailableUsedTillMonth(calculateAvailableUsedTillMonth(furlough.getMonthInYear(),furlough.getYear(),furlough.getUser()));
-                        furloughRepository.save(furlough);
-                    }
-                }
-            }
             if (editFurloughRequest.getFurloughCurrentEdits().size() != 0) {
                 List<FurloughCurrentEdit> furloughCurrentEdits = editFurloughRequest.getFurloughCurrentEdits();
                 for(FurloughCurrentEdit furloughCurrentEdit : furloughCurrentEdits){

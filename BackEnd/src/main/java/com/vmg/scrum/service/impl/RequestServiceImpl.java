@@ -95,14 +95,16 @@ public class RequestServiceImpl implements RequestService {
         Request request = requestRepository.findByRequestId(id);
         ApproveStatus approveStatus = approveSttRepository.findById(newStatus);
         ApproveStatus defaultStatus = approveSttRepository.findById(1);
+        ApproveStatus oldStatus1 = approveSttRepository.findById(oldStatus);
         request.setApproveStatus(approveStatus);
         request.setApproved(userRepository.getById(approvedId));
         requestRepository.save(request);
         if (request.getApproveStatus().getId() == 1) {
-//            LogDetail logDetail = logDetailRepository.findByDateAndUser(request.getCreator().getId(), request.getDateFrom());
-//            if(logDetail.isRequestActive()){
-//                throw new RuntimeException("Không thể hoàn tác");
-//            }
+            LogDetail logDetail = logDetailRepository.findByDateAndUser(request.getCreator().getId(), request.getDateFrom());
+            if(logDetail.isRequestActive()){
+                request.setApproveStatus(oldStatus1);
+                throw new RuntimeException("Không thể hoàn tác");
+            }
             if (request.getCategoryReason().getId() == 1 && oldStatus == 2) {
                 Furlough furlough = (Furlough) furloughRepository.findByYearAndUserIdAndMonthInYear((long) request.getDateFrom().getYear(), request.getCreator().getId(), (long) request.getDateFrom().getMonthValue());
                 furlough.setAvailableUsedTillMonth((float) (furlough.getAvailableUsedTillMonth() + request.getTotalDays()));
