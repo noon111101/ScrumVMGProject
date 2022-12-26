@@ -15,5 +15,4 @@ public interface FurloughRepository extends JpaRepository<Furlough,Long> {
     @Query(value = "select f from Furlough f \n" +
             "where f.user.id = ?2 and f.year = ?1 and f.monthInYear = ?3")
     Furlough findByYearAndUserIdAndMonthInYear(Long year , Long userId , Long month);
-
 }
