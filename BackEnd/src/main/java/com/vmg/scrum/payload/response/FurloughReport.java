@@ -6,7 +6,11 @@ import com.vmg.scrum.model.furlough.FurloughHistory;
 import com.vmg.scrum.repository.FurloughHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.Date;
 import java.util.List;
 
@@ -42,25 +46,35 @@ public class FurloughReport {
     //Số ngày phép được sử dụng đến tháng hiện tại
     private float availibleUsePresentMonth;
 
+    private boolean probation;
 
     public FurloughReport(User user, List<Furlough> furloughs,Long year,FurloughHistory furloughHistory) {
+        int leftMonth = 0;
+        int leftYear = 0;
+        int leftDate = 0;
         //Ngày giờ nghỉ làm
-        Date leftTime = user.getModifiedDate();
-        Long leftYear = (long)leftTime.getYear();
-        int leftDate = leftTime.getDate();
-        int leftMonth = leftTime.getMonth();
+        if(user.getEndWork()!=null){
+            leftMonth = user.getEndWork().getMonthValue();
+            leftYear = user.getEndWork().getYear();
+            leftDate = user.getEndWork().getDayOfMonth();
+        }
         LocalDate startWork = user.getStartWork();
         this.user = user;
         this.furloughs = furloughs;
-        if(furloughHistory.getAvailibleCurrentYear()==0){
+        this.probation=false;
+        long day = ChronoUnit.DAYS.between((Temporal) startWork,(Temporal)LocalDate.now());
+        if(day<=60)
+            this.probation=true;
+        if(furloughHistory.getAvailibleCurrentYear() ==  0){
+            //Khóa tài khoản
             if(!user.getAvalible()){
                 if(leftYear==year){
                     if(leftDate>=15)
                         this.availibleCurrentYear= 12-leftMonth;
                     else this.availibleCurrentYear=12-leftMonth+1;
                 } else if(leftYear<year) this.availibleCurrentYear=0;
-                else if(leftYear>year) this.availibleCurrentYear=furloughHistory.getAvailibleCurrentYear();
-            } else {
+                else if(leftYear>year) this.availibleCurrentYear=12-LocalDate.now().getMonthValue();
+            }else {
                 if (startWork.getYear() == year ) {
                     if (startWork.getDayOfMonth() >= 15)
                         this.availibleCurrentYear = 12 - startWork.getMonthValue();
@@ -70,15 +84,13 @@ public class FurloughReport {
             }
         }
         else this.availibleCurrentYear=furloughHistory.getAvailibleCurrentYear();
-
+        this.availibleCurrentYear = this.availibleCurrentYear + (Period.between(startWork,LocalDate.now()).getDays()/365);
         this.oddCurrentYear = furloughHistory.getLeftFurlough();
         this.usedBeforeApril = furloughs.get(0).getUsedInMonth() + furloughs.get(1).getUsedInMonth() + furloughs.get(2).getUsedInMonth();
-        for(int i=0;i<=11;i++){
+        for(int i=4;i<=11;i++){
             this.usedInYear=this.usedInYear+furloughs.get(i).getUsedInMonth();
         }
         this.leftLastYear = this.oddCurrentYear-this.usedBeforeApril;
-        if(this.leftLastYear<0)
-            this.leftLastYear=0;
         this.leftCurentYear=this.availibleCurrentYear-this.usedInYear+this.usedBeforeApril;
         if(this.usedBeforeApril>this.oddCurrentYear)
             this.leftCurentYear=this.leftCurentYear -(this.usedBeforeApril-this.oddCurrentYear);
@@ -162,6 +174,14 @@ public class FurloughReport {
 
     public void setPayFurlough(float payFurlough) {
         this.payFurlough = payFurlough;
+    }
+
+    public boolean isProbation() {
+        return probation;
+    }
+
+    public void setProbation(boolean probation) {
+        this.probation = probation;
     }
 
     public float getAvailibleUsePresentMonth() {

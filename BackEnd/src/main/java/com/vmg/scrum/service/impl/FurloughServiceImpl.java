@@ -136,10 +136,8 @@ public class FurloughServiceImpl implements FurloughService {
             List<Furlough> furloughs = furloughRepository.findByYearAndUserId(year, user.getId());
             List<Furlough> furloughList = new ArrayList<>();
             FurloughHistory furloughHistory = furloughHistoryRepository.findByYearAndUserId(year, user.getId());
-            if (furloughHistory == null) {
+            if (furloughHistory == null)
                 furloughHistory = new FurloughHistory();
-                furloughHistory.setAvailibleCurrentYear(12);
-            }
             for (int i = 1; i <= 12; i++) {
                 Furlough furlough1 = new Furlough();
                 furlough1.setMonthInYear((long) i);
@@ -173,48 +171,35 @@ public class FurloughServiceImpl implements FurloughService {
             float oddCurrentYear = furloughHistory.getLeftFurlough();
             float usedBeforeApril = furloughs.get(0).getUsedInMonth() + furloughs.get(1).getUsedInMonth() + furloughs.get(2).getUsedInMonth();
             float leftLastYear = oddCurrentYear-usedBeforeApril;
-            if(leftLastYear<0)
-                leftLastYear=0;
             payFurlough = leftLastYear;
         }
-
         float usedLeftLastYear = furloughHistoryRepository.findByYearAndUserId(year,user.getId()).getLeftFurlough();
         float availableCurrentYear = furloughHistoryRepository.findByYearAndUserId(year,user.getId()).getAvailibleCurrentYear();
-        float furloughGive =  availableCurrentYear-12;
+        float num = availableCurrentYear/12.0F;
+        float furloughRent = Math.round((num*3*10)/10);
+        if(availableCurrentYear <12)
+            furloughRent=0;
         float availableUsedTillMonth = 0 ;
         switch (monthInYear.intValue()){
             case 1:
-                availableUsedTillMonth = usedLeftLastYear+3+furloughGive;
-                break;
-            case 3:
-                Furlough furlough1 = furloughRepository.findByYearAndUserIdAndMonthInYear(year, user.getId(), (long) 1);
-                Furlough furlough2 = furloughRepository.findByYearAndUserIdAndMonthInYear(year,user.getId(),(long)2);
-                availableUsedTillMonth= furlough2.getAvailableUsedTillMonth()-furlough2.getUsedInMonth()+3;
+                availableUsedTillMonth = usedLeftLastYear+furloughRent;
                 break;
             case 2:
-                furlough1 = furloughRepository.findByYearAndUserIdAndMonthInYear(year,user.getId(),monthInYear-1);
-                availableUsedTillMonth= furlough1.getAvailableUsedTillMonth()-furlough1.getUsedInMonth();
-                break;
+            case 3:
             case 4:
-                Furlough furlough = furloughRepository.findByYearAndUserIdAndMonthInYear(year,user.getId(),monthInYear-1);
-                availableUsedTillMonth= furlough.getAvailableUsedTillMonth()-furlough.getUsedInMonth() - payFurlough;
-                break;
             case 5:
+            case 6:
             case 7:
             case 8:
+            case 9:
             case 10:
             case 11:
+                Furlough furlough = furloughRepository.findByYearAndUserIdAndMonthInYear(year,user.getId(),monthInYear-1);
+                availableUsedTillMonth= furlough.getAvailableUsedTillMonth()-furlough.getUsedInMonth() +1 ;
+                    break;
+            case 12:
                 furlough = furloughRepository.findByYearAndUserIdAndMonthInYear(year,user.getId(),monthInYear-1);
                 availableUsedTillMonth= furlough.getAvailableUsedTillMonth()-furlough.getUsedInMonth() ;
-                break;
-            case 6:
-            case 9:
-                Furlough furloughLast = furloughRepository.findByYearAndUserIdAndMonthInYear(year,user.getId(),monthInYear-1);
-                availableUsedTillMonth= furloughLast.getAvailableUsedTillMonth()-furloughLast.getUsedInMonth() + 3 ;
-                break;
-             case 12:
-                Furlough furloughLast12 = furloughRepository.findByYearAndUserIdAndMonthInYear(year,user.getId(),monthInYear-1);
-                availableUsedTillMonth= furloughLast12.getAvailableUsedTillMonth()-furloughLast12.getUsedInMonth();
                 break;
             default:
                 break;
