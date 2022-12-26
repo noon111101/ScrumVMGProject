@@ -103,6 +103,7 @@ public class RequestServiceImpl implements RequestService {
             LogDetail logDetail = logDetailRepository.findByDateAndUser(request.getCreator().getId(), request.getDateFrom());
             if(logDetail.isRequestActive()){
                 request.setApproveStatus(oldStatus1);
+                requestRepository.save(request);
                 throw new RuntimeException("Không thể hoàn tác");
             }
             if (request.getCategoryReason().getId() == 1 && oldStatus == 2) {

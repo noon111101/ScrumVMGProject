@@ -424,32 +424,41 @@ public class ExcelExportPhep {
                     }
 
                     int rowCount = sheet.getLastRowNum()+1;
+
+                    //Tổng số ngày đã nghỉ trước tháng 4
                     cell = row.createCell(18);
                     cell.setCellFormula("SUM(G"+rowCount+":I"+rowCount+")");
                     cell.setCellStyle(styleTitleThinCenter);
 
+                    //Tổng số ngày nghỉ phép của năm 2022
                     cell = row.createCell(19);
                     cell.setCellFormula("SUM(J"+rowCount+":R"+rowCount+")");
-                    cell.setCellFormula("IF(F"+rowCount+"-SUM(G"+rowCount+":I"+rowCount+")<=0," +
-                            "SUM(G"+rowCount+":I"+rowCount+")-F"+rowCount+"+SUM(J"+rowCount+":R"+rowCount+")," +
-                            "SUM(J"+rowCount+":R"+rowCount+"))");
+//                    cell.setCellFormula("IF(F"+rowCount+"-SUM(G"+rowCount+":I"+rowCount+")<=0," +
+//                            "SUM(G"+rowCount+":I"+rowCount+")-F"+rowCount+"+SUM(J"+rowCount+":R"+rowCount+")," +
+//                            "SUM(J"+rowCount+":R"+rowCount+"))");
                     cell.setCellStyle(styleTitleThinCenter);
 
+                    //Số ngày phép còn lại của năm 2021
                     cell = row.createCell(20);
-                    cell.setCellFormula("IF(F"+rowCount+"-SUM(G"+rowCount+":I"+rowCount+")" +
-                                            "<=0,0,F"+rowCount+"-SUM(G"+rowCount+":I"+rowCount+"))");
+                    cell.setCellFormula("F"+rowCount+"-SUM(G"+rowCount+":I"+rowCount+")");
+//                    cell.setCellFormula("IF(F"+rowCount+"-SUM(G"+rowCount+":I"+rowCount+")" +
+//                                            "<=0,0,F"+rowCount+"-SUM(G"+rowCount+":I"+rowCount+"))");
                     cell.setCellStyle(styleTitleThinCenter);
 
+                    //Số ngày phép còn lại của năm 2022
                     cell = row.createCell(21);
                     cell.setCellFormula("IF(F"+rowCount+"-SUM(G"+rowCount+":I"+rowCount+")" +
                                     "<0,E"+rowCount+"+F"+rowCount+"-SUM(G"+rowCount+":I"+rowCount+"),E"+rowCount+")" +
                                     "-SUM(J"+rowCount+":R"+rowCount+")");
                     cell.setCellStyle(styleTitleBoldBackground2);
 
+                    //Trả phép
                     cell = row.createCell(22);
-                    cell.setCellValue(fur.getOddCurrentYear());
+                    cell.setCellFormula("F"+rowCount+"-SUM(G"+rowCount+":I"+rowCount+")");
+//                    cell.setCellValue(fur.getOddCurrentYear());
                     cell.setCellStyle(styleTitleBoldBackground2);
 
+                    //Còn lại
                     cell = row.createCell(23);
                     cell.setCellFormula("U"+rowCount+"+V"+rowCount+"-W"+rowCount);
                     cell.setCellStyle(styleTitleBoldBackground2);
