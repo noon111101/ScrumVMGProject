@@ -202,6 +202,9 @@ public class ExcelImporter {
                         case 5:
                             signupRequest.setGender(currentCell.getStringCellValue());
                             break;
+                        case 6:
+                            signupRequest.setStartWork(currentCell.getLocalDateTimeCellValue().toLocalDate());
+                            break;
                         default:
                             break;
                     }
