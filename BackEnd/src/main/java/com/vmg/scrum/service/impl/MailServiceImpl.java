@@ -115,7 +115,7 @@ public class MailServiceImpl implements MailService {
     public void sendEmailFollowers(Set<String> recipientEmail, String title, String department, User fullName, Request totalsDay, LocalTime timeStart, LocalDate dateFrom, LocalTime timeEnd, LocalDate dateTo) throws MessagingException, UnsupportedEncodingException{
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        String requestLink = domain + "/managerequest";
+        String requestLink = "http://192.168.45.50:9999" + "/managerequest";
         String[] multipleEmailIds = recipientEmail.toArray(new String[0]);
         helper.setFrom("VMG@mailnotifi", "VMG");
         helper.setTo(multipleEmailIds);
@@ -317,7 +317,7 @@ public class MailServiceImpl implements MailService {
     public void sendEmailFollowersForget(Set<String> recipientEmail, String title, String department, Request totalsDay, User fullName, LocalDate dateForget) throws MessagingException, UnsupportedEncodingException{
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        String requestLink = domain + "/managerequest";
+        String requestLink = "http://192.168.45.50:9999" + "/managerequest";
         String[] multipleEmailIds = recipientEmail.toArray(new String[0]);
         helper.setFrom("VMG@mailnotifi", "VMG");
         helper.setTo(multipleEmailIds);
@@ -518,7 +518,7 @@ public class MailServiceImpl implements MailService {
     public void sendEmailFollowersTCS(Set<String> recipientEmail, String title, String department,Request totalsDay, User fullName, LocalDate dateFrom, LocalDate dateTo) throws MessagingException, UnsupportedEncodingException{
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        String requestLink = domain + "/managerequest";
+        String requestLink = "http://192.168.45.50:9999" + "/managerequest";
         String[] multipleEmailIds = recipientEmail.toArray(new String[0]);
         helper.setFrom("VMG@mailnotifi", "VMG");
         helper.setTo(multipleEmailIds);
@@ -721,7 +721,7 @@ public class MailServiceImpl implements MailService {
     public void sendEmailApprovers(Set<String> recipientEmail, String title, String department, User fullName, Request totalsDay, LocalTime timeStart, LocalDate dateFrom, LocalTime timeEnd, LocalDate dateTo) throws MessagingException, UnsupportedEncodingException{
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        String requestLink = domain + "/managerequest";
+        String requestLink = "http://192.168.45.50:9999" + "/managerequest";
         String[] multipleEmailIds = recipientEmail.toArray(new String[0]);
         helper.setFrom("VMG@mailnotifi", "VMG");
         helper.setTo(multipleEmailIds);
@@ -922,7 +922,7 @@ public class MailServiceImpl implements MailService {
     public void sendEmailApproversForget(Set<String> recipientEmail, String title, String department, Request totalsDay, User fullName, LocalDate dateForget) throws MessagingException, UnsupportedEncodingException{
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        String requestLink = domain + "/managerequest";
+        String requestLink = "http://192.168.45.50:9999" + "/managerequest";
         String[] multipleEmailIds = recipientEmail.toArray(new String[0]);
         helper.setFrom("VMG@mailnotifi", "VMG");
         helper.setTo(multipleEmailIds);
@@ -1123,7 +1123,7 @@ public class MailServiceImpl implements MailService {
     public void sendEmailApproversTCS(Set<String> recipientEmail, String title, String department, Request totalsDay, User fullName, LocalDate dateFrom, LocalDate dateTo) throws MessagingException, UnsupportedEncodingException{
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        String requestLink = domain + "/managerequest";
+        String requestLink = "http://192.168.45.50:9999" + "/managerequest";
         String[] multipleEmailIds = recipientEmail.toArray(new String[0]);
         helper.setFrom("VMG@mailnotifi", "VMG");
         helper.setTo(multipleEmailIds);
