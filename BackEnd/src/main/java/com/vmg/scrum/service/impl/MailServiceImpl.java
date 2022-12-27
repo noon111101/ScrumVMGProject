@@ -119,7 +119,7 @@ public class MailServiceImpl implements MailService {
         String[] multipleEmailIds = recipientEmail.toArray(new String[0]);
         helper.setFrom("VMG@mailnotifi", "VMG");
         helper.setTo(multipleEmailIds);
-        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin " + totalsDay.getCatergoryRequest().getName() + " that you followed";
+        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin " + totalsDay.getCategoryReason().getName() + " that you followed";
         String content = "<p> Họ và tên: "+ fullName.getFullName() + "_Bộ phận: "+ department + "</p>"
                            +
                          "<p>Số ngày nghỉ: "+ totalsDay.getTotalDays() + " ngày từ: "+ timeStart + " ngày " + dateFrom + " đến " + timeEnd + " ngày " + dateTo + " " + "</p>"
@@ -321,7 +321,7 @@ public class MailServiceImpl implements MailService {
         String[] multipleEmailIds = recipientEmail.toArray(new String[0]);
         helper.setFrom("VMG@mailnotifi", "VMG");
         helper.setTo(multipleEmailIds);
-        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin " + totalsDay.getCatergoryRequest().getName() + " that you followed";
+        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin " + totalsDay.getCategoryReason().getName()  + " that you followed";
         String content = "<p> Họ và tên: "+ fullName.getFullName() + "_Bộ phận: "+ department + "</p>"
                 +
                 "<p>Ngày quên chấm công: "+ dateForget + "</p>"
@@ -522,7 +522,7 @@ public class MailServiceImpl implements MailService {
         String[] multipleEmailIds = recipientEmail.toArray(new String[0]);
         helper.setFrom("VMG@mailnotifi", "VMG");
         helper.setTo(multipleEmailIds);
-        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin " + totalsDay.getCatergoryRequest().getName() + " that you followed";
+        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin " + totalsDay.getCategoryReason().getName()  + " that you followed";
         String content = "<p> Họ và tên: "+ fullName.getFullName() + "_Bộ phận: "+ department + "</p>"
                 +
                 "<p>Nghỉ từ: "+ dateFrom + " đến " + dateTo + "</p>"
@@ -725,7 +725,7 @@ public class MailServiceImpl implements MailService {
         String[] multipleEmailIds = recipientEmail.toArray(new String[0]);
         helper.setFrom("VMG@mailnotifi", "VMG");
         helper.setTo(multipleEmailIds);
-        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin " + totalsDay.getCatergoryRequest().getName() + " that you approved";
+        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin " + totalsDay.getCategoryReason().getName()  + " that you approved";
         String content = "<p> Họ và tên: "+ fullName.getFullName() + "_Bộ phận: "+ department + "</p>"
                 +
                 "<p>Số ngày nghỉ: "+ totalsDay.getTotalDays() + " ngày từ: "+ timeStart + " ngày " + dateFrom + " đến " + timeEnd + " ngày " + dateTo + " " + "</p>"
@@ -926,7 +926,7 @@ public class MailServiceImpl implements MailService {
         String[] multipleEmailIds = recipientEmail.toArray(new String[0]);
         helper.setFrom("VMG@mailnotifi", "VMG");
         helper.setTo(multipleEmailIds);
-        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin " + totalsDay.getCatergoryRequest().getName() + " that you approved";
+        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin " + totalsDay.getCategoryReason().getName()  + " that you approved";
         String content = "<p> Họ và tên: "+ fullName.getFullName() + "_Bộ phận: "+ department + "</p>"
                 +
                 "<p>Ngày quên chấm công: "+ dateForget + "</p>"
@@ -1127,7 +1127,7 @@ public class MailServiceImpl implements MailService {
         String[] multipleEmailIds = recipientEmail.toArray(new String[0]);
         helper.setFrom("VMG@mailnotifi", "VMG");
         helper.setTo(multipleEmailIds);
-        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin " + totalsDay.getCatergoryRequest().getName() + " that you approved";
+        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin " + totalsDay.getCategoryReason().getName()  + " that you approved";
         String content = "<p> Họ và tên: "+ fullName.getFullName() + "_Bộ phận: "+ department + "</p>"
                 +
                 "<p>Nghỉ từ: "+ dateFrom + " đến " + dateTo + "</p>"

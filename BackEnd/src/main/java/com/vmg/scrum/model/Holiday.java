@@ -5,9 +5,9 @@ import com.vmg.scrum.model.option.Department;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Builder
@@ -34,16 +34,14 @@ public class Holiday extends BaseEntity {
     private LocalDate dateTo;
 
     @Column(name = "total_days")
-    private int totalDays;
-
-
+    private double totalDays;
 
 
     public Holiday(String holidayName, LocalDate dateFrom, LocalDate dateTo) {
         this.holidayName = holidayName;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
-        totalDays = dateTo.compareTo(dateFrom)+1;
+        totalDays = dateFrom.until(dateTo, ChronoUnit.DAYS)+1;
     }
 
 }

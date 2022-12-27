@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 @Service
@@ -56,6 +57,7 @@ public class HolidayServiceImpl implements HolidayService {
         holiday.setHolidayName(holidayRequest.getName());
         holiday.setDateFrom(holidayRequest.getDateFrom());
         holiday.setDateTo(holidayRequest.getDateTo());
+        holiday.setTotalDays(holidayRequest.getDateFrom().until(holidayRequest.getDateTo(), ChronoUnit.DAYS)+1);
         holidayRepository.save(holiday);
 
     }
