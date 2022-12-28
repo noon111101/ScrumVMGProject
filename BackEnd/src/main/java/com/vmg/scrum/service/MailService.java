@@ -16,15 +16,16 @@ public interface MailService {
 
   void sendEmailFollowers(Set<String> recipientEmail, String title, String department, User fullName, Request totalsDay, LocalTime timeStart, LocalDate dateFrom, LocalTime timeEnd, LocalDate dateTo) throws MessagingException, UnsupportedEncodingException;
 
-  void sendEmailFollowersForget(Set<String> recipientEmail, String title, String department, User fullName, LocalDate dateForget) throws MessagingException, UnsupportedEncodingException;
 
-  void sendEmailFollowersTCS(Set<String> recipientEmail, String title, String department, User fullName, LocalDate dateFrom, LocalDate dateTo) throws MessagingException, UnsupportedEncodingException;
+  void sendEmailFollowersForget(Set<String> recipientEmail, String title, String department, Request totalsDay, User fullName, LocalDate dateForget) throws MessagingException, UnsupportedEncodingException;
+
+  void sendEmailFollowersTCS(Set<String> recipientEmail, String title, String department, Request totalsDay, User fullName, LocalDate dateFrom, LocalDate dateTo) throws MessagingException, UnsupportedEncodingException;
 
   void sendEmailApprovers(Set<String> recipientEmail, String title, String department, User fullName, Request totalsDay, LocalTime timeStart, LocalDate dateFrom, LocalTime timeEnd, LocalDate dateTo) throws MessagingException, UnsupportedEncodingException;
 
-  void sendEmailApproversForget(Set<String> recipientEmail, String title, String department, User fullName, LocalDate dateForget) throws MessagingException, UnsupportedEncodingException;
+  void sendEmailApproversForget(Set<String> recipientEmail, String title, String department, Request totalsDay, User fullName, LocalDate dateForget) throws MessagingException, UnsupportedEncodingException;
 
-  void sendEmailApproversTCS(Set<String> recipientEmail, String title, String department, User fullName, LocalDate dateFrom, LocalDate dateTo) throws MessagingException, UnsupportedEncodingException;
+  void sendEmailApproversTCS(Set<String> recipientEmail, String title, String department, Request totalsDay, User fullName, LocalDate dateFrom, LocalDate dateTo) throws MessagingException, UnsupportedEncodingException;
 
   UserDetails resetPasswordToken(String token);
 

@@ -115,11 +115,11 @@ public class MailServiceImpl implements MailService {
     public void sendEmailFollowers(Set<String> recipientEmail, String title, String department, User fullName, Request totalsDay, LocalTime timeStart, LocalDate dateFrom, LocalTime timeEnd, LocalDate dateTo) throws MessagingException, UnsupportedEncodingException{
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        String requestLink = domain + "/managerequest";
+        String requestLink = "http://192.168.45.50:9999" + "/managerequest";
         String[] multipleEmailIds = recipientEmail.toArray(new String[0]);
         helper.setFrom("VMG@mailnotifi", "VMG");
         helper.setTo(multipleEmailIds);
-        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin nghỉ phép that you followed";
+        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin " + totalsDay.getCategoryReason().getName() + " that you followed";
         String content = "<p> Họ và tên: "+ fullName.getFullName() + "_Bộ phận: "+ department + "</p>"
                            +
                          "<p>Số ngày nghỉ: "+ totalsDay.getTotalDays() + " ngày từ: "+ timeStart + " ngày " + dateFrom + " đến " + timeEnd + " ngày " + dateTo + " " + "</p>"
@@ -314,14 +314,14 @@ public class MailServiceImpl implements MailService {
 
 
     @Override
-    public void sendEmailFollowersForget(Set<String> recipientEmail, String title, String department, User fullName, LocalDate dateForget) throws MessagingException, UnsupportedEncodingException{
+    public void sendEmailFollowersForget(Set<String> recipientEmail, String title, String department, Request totalsDay, User fullName, LocalDate dateForget) throws MessagingException, UnsupportedEncodingException{
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        String requestLink = domain + "/managerequest";
+        String requestLink = "http://192.168.45.50:9999" + "/managerequest";
         String[] multipleEmailIds = recipientEmail.toArray(new String[0]);
         helper.setFrom("VMG@mailnotifi", "VMG");
         helper.setTo(multipleEmailIds);
-        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin nghỉ phép that you followed";
+        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin " + totalsDay.getCategoryReason().getName()  + " that you followed";
         String content = "<p> Họ và tên: "+ fullName.getFullName() + "_Bộ phận: "+ department + "</p>"
                 +
                 "<p>Ngày quên chấm công: "+ dateForget + "</p>"
@@ -515,14 +515,14 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public void sendEmailFollowersTCS(Set<String> recipientEmail, String title, String department, User fullName, LocalDate dateFrom, LocalDate dateTo) throws MessagingException, UnsupportedEncodingException{
+    public void sendEmailFollowersTCS(Set<String> recipientEmail, String title, String department,Request totalsDay, User fullName, LocalDate dateFrom, LocalDate dateTo) throws MessagingException, UnsupportedEncodingException{
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        String requestLink = domain + "/managerequest";
+        String requestLink = "http://192.168.45.50:9999" + "/managerequest";
         String[] multipleEmailIds = recipientEmail.toArray(new String[0]);
         helper.setFrom("VMG@mailnotifi", "VMG");
         helper.setTo(multipleEmailIds);
-        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin nghỉ phép that you followed";
+        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin " + totalsDay.getCategoryReason().getName()  + " that you followed";
         String content = "<p> Họ và tên: "+ fullName.getFullName() + "_Bộ phận: "+ department + "</p>"
                 +
                 "<p>Nghỉ từ: "+ dateFrom + " đến " + dateTo + "</p>"
@@ -721,11 +721,11 @@ public class MailServiceImpl implements MailService {
     public void sendEmailApprovers(Set<String> recipientEmail, String title, String department, User fullName, Request totalsDay, LocalTime timeStart, LocalDate dateFrom, LocalTime timeEnd, LocalDate dateTo) throws MessagingException, UnsupportedEncodingException{
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        String requestLink = domain + "/managerequest";
+        String requestLink = "http://192.168.45.50:9999" + "/managerequest";
         String[] multipleEmailIds = recipientEmail.toArray(new String[0]);
         helper.setFrom("VMG@mailnotifi", "VMG");
         helper.setTo(multipleEmailIds);
-        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin nghỉ phép that you approved";
+        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin " + totalsDay.getCategoryReason().getName()  + " that you approved";
         String content = "<p> Họ và tên: "+ fullName.getFullName() + "_Bộ phận: "+ department + "</p>"
                 +
                 "<p>Số ngày nghỉ: "+ totalsDay.getTotalDays() + " ngày từ: "+ timeStart + " ngày " + dateFrom + " đến " + timeEnd + " ngày " + dateTo + " " + "</p>"
@@ -919,14 +919,14 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public void sendEmailApproversForget(Set<String> recipientEmail, String title, String department, User fullName, LocalDate dateForget) throws MessagingException, UnsupportedEncodingException{
+    public void sendEmailApproversForget(Set<String> recipientEmail, String title, String department, Request totalsDay, User fullName, LocalDate dateForget) throws MessagingException, UnsupportedEncodingException{
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        String requestLink = domain + "/managerequest";
+        String requestLink = "http://192.168.45.50:9999" + "/managerequest";
         String[] multipleEmailIds = recipientEmail.toArray(new String[0]);
         helper.setFrom("VMG@mailnotifi", "VMG");
         helper.setTo(multipleEmailIds);
-        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin nghỉ phép that you approved";
+        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin " + totalsDay.getCategoryReason().getName()  + " that you approved";
         String content = "<p> Họ và tên: "+ fullName.getFullName() + "_Bộ phận: "+ department + "</p>"
                 +
                 "<p>Ngày quên chấm công: "+ dateForget + "</p>"
@@ -1120,14 +1120,14 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public void sendEmailApproversTCS(Set<String> recipientEmail, String title, String department, User fullName, LocalDate dateFrom, LocalDate dateTo) throws MessagingException, UnsupportedEncodingException{
+    public void sendEmailApproversTCS(Set<String> recipientEmail, String title, String department, Request totalsDay, User fullName, LocalDate dateFrom, LocalDate dateTo) throws MessagingException, UnsupportedEncodingException{
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        String requestLink = domain + "/managerequest";
+        String requestLink = "http://192.168.45.50:9999" + "/managerequest";
         String[] multipleEmailIds = recipientEmail.toArray(new String[0]);
         helper.setFrom("VMG@mailnotifi", "VMG");
         helper.setTo(multipleEmailIds);
-        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin nghỉ phép that you approved";
+        String subject = "[Request]"+ fullName.getFullName() +" created a new request Đơn xin " + totalsDay.getCategoryReason().getName()  + " that you approved";
         String content = "<p> Họ và tên: "+ fullName.getFullName() + "_Bộ phận: "+ department + "</p>"
                 +
                 "<p>Nghỉ từ: "+ dateFrom + " đến " + dateTo + "</p>"

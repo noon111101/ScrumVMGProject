@@ -42,7 +42,6 @@ public class LogDetailServiceImpl  implements LogDetailService{
     NoteCatergoryRepository noteCatergoryRepository;
     @Override
     public MessageResponse updateLogDetails(EditLogRequest[] editLogRequest) {
-
             if(editLogRequest.length==0){
                 throw  new UpdateNullException("Chưa có chỉnh sửa nào");
             }
