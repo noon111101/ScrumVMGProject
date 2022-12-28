@@ -48,43 +48,41 @@ public class FurloughReport {
 
     private boolean probation;
 
+    public boolean isLeaveCurrentYear() {
+        return leaveCurrentYear;
+    }
+
+    public void setLeaveCurrentYear(boolean leaveCurrentYear) {
+        this.leaveCurrentYear = leaveCurrentYear;
+    }
+
+    private boolean leaveCurrentYear;
+
+
     public FurloughReport(User user, List<Furlough> furloughs,Long year,FurloughHistory furloughHistory) {
-        int leftMonth = 0;
-        int leftYear = 0;
-        int leftDate = 0;
-        //Ngày giờ nghỉ làm
-        if(user.getEndWork()!=null){
-            leftMonth = user.getEndWork().getMonthValue();
-            leftYear = user.getEndWork().getYear();
-            leftDate = user.getEndWork().getDayOfMonth();
-        }
         LocalDate startWork = user.getStartWork();
         this.user = user;
         this.furloughs = furloughs;
         this.probation=false;
+        this.leaveCurrentYear=false;
+        if(user.getEndWork()!=null){
+            if(user.getEndWork().getYear()==LocalDate.now().getYear())
+                this.leaveCurrentYear=true;
+        }
         long day = ChronoUnit.DAYS.between((Temporal) startWork,(Temporal)LocalDate.now());
         if(day<=60)
             this.probation=true;
-        if(furloughHistory.getAvailibleCurrentYear() ==  0){
-            //Khóa tài khoản
-            if(!user.getAvalible()){
-                if(leftYear==year){
-                    if(leftDate>=15)
-                        this.availibleCurrentYear= 12-leftMonth;
-                    else this.availibleCurrentYear=12-leftMonth+1;
-                } else if(leftYear<year) this.availibleCurrentYear=0;
-                else if(leftYear>year) this.availibleCurrentYear=12-LocalDate.now().getMonthValue();
-            }else {
-                if (startWork.getYear() == year ) {
-                    if (startWork.getDayOfMonth() >= 15)
-                        this.availibleCurrentYear = 12 - startWork.getMonthValue();
-                    else this.availibleCurrentYear = 12 - startWork.getMonthValue() + 1;
-                }
-                else this.availibleCurrentYear= 12;
-            }
+        this.availibleCurrentYear=furloughHistory.getAvailibleCurrentYear();
+        if(user.getEndWork()!=null){
+            int leftMonth = user.getEndWork().getMonthValue();
+            int leftYear = user.getEndWork().getYear();
+            int leftDate = user.getEndWork().getDayOfMonth();
+            if(leftYear==LocalDate.now().getYear()){
+                if(leftDate>=15)
+                    this.availibleCurrentYear= 12-(12-leftMonth);
+                else this.availibleCurrentYear=12-(12-leftMonth)+1;
+            } else if(leftYear<LocalDate.now().getYear()) this.availibleCurrentYear=0;
         }
-        else this.availibleCurrentYear=furloughHistory.getAvailibleCurrentYear();
-        this.availibleCurrentYear = this.availibleCurrentYear + (Period.between(startWork,LocalDate.now()).getDays()/365);
         this.oddCurrentYear = furloughHistory.getLeftFurlough();
         this.usedBeforeApril = furloughs.get(0).getUsedInMonth() + furloughs.get(1).getUsedInMonth() + furloughs.get(2).getUsedInMonth();
         for(int i=4;i<=11;i++){

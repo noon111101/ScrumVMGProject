@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 @Service
@@ -53,7 +54,25 @@ public class FurloughSheduled {
             }
             if(currentMonth==12){
                 FurloughHistory furloughHistory = new FurloughHistory();
-                furloughHistory.setAvailibleCurrentYear(12F);
+                float availibleCurrentYear = 12;
+                if (user.getStartWork().getYear() == LocalDate.now().getYear() ) {
+                    if (user.getStartWork().getDayOfMonth() >= 15)
+                        availibleCurrentYear = availibleCurrentYear - user.getStartWork().getMonthValue();
+                    else availibleCurrentYear = availibleCurrentYear - user.getStartWork().getMonthValue() + 1;
+                }
+                availibleCurrentYear = availibleCurrentYear + (Period.between(user.getStartWork(),LocalDate.now()).getDays()/365);
+                //Ngày giờ nghỉ làm
+                if(user.getEndWork()!=null){
+                    int leftMonth = user.getEndWork().getMonthValue();
+                    int leftYear = user.getEndWork().getYear();
+                    int leftDate = user.getEndWork().getDayOfMonth();
+                    if(leftYear==LocalDate.now().getYear()){
+                        if(leftDate>=15)
+                            availibleCurrentYear= 12-(12-leftMonth);
+                        else availibleCurrentYear=12-(12-leftMonth)+1;
+                    } else if(leftYear<LocalDate.now().getYear()) availibleCurrentYear=0;
+                }
+                furloughHistory.setAvailibleCurrentYear(availibleCurrentYear);
                 furloughHistory.setUser(user);
                 furloughHistory.setYear(currentYear+1);
                 furloughHistory.setLeftFurlough(furloughService.calculateAvailableUsedTillMonth(currentMonth,currentYear,user)-furlough.getUsedInMonth());
