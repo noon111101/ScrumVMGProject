@@ -123,13 +123,13 @@ public class OfferRequestServiceImpl implements OfferRequestService {
         offerRepository.save(request);
         if(offerRequest.getCategoryReason() == 6) {
             mailService.sendEmailFollowersForget(offerRequest.getFollowers(), offerRequest.getContent(), department,request, creator, dateForget);
-            mailService.sendEmailApproversForget(offerRequest.getFollowers(), offerRequest.getContent(), department, request, creator, dateForget);
+            mailService.sendEmailApproversForget(offerRequest.getApprovers(), offerRequest.getContent(), department, request, creator, dateForget);
         } else if (offerRequest.getCategoryReason() == 4 || offerRequest.getCategoryReason() == 5) {
             mailService.sendEmailFollowersTCS(offerRequest.getFollowers(), offerRequest.getContent(), department,request, creator, dateFrom, dateTo);
-            mailService.sendEmailApproversTCS(offerRequest.getFollowers(), offerRequest.getContent(), department, request, creator, dateFrom, dateTo);
+            mailService.sendEmailApproversTCS(offerRequest.getApprovers(), offerRequest.getContent(), department, request, creator, dateFrom, dateTo);
     }else {
             mailService.sendEmailFollowers(offerRequest.getFollowers(), offerRequest.getContent(), department, creator, request, timeStart, dateFrom, timeEnd, dateTo);
-            mailService.sendEmailApprovers(offerRequest.getFollowers(), offerRequest.getContent(), department, creator, request, timeStart, dateFrom, timeEnd, dateTo);
+            mailService.sendEmailApprovers(offerRequest.getApprovers(), offerRequest.getContent(), department, creator, request, timeStart, dateFrom, timeEnd, dateTo);
         }
 
         return new MessageResponse("Tạo request thành công!");
