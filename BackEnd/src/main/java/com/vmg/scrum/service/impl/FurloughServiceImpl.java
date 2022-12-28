@@ -54,7 +54,7 @@ public class FurloughServiceImpl implements FurloughService {
                         FurloughHistory furloughHistory = furloughHistoryRepository.findByYearAndUserId(year, user.getId());
                         if (furloughHistory == null) {
                             furloughHistory = new FurloughHistory();
-                            furloughHistory.setAvailibleCurrentYear(0F);
+                            furloughHistory.setAvailibleCurrentYear(12);
                         }
                         for (int i = 1; i <= 12; i++) {
                             Furlough furlough1 = new Furlough();
