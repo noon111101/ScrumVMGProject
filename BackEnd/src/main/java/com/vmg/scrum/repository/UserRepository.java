@@ -30,6 +30,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "and u.username = ?1")
   String findDepartmentByUserID(String username);
 
+
+
   @Query(value = "select u from User u " +
           " where u.username = ?1 ")
   User findByfullName(String username);

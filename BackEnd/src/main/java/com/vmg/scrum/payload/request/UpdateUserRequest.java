@@ -1,5 +1,6 @@
 package com.vmg.scrum.payload.request;
 
+import com.vmg.scrum.model.Position;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +17,8 @@ public class UpdateUserRequest {
     private String username;
 
     private Set<String> role;
+
+    private long position;
 
     @NotBlank(message = "Chưa nhập tên")
     @Size(min = 6, max = 50)
@@ -104,5 +107,13 @@ public class UpdateUserRequest {
 
     public void setCover(MultipartFile cover) {
         this.cover = cover;
+    }
+
+    public long getPosition() {
+        return position;
+    }
+
+    public void setPosition(long position) {
+        this.position = position;
     }
 }

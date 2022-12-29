@@ -1,14 +1,17 @@
 package com.vmg.scrum.controller;
 
+import com.vmg.scrum.model.Position;
 import com.vmg.scrum.model.User;
 
 
 import com.vmg.scrum.model.excel.LogDetail;
 
+import com.vmg.scrum.model.option.Department;
 import com.vmg.scrum.payload.request.ManageUser_Request;
 import com.vmg.scrum.payload.request.SignupRequest;
 import com.vmg.scrum.payload.request.UpdateUserRequest;
 import com.vmg.scrum.payload.response.MessageResponse;
+import com.vmg.scrum.repository.PositionRepository;
 import com.vmg.scrum.repository.UserRepository;
 import com.vmg.scrum.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,7 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
 
     // Hiển thị User (theo phòng ban, search, trạng thái)
     @GetMapping("users")

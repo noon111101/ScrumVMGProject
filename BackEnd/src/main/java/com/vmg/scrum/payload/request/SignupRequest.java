@@ -30,6 +30,8 @@ public class SignupRequest {
         return department;
     }
 
+    private long position;
+
     public void setDepartment(String department) {
         this.department = department;
     }
@@ -109,5 +111,13 @@ public class SignupRequest {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public long getPosition() {
+        return position;
+    }
+
+    public void setPosition(long position) {
+        this.position = position;
     }
 }
