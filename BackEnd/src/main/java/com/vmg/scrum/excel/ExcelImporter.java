@@ -1,10 +1,12 @@
 package com.vmg.scrum.excel;
 
 
+import com.vmg.scrum.model.Position;
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.payload.request.SignupRequest;
 import com.vmg.scrum.repository.DepartmentRepository;
+import com.vmg.scrum.repository.PositionRepository;
 import com.vmg.scrum.repository.ShiftRepository;
 import com.vmg.scrum.repository.UserRepository;
 import com.vmg.scrum.service.impl.UserServiceImpl;
@@ -33,6 +35,8 @@ public class ExcelImporter {
     UserServiceImpl userService;
     @Autowired
     DepartmentRepository departmentRepository;
+    @Autowired
+    PositionRepository positionRepository;
     public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
 
@@ -159,9 +163,9 @@ public class ExcelImporter {
         try {
             XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
 
-            XSSFSheet sheet = workbook.getSheet("Sheet2");
+            XSSFSheet sheet = workbook.getSheet("Sheet1");
             if(sheet==null)
-                throw new RuntimeException("File không chứa sheet theo quy định (sheet 2 trống )");
+                throw new RuntimeException("File không chứa sheet theo quy định (sheet 1 trống )");
             Iterator<Row> rows = sheet.iterator();
 
 
@@ -195,9 +199,20 @@ public class ExcelImporter {
                             break;
                         case 4:
                             String role = currentCell.getStringCellValue();
+                            Position position = positionRepository.findByName(role);
+                            Long id = position.getRole().getId();
+                            String roleName = null;
+                            if (id == 1) {
+                                roleName = "user";
+                            }
+                            if(id == 2)
+                                roleName="manage";
+                            if(id==3)
+                                roleName="admin";
                             Set<String> roles = new HashSet<>();
-                            roles.add(role);
+                            roles.add(roleName);
                             signupRequest.setRole(roles);
+                            signupRequest.setPosition(id);
                             break;
                         case 5:
                             signupRequest.setGender(currentCell.getStringCellValue());
