@@ -212,6 +212,7 @@ public class ExcelImporter {
                             Set<String> roles = new HashSet<>();
                             roles.add(roleName);
                             signupRequest.setRole(roles);
+                            signupRequest.setPosition(id);
                             break;
                         case 5:
                             signupRequest.setGender(currentCell.getStringCellValue());
