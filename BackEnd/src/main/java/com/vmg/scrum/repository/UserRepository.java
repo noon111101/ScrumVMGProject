@@ -94,5 +94,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
             " order by u.id desc ")
     Page<User> getUsersByDepartments_Id_Search_Status(long id,String search, boolean status, Pageable pageable);
 
-
+  @Query(value = "select u from User u " +
+          " where u.position.id = 1 "+
+          "or u.position.id= 2"+
+             "or u.position.id = 3"+
+               "or u.position.id = 4")
+  List<User> findUserByPositionID();
 }

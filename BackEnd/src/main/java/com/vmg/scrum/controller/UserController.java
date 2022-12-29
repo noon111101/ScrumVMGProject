@@ -81,6 +81,11 @@ public class UserController {
         return new ResponseEntity<>(userRepository.findAllByDepartments_Id(id), HttpStatus.OK);
     }
 
+    @GetMapping("/getAllUserByPositionId")
+    public ResponseEntity<List<User>> getUserByPositionId(){
+        return new ResponseEntity<>(userRepository.findUserByPositionID(), HttpStatus.OK);
+    }
+
 
     @PostMapping("create")
     public MessageResponse registerUserExcel(@RequestBody SignupRequest[] signupRequests){
