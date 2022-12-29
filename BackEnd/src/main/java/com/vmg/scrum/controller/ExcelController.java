@@ -1,10 +1,8 @@
 package com.vmg.scrum.controller;
 
 
-import com.vmg.scrum.excel.DataExcelCalculation;
-import com.vmg.scrum.excel.ExcelExportPhep;
-import com.vmg.scrum.excel.ExcelExporterReport;
-import com.vmg.scrum.excel.ExcelImporter;
+import com.vmg.scrum.excel.*;
+import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.payload.request.SignupRequest;
 import com.vmg.scrum.repository.DepartmentRepository;
@@ -92,6 +90,31 @@ public class ExcelController {
 //            listLogs = logDetailRepository.findByMonthAndDepartmentSortDate(id, month);
             ExcelExportPhep excelExporter = new ExcelExportPhep(year, departmentRepository,userRepository, furloughService);
             excelExporter.export(response);
+        }
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/export_users")
+    public ResponseEntity exportUser(@RequestParam(name = "id", defaultValue = "0") Long id, HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=Danh sách nhân viên_" + currentDateTime + ".xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        List<User> listUsers = new ArrayList<>();
+        if(id==0){
+            listUsers = userRepository.findAll();
+            ExcelExportUser exportUser = new ExcelExportUser(listUsers,departmentRepository);
+            exportUser.export(response);
+        }
+        else {
+            listUsers = userRepository.findAllByDepartments_Id(id);
+            ExcelExportUser exportUser = new ExcelExportUser(listUsers, id,departmentRepository);
+            exportUser.export(response);
         }
 
         return new ResponseEntity(HttpStatus.OK);
