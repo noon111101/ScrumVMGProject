@@ -10,5 +10,7 @@ import java.util.List;
 public interface PositionRepository extends JpaRepository<Position, Long> {
     Position findById(long id);
 
+    Position findByName(String name);
+
     List<Position> findAll();
 }
