@@ -2,11 +2,13 @@ package com.vmg.scrum.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vmg.scrum.model.excel.LogDetail;
 import com.vmg.scrum.model.furlough.Furlough;
 import com.vmg.scrum.model.furlough.FurloughHistory;
 import com.vmg.scrum.model.option.Department;
 import com.vmg.scrum.model.option.NoteLog;
+import com.vmg.scrum.model.request.CategoryReason;
 import com.vmg.scrum.model.request.Request;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -74,8 +76,13 @@ public class User extends BaseEntity {
     private Set<LogDetail> logDetails= new HashSet<>();
     @ManyToMany( fetch = FetchType.LAZY)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns =
-            @JoinColumn(name = "role_id"))
+    @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "position_id", referencedColumnName = "position_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Position position;
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
     @JsonIgnore
@@ -95,7 +102,7 @@ public class User extends BaseEntity {
     private LocalDate endWork;
 
 
-    public User(String username, String rootPassword, String fullName,String gender,String cover,String code,Department department,LocalDate startWork, LocalDate endWork) {
+    public User(String username, String rootPassword, String fullName,String gender,String cover,String code,Department department,Position position,LocalDate startWork, LocalDate endWork) {
         this.username = username;
         this.rootPassword = rootPassword;
         this.fullName = fullName;
@@ -105,6 +112,7 @@ public class User extends BaseEntity {
         this.departments=department;
         this.checkRootDisable=false;
         this.avalible =true;
+        this.position = position;
         this.startWork = startWork;
         this.endWork = endWork;
     }

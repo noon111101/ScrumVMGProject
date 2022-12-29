@@ -3,6 +3,7 @@ package com.vmg.scrum.service.impl;
 
 import com.vmg.scrum.exception.custom.LockAccountException;
 import com.vmg.scrum.model.ERole;
+import com.vmg.scrum.model.Position;
 import com.vmg.scrum.model.Role;
 import com.vmg.scrum.model.User;
 import com.vmg.scrum.model.option.Department;
@@ -10,6 +11,7 @@ import com.vmg.scrum.payload.request.*;
 import com.vmg.scrum.payload.response.JwtResponse;
 import com.vmg.scrum.payload.response.MessageResponse;
 import com.vmg.scrum.repository.DepartmentRepository;
+import com.vmg.scrum.repository.PositionRepository;
 import com.vmg.scrum.repository.RoleRepository;
 import com.vmg.scrum.repository.UserRepository;
 import com.vmg.scrum.security.UserDetailsImpl;
@@ -20,8 +22,6 @@ import com.vmg.scrum.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -42,6 +42,7 @@ public class UserServiceImpl implements UserService {
 
     private final RoleRepository roleRepository;
 
+
     @Autowired
     HashOneWay encoder;
 
@@ -54,13 +55,17 @@ public class UserServiceImpl implements UserService {
     @Autowired
     FileManagerService fileManagerService;
 
+    @Autowired
+    private final PositionRepository positionRepository;
 
-    public UserServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, HashOneWay encoder, JwtUtils jwtUtils) {
+
+    public UserServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, HashOneWay encoder, JwtUtils jwtUtils, PositionRepository positionRepository) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
+        this.positionRepository = positionRepository;
     }
 
     private static String alphaNumericString(int len) {
@@ -108,6 +113,7 @@ public class UserServiceImpl implements UserService {
         //file
 
         String filename = fileManagerService.save(signUpRequest.getCover());
+        Position position = positionRepository.findById(signUpRequest.getPosition());
         // Create new user's account
         User user = new User(signUpRequest.getUsername(),
                 encoder.encode(genarate),
@@ -116,40 +122,27 @@ public class UserServiceImpl implements UserService {
                 filename,
                 "VMG_"+signUpRequest.getCode(),
                 department,
+                position,
                 signUpRequest.getStartWork(),
                 signUpRequest.getEndWork()
         );
-        Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
-
-        if (strRoles == null) {
-            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                switch (role) {
-                    case "admin" -> {
+       if(position.getId() == 1) {
                         Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(adminRole);
-                    }
-                    case "manage" -> {
-                        Role manageRole = roleRepository.findByName(ERole.ROLE_MANAGE)
+        }else if(position.getId() == 2 || position.getId() == 3 || position.getId() == 4 || position.getId() == 5 ) {
+                                    Role manageRole = roleRepository.findByName(ERole.ROLE_MANAGE)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(manageRole);
-                    }
-                    default -> {
-                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+        }else{
+            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(userRole);
-                    }
-                }
-            });
         }
         user.setRoles(roles);
         userRepository.save(user);
-        mailService.sendEmailAccountInfo(signUpRequest.getUsername(), genarate);
+//        mailService.sendEmailAccountInfo(signUpRequest.getUsername(), genarate);
         return new MessageResponse("Tạo tài khoản thành công!");
     }
 
@@ -166,6 +159,7 @@ public class UserServiceImpl implements UserService {
         //file
 
         String filename = fileManagerService.save(signUpRequest.getCover());
+        Position position = positionRepository.findById(signUpRequest.getPosition());
         // Create new user's account
         User user = new User(signUpRequest.getUsername(),
                 encoder.encode(genarate),
@@ -174,6 +168,7 @@ public class UserServiceImpl implements UserService {
                 filename,
                 signUpRequest.getCode(),
                 department,
+                position,
                 signUpRequest.getStartWork(),
                 signUpRequest.getEndWork()
         );
@@ -282,6 +277,8 @@ public class UserServiceImpl implements UserService {
         user.setGender(updateRequest.getGender());
         Department department = departmentRepository.findByName(updateRequest.getDepartment());
         user.setDepartments(department);
+        Position position = positionRepository.findById(updateRequest.getPosition());
+        user.setPosition(position);
         user.setStartWork(updateRequest.getStartWork());
         user.setEndWork(updateRequest.getEndWork());
         System.out.println(updateRequest.getCover().getSize());
@@ -291,32 +288,19 @@ public class UserServiceImpl implements UserService {
             String filename = fileManagerService.save(updateRequest.getCover());
             user.setCover(filename);
         }
-        Set<String> strRoles = updateRequest.getRole();
         Set<Role> roles = new HashSet<>();
-        if (strRoles == null) {
+        if(position.getId() == 1) {
+            Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            roles.add(adminRole);
+        }else if(position.getId() == 2 || position.getId() == 3 || position.getId() == 4 || position.getId() == 5 ) {
+            Role manageRole = roleRepository.findByName(ERole.ROLE_MANAGE)
+                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            roles.add(manageRole);
+        }else {
             Role userRole = roleRepository.findByName(ERole.ROLE_USER)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
             roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                switch (role) {
-                    case "admin" -> {
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
-                    }
-                    case "manage" -> {
-                        Role manageRole = roleRepository.findByName(ERole.ROLE_MANAGE)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(manageRole);
-                    }
-                    default -> {
-                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(userRole);
-                    }
-                }
-            });
         }
         user.setRoles(roles);
         userRepository.save(user);

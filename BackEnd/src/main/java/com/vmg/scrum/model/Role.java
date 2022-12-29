@@ -21,6 +21,7 @@ public class Role extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "role_name",length = 20)
     private ERole name;
+
     @ManyToMany(mappedBy = "roles")
     @JsonIgnore
     private Set<User> users;
